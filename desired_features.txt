@@ -1,0 +1,28 @@
+CANDIDATES
+	* Personal login
+	* Expanded profile page
+	* Add personal information
+		* Website
+		* Forum thread
+		* Twitter
+		* Suggested means of contacting this candidate
+		* Campaign Statement
+		* Summary of experience in Eve and time played
+		* Summary of relevant RL experience
+	* Set custom weight for each statement (with fixed total weight of all statements)
+	* Answer Strongly Disagree, Disagree, Neutral, Agree, Strongly Agree
+	* Add explanation/clarification of answer
+
+USERS
+	* Allow different scoring algorithms
+	* Allow users to ignore questions or candidates, adjust matching score accordingly
+	* Allow users to select question sets based on topic, show matches based only on that set
+	* Allow users to set custom weights for statements
+
+QUESTIONS
+	* Questions tagged with relevant subjects ("0.0", "industry", etc).
+
+WEBSITE
+	* Allow users to quickly see all candidate answers, without questionaire
+	* Allow users to quickly see all candidate profiles
+	* Allow users to quickly go to questionaire
