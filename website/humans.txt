@@ -1,0 +1,16 @@
+# humanstxt.org/
+# The humans responsible & technology colophon
+
+# TEAM
+
+    Developer: Valentijn "Dierdra Vaal" Geirnaert
+
+# THANKS
+
+    CCP Games
+	Serenity Steele
+
+# TECHNOLOGY COLOPHON
+
+    HTML5, CSS3
+    jQuery, Modernizr

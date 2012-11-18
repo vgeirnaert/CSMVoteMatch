@@ -1,6 +1,7 @@
 CANDIDATES
 	* Personal login
 	* Expanded profile page
+	* Previous CSM yes/no (or terms?)
 	* Add personal information
 		* Website
 		* Forum thread
@@ -9,6 +10,7 @@ CANDIDATES
 		* Campaign Statement
 		* Summary of experience in Eve and time played
 		* Summary of relevant RL experience
+		* Most to least experience/importance of gameplay areas?
 	* Set custom weight for each statement (with fixed total weight of all statements)
 	* Answer Strongly Disagree, Disagree, Neutral, Agree, Strongly Agree
 	* Add explanation/clarification of answer
