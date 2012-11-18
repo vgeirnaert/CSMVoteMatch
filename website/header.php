@@ -19,6 +19,8 @@
         </style>
         <link rel="stylesheet" href="css/bootstrap-responsive.css">
         <link rel="stylesheet" href="css/main.css">
+		<link rel="icon" type="image/png" href="favicon32.png">
+		<link rel="apple-touch-icon" href="apple-touch-icon.png">
 
         <script src="js/vendor/modernizr-2.6.1-respond-1.1.0.min.js"></script>
     </head>
@@ -39,10 +41,10 @@
                     </a>
                     <div class="nav-collapse collapse">
                         <ul class="nav">
-                            <li class="active"><a href="index.php" class="brand">Vote Match 2.0</a></li>
-                            <li><a href="#">Which candidate represents you?</a></li>
-                            <li><a href="#">Candidates overview</a></li>
-							<li><a href="#">Candidate comparison</a></li>
+                            <li><a href="index.php" class="brand">Vote Match 2.0</a></li>
+                            <li><a href="survey.php">Which candidate represents you?</a></li>
+                            <li><a href="candidates.php">Candidates overview</a></li>
+							<li><a href="compare.php">Candidate comparison</a></li>
                             <li class="dropdown">
                                 <a href="#" class="dropdown-toggle" data-toggle="dropdown">Help & FAQ<b class="caret"></b></a>
                                 <ul class="dropdown-menu">

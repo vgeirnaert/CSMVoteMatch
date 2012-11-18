@@ -165,7 +165,6 @@ body {
   color: #333333;
   background-color: #000000;
   background-repeat:no-repeat;
-  background-image: url('../img/backgrounds/1.jpg');
   background-attachment:fixed;
   background-position:center; 
 }
@@ -213,6 +212,12 @@ a:hover {
   *zoom: 1;
 }
 
+.rounded {
+  -webkit-border-radius: 6px;
+     -moz-border-radius: 6px;
+          border-radius: 6px;
+}
+
 .row:before,
 .row:after {
   display: table;
@@ -236,6 +241,29 @@ a:hover {
 .navbar-fixed-bottom .container {
   width: 940px;
 }
+
+.candidate {
+	padding: 5px;
+	margin-bottom: 30px;
+	text-align: center;
+	background-color: rgba(255,255,255,0.5);
+}
+
+/*.high {
+	background-color: rgba(0,255,0,0.2);
+}
+
+.low {
+	background-color: rgba(255,255,0,0.2);
+}
+
+.null {
+	background-color: rgba(255,0,0,0.2);
+}
+
+.wh {
+	background-color: rgba(0,0,255,0.2);
+}*/
 
 .span12 {
   width: 940px;
