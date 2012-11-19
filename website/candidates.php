@@ -1,7 +1,7 @@
 <?php include 'header.php'; ?>
 
 <!-- Main hero unit for a primary marketing message or call to action -->
-<div class="row inverted">
+<div class="row inverted rounded">
 	<h1>Candidates overview</h1>
 	<a class="btn pull-right" href="#" onclick="toggleFilterButton();">Hide filters</a>
 	<div class="span9 filters">
@@ -31,7 +31,7 @@
 </div>
 <script src="js/candidates.js"></script>
 <br>
-<div class="row">
+<div class="row rounded">
 	<div class="span4 candidate high nocsm lt1 rounded">
 		<a href="https://gate.eveonline.com/Profile/Dierdra%20Vaal" target="_blank"><h3>Dierdra Vaal 1</h3>
 		<img src="https://image.eveonline.com/Character/109000795_128.jpg" class="img-rounded" /></a>

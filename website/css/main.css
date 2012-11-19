@@ -10,13 +10,75 @@ div.warning {
 	border: #ffffff 2px solid;
 }
 
+body {
+	background-color: #000000;
+	background-repeat:no-repeat;
+	background-attachment:fixed;
+	background-position:center; 
+}
 
+a {
+	color: #003399;
+}
 
+a :hover{
+	color: #0044aa;
+}
 
+.row {
+  color: inherit;
+  padding: 30px;
+  background-color: rgba(255,255,255,0.6);
+  margin-left: 0px;
+}
 
+.rounded  {
+  -webkit-border-radius: 6px;
+     -moz-border-radius: 6px;
+          border-radius: 6px;
+}
 
+.inverted {
+	background-color: rgba(0,0,0,0.5);
+	color: #eeeeee;
+}
 
+.candidate {
+	padding: 5px;
+	margin-bottom: 30px;
+	text-align: center;
+	background-color: rgba(255,255,255,0.5);
+}
 
+hr {
+	border-top: 1px solid #444444;
+	border-bottom: 0px solid #555555;
+}
+
+.navbar-inverse .navbar-inner {
+	background-image: -moz-linear-gradient(top, #333333, #111111);
+	background-image: -webkit-gradient(linear, 0 0, 0 100%, from(#333333), to(#111111));
+	background-image: -webkit-linear-gradient(top, #333333, #111111);
+	background-image: -o-linear-gradient(top, #333333, #111111);
+	background-image: linear-gradient(to bottom, #333333, #111111);
+	border-color: #333333;
+}
+
+ .contents{
+	background-color: rgba(255,255,255,0.15);
+	padding: 30px;
+	color: #222222;
+}
+
+.hero-unit {
+	color: #eeeeee;
+	background-color: #333333;
+	background-image: url('../img/caldariheader.jpg');
+}
+
+.hero-unit a {
+	color: #77aaff;
+}
 
 
 

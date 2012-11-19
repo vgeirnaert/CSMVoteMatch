@@ -1,10 +1,10 @@
 <?php include 'header.php'; ?>
 
-<div class="row inverted">
+<div class="row inverted rounded">
 	<h1>Help & FAQ</h1>
 </div>
 <br>
-<div class="row">
+<div class="row rounded">
 	<div class="span5">
 		<h1>FAQ</h1>
 		<h2><a name="about">What is this website about?</a></h2>

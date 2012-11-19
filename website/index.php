@@ -6,7 +6,7 @@
 
 </div>
 
-<div class="row">
+<div class="row rounded">
 	<div class="span4">
 		<h2><a href="survey.php">Get started!</a></h2>
 		<p>Unsure which candidate to vote for? Take our survey of statements about Eve Online and see how your vision for Eve matches up with the vision of the candidates in the coming CSM election. </p>
