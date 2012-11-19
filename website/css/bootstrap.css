@@ -212,10 +212,15 @@ a:hover {
   *zoom: 1;
 }
 
-.rounded {
+.rounded  {
   -webkit-border-radius: 6px;
      -moz-border-radius: 6px;
           border-radius: 6px;
+}
+
+.inverted {
+  background-color: rgba(0,0,0,0.5);
+  color: #eeeeee;
 }
 
 .row:before,
@@ -5775,8 +5780,9 @@ a.badge:hover {
 .hero-unit {
   padding: 60px;
   margin-bottom: 30px;
-  color: inherit;
-  background-color: rgba(255,255,255,0.6);
+  color: #eeeeee;
+  background-color: #333333;
+  background-image: url('../img/caldariheader.jpg');
   -webkit-border-radius: 6px;
      -moz-border-radius: 6px;
           border-radius: 6px;
@@ -5794,7 +5800,14 @@ a.badge:hover {
   font-size: 18px;
   font-weight: 200;
   line-height: 30px;
-  color: inherit;
+  /*color: #333333;
+  background-color: rgba(255,255,255,0.6);
+  padding-left: 15px;
+  padding-right: 15px;*/
+}
+
+.hero-unit a {
+  color: #77aaff;
 }
 
 .pull-right {

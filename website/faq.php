@@ -1,10 +1,9 @@
 <?php include 'header.php'; ?>
 
-<!-- Main hero unit for a primary marketing message or call to action -->
-<div class="hero-unit">
+<div class="row inverted">
 	<h1>Help & FAQ</h1>
 </div>
-
+<br>
 <div class="row">
 	<div class="span5">
 		<h1>FAQ</h1>

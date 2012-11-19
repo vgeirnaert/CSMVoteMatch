@@ -1,14 +1,14 @@
 <?php include 'header.php'; ?>
 
-<!-- Main hero unit for a primary marketing message or call to action -->
-<div class="hero-unit">
-	<h1>Help & FAQ</h1>
+<div class="row inverted">
+	<h1>Compare candidates</h1>
 </div>
-
+<br>
 
 <div class="row">
 	
 </div>
 
+<script src="js/compare.js"></script>
 
 <?php include 'footer.php'; ?>
