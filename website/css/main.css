@@ -1,10 +1,14 @@
-
-
 /* ==========================================================================
    Author's custom styles
    ========================================================================== */
 
-
+div.warning {
+	position: fixed;
+	background-color: #000000;
+	color: #ffffff;
+	padding: 15px;
+	border: #ffffff 2px solid;
+}
 
 
 
