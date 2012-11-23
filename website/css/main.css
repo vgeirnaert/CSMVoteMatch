@@ -32,6 +32,10 @@ a :hover{
   margin-left: 0px;
 }
 
+[class*="span"] {
+	margin-left: 0px;
+}
+
 .rounded  {
   -webkit-border-radius: 6px;
      -moz-border-radius: 6px;
@@ -45,9 +49,20 @@ a :hover{
 
 .candidate {
 	padding: 5px;
-	margin-bottom: 30px;
+	margin: 15px;
 	text-align: center;
 	background-color: rgba(255,255,255,0.5);
+}
+
+.frontblurb {
+	margin-right: 35px;
+}
+
+.coverview {
+	text-align: left;
+	background-color: rgba(255,255,255,0.5);
+	padding: 10px;
+	margin: 5px;
 }
 
 hr {
@@ -79,6 +94,23 @@ hr {
 .hero-unit a {
 	color: #77aaff;
 }
+
+.bold {
+	font-weight: bold;
+}
+
+.green {
+	color: #006600;
+}
+
+.red {
+	color: #660000;
+}
+	
+h2 {
+	color: #660000;
+}
+
 
 
 

@@ -15,7 +15,7 @@ function toggleCandidateVisibility() {
 			elementsHide = elementsHide + "." + element.value;
 		}
 	});
-	$(elementsShow).show(150);
+	$(elementsShow).show();
 	$(elementsHide).hide(150); 
 }
 

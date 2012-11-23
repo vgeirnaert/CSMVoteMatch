@@ -2,10 +2,10 @@
 
 <!-- Main hero unit for a primary marketing message or call to action -->
 <div class="row inverted rounded">
-	<h1>Candidates overview</h1>
-	<a class="btn pull-right" href="#" onclick="toggleFilterButton();">Hide filters</a>
+	<div class="span6"><h1>Candidates overview</h1></div>
+	<div class="span5"><br><a class="btn pull-right" href="#" onclick="toggleFilterButton();">Hide filters</a></div>
 	<div class="span9 filters">
-		<h2>Filters</h2>
+		<h3>Filters</h3>
 		<div class="span2">
 			<h4>Location</h4>
 			<input type="checkbox" onclick="toggleCandidateVisibility();" checked value="high" /> Highsec<br>
@@ -13,12 +13,12 @@
 			<input type="checkbox" onclick="toggleCandidateVisibility();" checked value="null" /> Nullsec<br>
 			<input type="checkbox" onclick="toggleCandidateVisibility();" checked value="wh" /> Wormhole
 		</div>
-		<div class="span2">
+		<div class="span3">
 			<h4>CSM Experience</h4>
-			<input type="checkbox" onclick="toggleCandidateVisibility();" checked value="csm" /> Former CSM<br>
+			<input type="checkbox" onclick="toggleCandidateVisibility();" checked value="csm" /> Former council member<br>
 			<input type="checkbox" onclick="toggleCandidateVisibility();" checked value="nocsm" /> No CSM experience
 		</div>
-		<div class="span2">
+		<div class="span3">
 			<h4>Time in Eve</h4>
 			<input type="checkbox" onclick="toggleCandidateVisibility();" checked value="lt1" /> less than 1 year<br>
 			<input type="checkbox" onclick="toggleCandidateVisibility();" checked value="1t2" /> 1-2 years<br>
@@ -33,88 +33,88 @@
 <br>
 <div class="row rounded">
 	<div class="span4 candidate high nocsm lt1 rounded">
-		<a href="https://gate.eveonline.com/Profile/Dierdra%20Vaal" target="_blank"><h3>Dierdra Vaal 1</h3>
-		<img src="https://image.eveonline.com/Character/109000795_128.jpg" class="img-rounded" /></a>
-		<p><a href="https://gate.eveonline.com/Corporation/Koshaku" target="_blank">Koshaku [KAZO]</a><br>
-		<a href="https://gate.eveonline.com/Alliance/Gentlemen's%20Agreement" target="_blank">Gentlemen's Agreement &lt;GENTS&gt;</a>
-		</p>
+		<a href="candidate.php"><h3>Dierdra Vaal 1</h3>
+		<img src="https://image.eveonline.com/Character/109000795_128.jpg" class="img-rounded" />
+		<p>Koshaku [KAZO]<br>
+		Gentlemen's Agreement [GENTS]
+		</p></a>
 	</div>
 	<div class="span4 candidate high csm 1t2 rounded">
-		<a href="https://gate.eveonline.com/Profile/Dierdra%20Vaal" target="_blank"><h3>Dierdra Vaal 2</h3>
-		<img src="https://image.eveonline.com/Character/109000795_128.jpg" class="img-rounded" /></a>
-		<p><a href="https://gate.eveonline.com/Corporation/Koshaku" target="_blank">Koshaku [KAZO]</a><br>
-		<a href="https://gate.eveonline.com/Alliance/Gentlemen's%20Agreement" target="_blank">Gentlemen's Agreement &lt;GENTS&gt;</a>
-		</p>
+		<a href="candidate.php"><h3>Dierdra Vaal 2</h3>
+		<img src="https://image.eveonline.com/Character/109000795_128.jpg" class="img-rounded" />
+		<p>Koshaku [KAZO]<br>
+		Gentlemen's Agreement [GENTS]
+		</p></a>
 	</div>
 	<div class="span4 candidate null nocsm 2t3 rounded">
-		<a href="https://gate.eveonline.com/Profile/Dierdra%20Vaal" target="_blank"><h3>Dierdra Vaal 3</h3>
-		<img src="https://image.eveonline.com/Character/109000795_128.jpg" class="img-rounded" /></a>
-		<p><a href="https://gate.eveonline.com/Corporation/Koshaku" target="_blank">Koshaku [KAZO]</a><br>
-		<a href="https://gate.eveonline.com/Alliance/Gentlemen's%20Agreement" target="_blank">Gentlemen's Agreement &lt;GENTS&gt;</a>
-		</p>
+		<a href="candidate.php"><h3>Dierdra Vaal 3</h3>
+		<img src="https://image.eveonline.com/Character/109000795_128.jpg" class="img-rounded" />
+		<p>Koshaku [KAZO]<br>
+		Gentlemen's Agreement [GENTS]
+		</p></a>
 	</div>
 	<div class="span4 candidate low nocsm 3t4 rounded">
-		<a href="https://gate.eveonline.com/Profile/Dierdra%20Vaal" target="_blank"><h3>Dierdra Vaal 4</h3>
-		<img src="https://image.eveonline.com/Character/109000795_128.jpg" class="img-rounded" /></a>
-		<p><a href="https://gate.eveonline.com/Corporation/Koshaku" target="_blank">Koshaku [KAZO]</a><br>
-		<a href="https://gate.eveonline.com/Alliance/Gentlemen's%20Agreement" target="_blank">Gentlemen's Agreement &lt;GENTS&gt;</a>
-		</p>
+		<a href="candidate.php"><h3>Dierdra Vaal 4</h3>
+		<img src="https://image.eveonline.com/Character/109000795_128.jpg" class="img-rounded" />
+		<p>Koshaku [KAZO]<br>
+		Gentlemen's Agreement [GENTS]
+		</p></a>
 	</div>
 	<div class="span4 candidate null nocsm 4t5 rounded">
-		<a href="https://gate.eveonline.com/Profile/Dierdra%20Vaal" target="_blank"><h3>Dierdra Vaal 5</h3>
-		<img src="https://image.eveonline.com/Character/109000795_128.jpg" class="img-rounded" /></a>
-		<p><a href="https://gate.eveonline.com/Corporation/Koshaku" target="_blank">Koshaku [KAZO]</a><br>
-		<a href="https://gate.eveonline.com/Alliance/Gentlemen's%20Agreement" target="_blank">Gentlemen's Agreement &lt;GENTS&gt;</a>
-		</p>
+		<a href="candidate.php"><h3>Dierdra Vaal 5</h3>
+		<img src="https://image.eveonline.com/Character/109000795_128.jpg" class="img-rounded" />
+		<p>Koshaku [KAZO]<br>
+		Gentlemen's Agreement [GENTS]
+		</p></a>
 	</div>
 	<div class="span4 candidate wh nocsm mt5 rounded">
-		<a href="https://gate.eveonline.com/Profile/Dierdra%20Vaal" target="_blank"><h3>Dierdra Vaal 6</h3>
-		<img src="https://image.eveonline.com/Character/109000795_128.jpg" class="img-rounded" /></a>
-		<p><a href="https://gate.eveonline.com/Corporation/Koshaku" target="_blank">Koshaku [KAZO]</a><br>
-		<a href="https://gate.eveonline.com/Alliance/Gentlemen's%20Agreement" target="_blank">Gentlemen's Agreement &lt;GENTS&gt;</a>
-		</p>
+		<a href="candidate.php"><h3>Dierdra Vaal 6</h3>
+		<img src="https://image.eveonline.com/Character/109000795_128.jpg" class="img-rounded" />
+		<p>Koshaku [KAZO]<br>
+		Gentlemen's Agreement [GENTS]
+		</p></a>
 	</div>
 	<div class="span4 candidate high nocsm mt5 rounded">
-		<a href="https://gate.eveonline.com/Profile/Dierdra%20Vaal" target="_blank"><h3>Dierdra Vaal 7</h3>
-		<img src="https://image.eveonline.com/Character/109000795_128.jpg" class="img-rounded" /></a>
-		<p><a href="https://gate.eveonline.com/Corporation/Koshaku" target="_blank">Koshaku [KAZO]</a><br>
-		<a href="https://gate.eveonline.com/Alliance/Gentlemen's%20Agreement" target="_blank">Gentlemen's Agreement &lt;GENTS&gt;</a>
-		</p>
+		<a href="candidate.php"><h3>Dierdra Vaal 7</h3>
+		<img src="https://image.eveonline.com/Character/109000795_128.jpg" class="img-rounded" />
+		<p>Koshaku [KAZO]<br>
+		Gentlemen's Agreement [GENTS]
+		</p></a>
 	</div>
 	<div class="span4 candidate wh csm 4t5 rounded">
-		<a href="https://gate.eveonline.com/Profile/Dierdra%20Vaal" target="_blank"><h3>Dierdra Vaal 8</h3>
-		<img src="https://image.eveonline.com/Character/109000795_128.jpg" class="img-rounded" /></a>
-		<p><a href="https://gate.eveonline.com/Corporation/Koshaku" target="_blank">Koshaku [KAZO]</a><br>
-		<a href="https://gate.eveonline.com/Alliance/Gentlemen's%20Agreement" target="_blank">Gentlemen's Agreement &lt;GENTS&gt;</a>
-		</p>
+		<a href="candidate.php"><h3>Dierdra Vaal 8</h3>
+		<img src="https://image.eveonline.com/Character/109000795_128.jpg" class="img-rounded" />
+		<p>Koshaku [KAZO]<br>
+		Gentlemen's Agreement [GENTS]
+		</p></a>
 	</div>
 	<div class="span4 candidate low nocsm 3t4 rounded">
-		<a href="https://gate.eveonline.com/Profile/Dierdra%20Vaal" target="_blank"><h3>Dierdra Vaal 9</h3>
-		<img src="https://image.eveonline.com/Character/109000795_128.jpg" class="img-rounded" /></a>
-		<p><a href="https://gate.eveonline.com/Corporation/Koshaku" target="_blank">Koshaku [KAZO]</a><br>
-		<a href="https://gate.eveonline.com/Alliance/Gentlemen's%20Agreement" target="_blank">Gentlemen's Agreement &lt;GENTS&gt;</a>
-		</p>
+		<a href="candidate.php"><h3>Dierdra Vaal 9</h3>
+		<img src="https://image.eveonline.com/Character/109000795_128.jpg" class="img-rounded" />
+		<p>Koshaku [KAZO]<br>
+		Gentlemen's Agreement [GENTS]
+		</p></a>
 	</div>
 	<div class="span4 candidate null nocsm 2t3 rounded">
-		<a href="https://gate.eveonline.com/Profile/Dierdra%20Vaal" target="_blank"><h3>Dierdra Vaal 10</h3>
-		<img src="https://image.eveonline.com/Character/109000795_128.jpg" class="img-rounded" /></a>
-		<p><a href="https://gate.eveonline.com/Corporation/Koshaku" target="_blank">Koshaku [KAZO]</a><br>
-		<a href="https://gate.eveonline.com/Alliance/Gentlemen's%20Agreement" target="_blank">Gentlemen's Agreement &lt;GENTS&gt;</a>
-		</p>
+		<a href="candidate.php"><h3>Dierdra Vaal 10</h3>
+		<img src="https://image.eveonline.com/Character/109000795_128.jpg" class="img-rounded" />
+		<p>Koshaku [KAZO]<br>
+		Gentlemen's Agreement [GENTS]
+		</p></a>
 	</div>
 	<div class="span4 candidate null nocsm 1t2 rounded">
-		<a href="https://gate.eveonline.com/Profile/Dierdra%20Vaal" target="_blank"><h3>Dierdra Vaal 11</h3>
-		<img src="https://image.eveonline.com/Character/109000795_128.jpg" class="img-rounded" /></a>
-		<p><a href="https://gate.eveonline.com/Corporation/Koshaku" target="_blank">Koshaku [KAZO]</a><br>
-		<a href="https://gate.eveonline.com/Alliance/Gentlemen's%20Agreement" target="_blank">Gentlemen's Agreement &lt;GENTS&gt;</a>
-		</p>
+		<a href="candidate.php"><h3>Dierdra Vaal 11</h3>
+		<img src="https://image.eveonline.com/Character/109000795_128.jpg" class="img-rounded" />
+		<p>Koshaku [KAZO]<br>
+		Gentlemen's Agreement [GENTS]
+		</p></a>
 	</div>
 	<div class="span4 candidate high nocsm lt1 rounded">
-		<a href="https://gate.eveonline.com/Profile/Dierdra%20Vaal" target="_blank"><h3>Dierdra Vaal 12</h3>
-		<img src="https://image.eveonline.com/Character/109000795_128.jpg" class="img-rounded" /></a>
-		<p><a href="https://gate.eveonline.com/Corporation/Koshaku" target="_blank">Koshaku [KAZO]</a><br>
-		<a href="https://gate.eveonline.com/Alliance/Gentlemen's%20Agreement" target="_blank">Gentlemen's Agreement &lt;GENTS&gt;</a>
-		</p>
+		<a href="candidate.php"><h3>Dierdra Vaal 12</h3>
+		<img src="https://image.eveonline.com/Character/109000795_128.jpg" class="img-rounded" />
+		<p>Koshaku [KAZO]<br>
+		Gentlemen's Agreement [GENTS]
+		</p></a>
 	</div>
 </div>
 
