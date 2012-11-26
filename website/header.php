@@ -21,7 +21,7 @@
         <link rel="stylesheet" href="css/main.css">
 		<link rel="icon" type="image/png" href="favicon32.png">
 		<link rel="apple-touch-icon" href="apple-touch-icon.png">
-
+		<script src="//ajax.googleapis.com/ajax/libs/jquery/1.8.2/jquery.min.js"></script>
         <script src="js/vendor/modernizr-2.6.1-respond-1.1.0.min.js"></script>
     </head>
     <body id="body">

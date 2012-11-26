@@ -70,6 +70,10 @@ hr {
 	border-bottom: 0px solid #555555;
 }
 
+img.rounded {
+	/*border: 2px solid #ffffff;*/
+}
+
 .navbar-inverse .navbar-inner {
 	background-image: -moz-linear-gradient(top, #333333, #111111);
 	background-image: -webkit-gradient(linear, 0 0, 0 100%, from(#333333), to(#111111));
@@ -111,10 +115,49 @@ h2 {
 	color: #660000;
 }
 
+table {
+	background-color: rgba(255,255,255,0.8);
+	border-collapse: collapse;
+	border: 1px solid #888888;
+}
 
+td {
+	border: 1px solid #888888;
+}
 
+td.question {
+	padding-left: 10px;
+	min-width: 360px;
+	width: 360px;
+	font-size: 9pt;
+}
 
+tr.header {
+	background-color: rgba(0,0,0,0.3);
+}
 
+tr.even {
+	background-color: rgba(0,0,0,0.1);
+}
 
+tr.qrow:hover{
+	background-color: rgba(0,64,255,0.2);
+}
 
+th.even {
+	background-color: rgba(255,255,255,0.3);
+}
 
+th.answer {
+	vertical-align: top;
+	width: 75px;	
+	min-width: 75px;
+	font-size: 9pt;
+	padding: 3px;
+	border: 1px solid #888888;
+}
+
+div.check {
+	visibility:hidden;
+	position: absolute;
+}
