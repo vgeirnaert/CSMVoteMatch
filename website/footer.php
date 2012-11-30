@@ -1,5 +1,4 @@
-		<hr>
-
+		<br>
 		<footer>
 		<p><i>CSM Vote Match &copy; Dierdra Vaal 2012 - this website is not affiliated with CCP Games. All Eve Online material and artwork &copy; CCP Games</i></p>
 		</footer>

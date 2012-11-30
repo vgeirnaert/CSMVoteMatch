@@ -117,6 +117,8 @@ function makeMatches() {
 	return allMatches;
 }
 
+var madeMatches;
+
 // sort function, people with a higher score will be sorted ahead of those with a lower score
 function sortCandidateArray(a,b) {
 	return (b["score"] - a["score"]);
@@ -138,6 +140,7 @@ function printResults(matches) {
 	html = html + makeTableFooter(matches);
 		
 	$("#contentholder").html(html);
+	$("#showexcess").html("Show all candidates &raquo;");
 }
 
 function makeRow(matches, row) {
@@ -160,7 +163,10 @@ function makeRow(matches, row) {
 }
 
 function makeQuestion(qIndex, lIndex) {
-	return "<td class=\"question\">" + questions[matchQuestions[qIndex]][lIndex] + "</td>";
+	var html = "<td class=\"question\">";
+	html = html + "<input type=\"checkbox\" value=\"" + matchQuestions[qIndex] + "\" name=\"q\" /> ";
+	html = html + questions[matchQuestions[qIndex]][lIndex] + "</td>";
+	return html;
 }
 
 function makeTableHeader(matches) {
@@ -168,15 +174,16 @@ function makeTableHeader(matches) {
 	var style = "";
 	var tclass = "";
 	
-	html = "<table><tr class=\"header\"><th></th>";
+	html = "<table><tr class=\"header\"><th>";
+	html = html + "<div class=\"flags span2\"><img src=\"img/gb.png\" onclick=\"changeLanguage(0);\"/> <img src=\"img/de.png\" onclick=\"changeLanguage(1);\"/> <img src=\"img/ru.png\" onclick=\"changeLanguage(2);\"/> <img src=\"img/jp.png\" onclick=\"changeLanguage(3);\"/></div>";
+	html = html + "</th>";
 	
 	for(var i = 0; i < matches.length; i++) {
 		style = getStyle(i);
 		tclass = getClass(i);
-		html = html + "<th class=\"answer " + tclass + "\" " + style + " onmouseover=\"toggleCheckbox();\">";
-		html = html + "<div class=\"check\"><input type=\"checkbox\" /></div>";
+		html = html + "<th class=\"answer " + tclass + "\" " + style + " >";
+		html = html + "<div class=\"check\"><input type=\"checkbox\" value=\"" + (matches[i])["candidate"] + "\" name=\"c\" /></div>";
 		html = html + "<a href=\"candidate.php?cid=" + (candidates[(matches[i])["candidate"]])["cid"] +"\"><img src=\"https://image.eveonline.com/Character/" + (candidates[(matches[i])["candidate"]])["cid"] + "_64.jpg\" class=\"rounded\" /><br>" + (candidates[(matches[i])["candidate"]])["name"] + " (" + (matches[i])["score"] + ")</a>";
-
 		html = html + "</th>";
 	}
 	
@@ -236,12 +243,119 @@ function toggleCandidates() {
 	}
 }
 
-function toggleCheckbox() {
-	if($(".check").is(':hidden'))
-		$(".check").show(300);
-	else
-		$(".check").hide(300);
+function changeLanguage(lang) {
+	language = lang;
+	printResults(madeMatches);
+}
+
+function toggleButtonPanel(panel) {
+	var show = "";
+	var hide = "";
+	
+	if(panel == "questionbuttons") {
+		show = "questionbuttons";
+		hide = "candidatebuttons";
+	} else {
+		show = "candidatebuttons";
+		hide = "questionbuttons";
+	}
+	
+	if($("."+show).is(':hidden')) {
+		if($("."+hide).is(':visible'))
+			$("."+hide).hide();
+			
+		$("."+show).show(500);
+	} else {
+		$("."+show).hide(500);
+	}
+}
+
+//===============================================
+// Next are the functions dealing with checking
+// and unchecking questions and candidates
+//===============================================
+function resetQuestions() {
+	for(var i = 0; i < questions.length; i++)
+		matchQuestions[i] = i;
+		
+	printNewGrid();
+}
+
+function resetCandidates() {
+	for(var i = 0; i < candidates.length; i++)
+		matchCandidates[i] = i;
+		
+	printNewGrid();
+}
+
+function includeCandidates() {
+	matchCandidates = [];
+	
+	$('input').each(function(index, element){
+		if(element.checked && element.name == "c") {
+			matchCandidates.push(parseInt(element.value));
+		}
+	});
+	
+	printNewGrid();
+}
+
+function excludeCandidates() {
+	matchCandidates = [];
+	var excluding = [];
+	
+	// add all checked candidates to exclude list
+	$('input').each(function(index, element){
+		if(element.checked && element.name == "c") {
+			excluding.push(parseInt(element.value));
+		}
+	});
+	
+	// build match list of all candidates not in the exclude list
+	for(var i = 0; i < candidates.length; i++) {
+		if(jQuery.inArray(i, excluding) == -1)
+			matchCandidates.push(i);
+	}
+	
+	printNewGrid();
+}
+
+function includeQuestions() {
+	matchQuestions = [];
+	
+	$('input').each(function(index, element){
+		if(element.checked && element.name == "q") {
+			matchQuestions.push(parseInt(element.value));
+		}
+	});
+	
+	printNewGrid();
+}
+
+function excludeQuestions() {
+	matchQuestions = [];
+	var excluding = [];
+	
+	// add all checked candidates to exclude list
+	$('input').each(function(index, element){
+		if(element.checked && element.name == "q") {
+			excluding.push(parseInt(element.value));
+		}
+	});
+	
+	// build match list of all candidates not in the exclude list
+	for(var i = 0; i < questions.length; i++) {
+		if(jQuery.inArray(i, excluding) == -1)
+			matchQuestions.push(i);
+	}
+	
+	printNewGrid();
 }
 
 // Entry point of our script!
-printResults(makeMatches());
+printNewGrid();
+
+function printNewGrid() {
+	madeMatches = makeMatches();
+	printResults(madeMatches);
+}
