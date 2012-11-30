@@ -140,7 +140,8 @@ function printResults(matches) {
 	html = html + makeTableFooter(matches);
 		
 	$("#contentholder").html(html);
-	$("#showexcess").html("Show all candidates &raquo;");
+	//$("#showexcess").html("Show all candidates &raquo;");
+	$("#showexcess").html("&laquo; Hide candidates");
 }
 
 function makeRow(matches, row) {
@@ -195,8 +196,8 @@ function makeTableHeader(matches) {
 function getStyle(column) {
 	var style = "";
 		
-	if(column > 8)
-			style = "style=\"display:none;\"";
+	//if(column > 8)
+	//		style = "style=\"display:none;\"";
 			
 	return style;
 }
@@ -297,6 +298,7 @@ function includeCandidates() {
 		}
 	});
 	
+	// recalculate and draw
 	printNewGrid();
 }
 
@@ -317,6 +319,32 @@ function excludeCandidates() {
 			matchCandidates.push(i);
 	}
 	
+	// recalculate and draw
+	printNewGrid();
+}
+
+function compareCandidatesWith() {
+	var candidate = null;
+	var bMultiple = false;
+	
+	$('input').each(function(index, element){
+		if(element.checked && element.name == "c") {
+			if(candidate != null)
+				bMultiple = true;
+				
+			candidate = (parseInt(element.value));
+		}
+	});
+	
+	if(bMultiple)
+		alert("Notify: you had selected multiple candidates. Candidates will be compared to " + (candidates[candidate])["name"] + ".");
+		
+	if(candidate != null)
+		matchUser = candidates[candidate]
+	else
+		alert("No candidate selected.");
+		
+	// recalculate and draw
 	printNewGrid();
 }
 
@@ -329,6 +357,7 @@ function includeQuestions() {
 		}
 	});
 	
+	// recalculate and draw
 	printNewGrid();
 }
 
@@ -336,19 +365,20 @@ function excludeQuestions() {
 	matchQuestions = [];
 	var excluding = [];
 	
-	// add all checked candidates to exclude list
+	// add all checked questions to exclude list
 	$('input').each(function(index, element){
 		if(element.checked && element.name == "q") {
 			excluding.push(parseInt(element.value));
 		}
 	});
 	
-	// build match list of all candidates not in the exclude list
+	// build match list of all questions not in the exclude list
 	for(var i = 0; i < questions.length; i++) {
 		if(jQuery.inArray(i, excluding) == -1)
 			matchQuestions.push(i);
 	}
 	
+	// recalculate and draw
 	printNewGrid();
 }
 
