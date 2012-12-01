@@ -132,6 +132,11 @@ td.question {
 	font-size: 9pt;
 }
 
+td.answer {
+	text-align: center;
+	vertical-align: middle;
+}	
+
 tr.header {
 	background-color: rgba(0,0,0,0.3);
 }
@@ -189,6 +194,8 @@ div.buttonpanel {
 	width: 250px;
 	padding: 10px;
 	margin: 5px;
+	z-index:10;
+	box-shadow: 5px 5px 10px rgba(0, 0, 0, 0.2);
 }
 
 div.buttonpanel a {
@@ -200,3 +207,15 @@ div.buttonholder {
 	position: relative;
 }
 
+input[type="text"] {
+	width: 20px;
+	padding: 2px;
+	margin: 2px;
+}
+
+.btnsmall {
+	padding: 2px 5px;
+	font-size: 14px;
+	line-height:15px;
+	font-weight: bold;
+}
