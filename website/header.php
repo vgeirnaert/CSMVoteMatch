@@ -9,6 +9,7 @@
         <title>CSM Vote Match 2.0</title>
         <meta name="description" content="">
         <meta name="viewport" content="width=device-width">
+		<meta http-equiv="Content-Type" content="text/html; charset="utf-8" />
 
         <link rel="stylesheet" href="css/bootstrap.min.css">
         <style>

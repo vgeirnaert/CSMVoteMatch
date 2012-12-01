@@ -1,4 +1,51 @@
-<?php include 'header.php'; ?>
+<?php include 'header.php'; 
+
+function makeUserAnswers() {
+	$num_questions = 9;
+	
+	$line = '{"name":"You", "cid":"0"';
+	
+	for($i = 0; $i < $num_questions; $i++) {
+		$answer = parseAnswer($_POST["q" . $i]);
+		$weight = parseWeight($_POST["q" . $i . "_weight"]);
+		
+		$line = $line . ', "q' . ($i + 1) . '_answer":' . $answer . ', "q' . ($i + 1) . '_weight":' . $weight;
+
+	}
+	
+	$line = $line . '},';
+	
+	return $line;
+}
+
+function parseAnswer($ans) {
+	switch($ans) {
+		case "SD":
+			return -2;
+		break;
+		case "D":
+			return -1;
+		break;
+		case "A":
+			return 1;
+		break;
+		case "SA":
+			return 2;
+		break;
+		default: // No opinion or weird input
+			return 0;
+		break;
+	}
+}
+
+function parseWeight($weight) {
+	if($weight == "")
+		return 1;
+		
+	return $weight;
+}
+
+?>
 
 <script type="text/javascript">
 var questions = [
@@ -16,7 +63,7 @@ var questions = [
 var matchQuestions = [0,1,2,3,4,5,6,7,8];
 
 var candidates = [
-	{"name":"You", "cid":"0", "q1_answer": 0, "q1_weight":1,"q2_answer":0, "q2_weight":1,"q3_answer":0, "q3_weight":1,"q4_answer":0, "q4_weight":1,"q5_answer":0, "q5_weight":1,"q6_answer":0, "q6_weight":1,"q7_answer":0, "q7_weight":1,"q8_answer":0, "q8_weight":1,"q9_answer":0, "q9_weight":1},
+	<?php echo makeUserAnswers(); ?>
 	{"name":"All Strongly Disagree", "cid":"109000795", "q1_answer":-2, "q1_weight":1,"q2_answer":-2, "q2_weight":1,"q3_answer":-2, "q3_weight":1,"q4_answer":-2, "q4_weight":1,"q5_answer":-2, "q5_weight":1,"q6_answer":-2, "q6_weight":1,"q7_answer":-2, "q7_weight":1,"q8_answer":-2, "q8_weight":1,"q9_answer":-2, "q9_weight":1},
 	{"name":"All Strongly Agree", "cid":"109000795", "q1_answer":2, "q1_weight":1,"q2_answer":2, "q2_weight":1,"q3_answer":2, "q3_weight":1,"q4_answer":2, "q4_weight":1,"q5_answer":2, "q5_weight":1,"q6_answer":2, "q6_weight":1,"q7_answer":2, "q7_weight":1,"q8_answer":2, "q8_weight":1,"q9_answer":2, "q9_weight":1},
 	{"name":"Agree", "cid":"109000795", "q1_answer":1, "q1_weight":1,"q2_answer":1, "q2_weight":1,"q3_answer":1, "q3_weight":1,"q4_answer":1, "q4_weight":1,"q5_answer":1, "q5_weight":1,"q6_answer":1, "q6_weight":1,"q7_answer":1, "q7_weight":1,"q8_answer":1, "q8_weight":1,"q9_answer":1, "q9_weight":1},

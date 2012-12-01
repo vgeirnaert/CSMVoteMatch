@@ -5,7 +5,7 @@
 </div>
 <br>
 <div class="row rounded">
-	<form method="post" action="compare.php">
+	<form method="post" action="compare.php" name="survey" onsubmit="return validateForm();">
 	<div class="span2 pull-right coverview rounded">
 		<h2>Importance</h2>
 		<b>Points to distribute:</b>
@@ -216,19 +216,19 @@
 			<td class="question">
 			</td>
 			<td class="answer">
-				<input type="radio" name="q9" value="SD" />
+				<input type="radio" name="q8" value="SD" />
 			</td>
 			<td class="answer">
-				<input type="radio" name="q9" value="D" />
+				<input type="radio" name="q8" value="D" />
 			</td>
 			<td class="answer">
-				<input type="radio" name="q9" value="NO" checked />
+				<input type="radio" name="q8" value="NO" checked />
 			</td>
 			<td class="answer">
-				<input type="radio" name="q9" value="A" />
+				<input type="radio" name="q8" value="A" />
 			</td>
 			<td class="answer">
-				<input type="radio" name="q9" value="SA" />
+				<input type="radio" name="q8" value="SA" />
 			</td>
 			<td class="answer">
 				<a href="#" onclick="decrementWeight(8);" class="btn btnsmall">-</a><input type="text" name="q8_weight" value="1" width="2"  onchange="changeValue(8);" class="noEnterSubmit" /><a href="#" onclick="incrementWeight(8);" class="btn btnsmall">+</a>
@@ -255,12 +255,12 @@ var questions = [
 ];
 	
 var opinions = [
-	["Strongly disagree", "Trifft gar nicht zu", "Strongly disagree RUS", "Strongly disagree JP"],
-	["Disagree", "Nicht &uuml;bereinstimmen", "Disagree RUS", "Disagree JP"],
-	["No opinion", "Keine Meinung", "No opinion RUS", "No opinion JP"],
-	["Agree", "Stimme zu", "Agree RUS", "Agree JP"],
-	["Strongly agree", "Stimme voll zu", "Strongly agree RUS", "Strongly agree JP"],
-	["Importance", "Bedeutung", "Importance RUS", "Importance JP"],
+	["Strongly disagree", "Trifft gar nicht zu", "&#1050;&#1072;&#1090;&#1077;&#1075;&#1086;&#1088;&#1080;&#1095;&#1077;&#1089;&#1082;&#1080;&#32;&#1085;&#1077;&#32;&#1089;&#1086;&#1075;&#1083;&#1072;&#1089;&#1077;&#1085;", "&#20840;&#12367;&#21516;&#24847;&#12391;&#12365;&#12394;&#12356;"],
+	["Disagree", "Nicht &uuml;bereinstimmen", "&#1085;&#1077;&#32;&#1089;&#1086;&#1075;&#1083;&#1072;&#1096;&#1072;&#1090;&#1100;&#1089;&#1103;", "&#21516;&#24847;&#12375;&#12394;&#12356;"],
+	["No opinion", "Keine Meinung", "&#1053;&#1077;&#1090;&#32;&#1084;&#1085;&#1077;&#1085;&#1080;&#1103;", "&#24847;&#35211;&#12394;&#12375;"],
+	["Agree", "Stimme zu", "&#1089;&#1086;&#1075;&#1083;&#1072;&#1096;&#1072;&#1090;&#1100;&#1089;&#1103;", "&#21516;&#24847;&#12377;&#12427;"],
+	["Strongly agree", "Stimme voll zu", "&#1055;&#1086;&#1083;&#1085;&#1086;&#1089;&#1090;&#1100;&#1102;&#32;&#1089;&#1086;&#1075;&#1083;&#1072;&#1089;&#1077;&#1085;", "&#24375;&#12367;&#21516;&#24847;&#12377;&#12427;"],
+	["Importance", "Bedeutung", "&#1079;&#1085;&#1072;&#1095;&#1077;&#1085;&#1080;&#1077;", "&#37325;&#35201;&#24615;"],
 ];
 
 var language = 0;

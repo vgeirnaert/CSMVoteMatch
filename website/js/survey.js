@@ -82,3 +82,11 @@ function start() {
 	changeLanguage(0);
 	changeCounter();
 }
+
+function validateForm() {
+	if(freePoints == 0)
+		return true;
+	
+	alert('You must allocate all your importance points! You currently have ' + freePoints.toFixed(1) + ' left.');
+	return false;
+}
