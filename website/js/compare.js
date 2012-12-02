@@ -48,7 +48,7 @@ TraditionalCompareClass.prototype.getMinFidelityScore = function(totalQuestions)
 }
 
 // transform question array position integer to key string for question answer
-function getAnswerKey(intQuestion) {
+/*function getAnswerKey(intQuestion) {
 	return getQuestionKey(intQuestion) + "_answer";
 }
 
@@ -59,10 +59,10 @@ function getWeightKey(intQuestion) {
 
 function getScoreKey(intQuestion) {
 	return getQuestionKey(intQuestion) + "_score";
-}
+}*/
 
 function getQuestionKey(intQuestion) {
-	return "q" + (intQuestion + 1);
+	return "q" + (intQuestion);
 }
 
 // iterate over all relevant questions for one candidate
@@ -82,10 +82,10 @@ function matchCandidate(user, candidate, comparer, index) {
 	
 	for(var i = 0; i < matchQuestions.length; i++) {
 		// first, get the answers and weights from our user and candidate
-		var answerA = user[getAnswerKey(matchQuestions[i])];
-		var weightA = user[getWeightKey(matchQuestions[i])];
-		var answerB = candidate[getAnswerKey(matchQuestions[i])];
-		var weightB = candidate[getWeightKey(matchQuestions[i])];
+		var answerA =user[getQuestionKey(matchQuestions[i])]["answer"];
+		var weightA = user[getQuestionKey(matchQuestions[i])]["weight"];
+		var answerB = candidate[getQuestionKey(matchQuestions[i])]["answer"];
+		var weightB = candidate[getQuestionKey(matchQuestions[i])]["weight"];
 		
 		// then calculate a fidelity score and add it to the tally
 		var questionFidelity = comparer.scoreQuestion(answerA, weightA, answerB, weightB);
@@ -140,22 +140,20 @@ function printResults(matches) {
 	html = html + makeTableFooter(matches);
 		
 	$("#contentholder").html(html);
-	//$("#showexcess").html("Show all candidates &raquo;");
-	$("#showexcess").html("&laquo; Hide candidates");
+	$("#showexcess").html("&laquo; Hide results");
 }
 
 function makeRow(matches, row) {
 	
 	var html = "<tr class=\"" + getEvenRow(row) + "\">";
-	var style = "";
 	var tclass = "";
 	
 	html = html + makeQuestion(row, language);
 	
 	for(var i = 0; i < matches.length; i++) {
-		style = getStyle(i);
 		tclass = getClass(i);
-		html = html + "<td class=\"answer " + tclass + "\" " + style + ">" + ((matches[i])[getQuestionKey(matchQuestions[row])])["fidelity"] + "</td>";
+		background = getBackground(((matches[i])[getQuestionKey(matchQuestions[row])])["fidelity"]);
+		html = html + "<td class=\"answer " + tclass + " " + background + "\">" + getCellContents( ((candidates[(matches[i])["candidate"]])[getQuestionKey(row)])["answer"], ((candidates[(matches[i])["candidate"]])[getQuestionKey(row)])["weight"]) + "</td>";
 	}
 	
 	html = html + "</tr>";
@@ -172,7 +170,6 @@ function makeQuestion(qIndex, lIndex) {
 
 function makeTableHeader(matches) {
 	var html = "";
-	var style = "";
 	var tclass = "";
 	
 	html = "<table><tr class=\"header\"><th>";
@@ -180,9 +177,8 @@ function makeTableHeader(matches) {
 	html = html + "</th>";
 	
 	for(var i = 0; i < matches.length; i++) {
-		style = getStyle(i);
 		tclass = getClass(i);
-		html = html + "<th class=\"answer " + tclass + "\" " + style + " >";
+		html = html + "<th class=\"answer " + tclass + "\">";
 		html = html + "<div class=\"check\"><input type=\"checkbox\" value=\"" + (matches[i])["candidate"] + "\" name=\"c\" /></div>";
 		html = html + "<a href=\"candidate.php?cid=" + (candidates[(matches[i])["candidate"]])["cid"] +"\"><img src=\"https://image.eveonline.com/Character/" + (candidates[(matches[i])["candidate"]])["cid"] + "_64.jpg\" class=\"rounded\" /><br>" + (candidates[(matches[i])["candidate"]])["name"] + " (" + Math.round((matches[i])["score"] * 100) / 100 + ")</a>";
 		html = html + "</th>";
@@ -191,15 +187,6 @@ function makeTableHeader(matches) {
 	html = html + "</tr>";
 	
 	return html;
-}
-
-function getStyle(column) {
-	var style = "";
-		
-	//if(column > 8)
-	//		style = "style=\"display:none;\"";
-			
-	return style;
 }
 
 function getClass(column) {
@@ -214,6 +201,49 @@ function getClass(column) {
 		c = c + " uneven";
 		
 	return c;
+}
+
+function getBackground(fidelity) {
+	if(fidelity < -2)
+		return "verybad";
+		
+	if(fidelity < 0)
+		return "bad";
+		
+	if(fidelity == 0)
+		return "neutral";
+		
+	if(fidelity > 2)
+		return "verygood";
+		
+	if(fidelity > 0)
+		return "good";
+}
+
+function getCellContents(vote, weight) {
+	var html = "";
+	switch(vote) {
+		case -2:
+			html = '<img src="img/thumbsdown.png" alt="Strongly disagree" /><img src="img/thumbsdown.png" alt="Strongly disagree" />';
+			break;
+		case -1:
+			html = '<img src="img/thumbsdown.png" alt="Disagree" />';
+			break;
+		case 0:
+			html = '<img src="img/noopinion.png" alt="No opinion" />';
+			break;
+		case 1:
+			html = '<img src="img/thumbsup.png" alt="Agree" />';
+			break;
+		case 2:
+			html = '<img src="img/thumbsup.png"  alt="Strongly agree"/><img src="img/thumbsup.png" alt="Strongly agree" />';
+			break;
+	}
+	
+	if(weight > 1)
+		html = html + '<img src="img/comment.png" alt="" />';
+		
+	return html;
 }
 
 function getEvenRow(row) {
@@ -237,10 +267,10 @@ function makeTableFooter() {
 function toggleCandidates() {
 	if($(".excess").is(':hidden')) {
 		$(".excess").show(1000);
-		$("#showexcess").html("&laquo; Hide candidates");
+		$("#showexcess").html("&laquo; Hide results");
 	} else {
 		$(".excess").hide(1000);
-		$("#showexcess").html("Show all candidates &raquo;");
+		$("#showexcess").html("Show all results &raquo;");
 	}
 }
 

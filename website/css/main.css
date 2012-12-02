@@ -219,3 +219,23 @@ input[type="text"] {
 	line-height:15px;
 	font-weight: bold;
 }
+
+td.verybad {
+	background: #dd0000;
+}
+
+td.bad {
+	background: #dd8800;
+}
+
+td.neutral {
+	background: #cccccc;
+}
+
+td.good {
+	background: #6699dd;
+}
+
+td.verygood {
+	background: #2266ff;
+}
