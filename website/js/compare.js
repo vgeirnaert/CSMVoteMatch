@@ -153,7 +153,7 @@ function makeRow(matches, row) {
 	for(var i = 0; i < matches.length; i++) {
 		tclass = getClass(i);
 		background = getBackground(((matches[i])[getQuestionKey(matchQuestions[row])])["fidelity"]);
-		html = html + "<td class=\"answer " + tclass + " " + background + "\">" + getCellContents( ((candidates[(matches[i])["candidate"]])[getQuestionKey(row)])["answer"], ((candidates[(matches[i])["candidate"]])[getQuestionKey(row)])["weight"]) + "</td>";
+		html = html + "<td class=\"answer " + tclass + " " + background + "\">" + getCellContents( ((candidates[(matches[i])["candidate"]])[getQuestionKey(row)])["answer"], ((candidates[(matches[i])["candidate"]])[getQuestionKey(row)])["weight"], ((candidates[(matches[i])["candidate"]])[getQuestionKey(row)])["comment"], (candidates[(matches[i])["candidate"]])["name"]  ) + "</td>";
 	}
 	
 	html = html + "</tr>";
@@ -204,7 +204,7 @@ function getClass(column) {
 }
 
 function getBackground(fidelity) {
-	if(fidelity < -2)
+	if(fidelity <= -2)
 		return "verybad";
 		
 	if(fidelity < 0)
@@ -213,35 +213,37 @@ function getBackground(fidelity) {
 	if(fidelity == 0)
 		return "neutral";
 		
-	if(fidelity > 2)
+	if(fidelity >= 2)
 		return "verygood";
 		
 	if(fidelity > 0)
 		return "good";
 }
 
-function getCellContents(vote, weight) {
-	var html = "";
+function getCellContents(vote, weight, comment, name) {
+	var html = '<div data-ot="' + comment + '" data-ot-title="' + name + '" data-ot-show-on="click" data-ot-containInViewport="true" data-ot-hide-trigger="closeButton" data-ot-fixed="true" data-ot-target="true" data-ot-offset="[-20,-10]" data-ot-close-button-radius="11" data-ot-close-button-cross-size="10" data-ot-close-button-cross-line-width="3" >';
 	switch(vote) {
 		case -2:
-			html = '<img src="img/thumbsdown.png" alt="Strongly disagree" /><img src="img/thumbsdown.png" alt="Strongly disagree" />';
+			html += '<img src="img/doublethumbsdown.png" alt="Strongly disagree" />';
 			break;
 		case -1:
-			html = '<img src="img/thumbsdown.png" alt="Disagree" />';
+			html += '<img src="img/thumbsdown.png" alt="Disagree" />';
 			break;
 		case 0:
-			html = '<img src="img/noopinion.png" alt="No opinion" />';
+			html += '<img src="img/noopinion.png" alt="No opinion" />';
 			break;
 		case 1:
-			html = '<img src="img/thumbsup.png" alt="Agree" />';
+			html += '<img src="img/thumbsup.png" alt="Agree" />';
 			break;
 		case 2:
-			html = '<img src="img/thumbsup.png"  alt="Strongly agree"/><img src="img/thumbsup.png" alt="Strongly agree" />';
+			html += '<img src="img/doublethumbsup.png"  alt="Strongly agree"/>';
 			break;
 	}
 	
 	if(weight > 1)
 		html = html + '<img src="img/comment.png" alt="" />';
+		
+	html = html + '</div>';
 		
 	return html;
 }

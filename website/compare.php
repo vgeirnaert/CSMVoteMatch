@@ -64,7 +64,7 @@ var matchQuestions = [0,1,2,3,4,5,6,7,8];
 
 var candidates = [
 	<?php echo makeUserAnswers(); ?>
-	{"name":"All Strongly Disagree", "cid":"109000795", "q0":{"answer":-2, "weight":1, "comment":"Test comment"},"q1":{"answer":-2, "weight":1, "comment":"Test comment"},"q2":{"answer":-2, "weight":1, "comment":"Test comment"},"q3":{"answer":-2, "weight":1, "comment":"Test comment"},"q4":{"answer":-2, "weight":1, "comment":"Test comment"},"q5":{"answer":-2, "weight":1, "comment":"Test comment"},"q6":{"answer":-2, "weight":1, "comment":"Test comment"},"q7":{"answer":-2, "weight":1, "comment":"Test comment"},"q8":{"answer":-2, "weight":1, "comment":"Test comment"}},
+	{"name":"All Strongly Disagree", "cid":"109000795", "q0":{"answer":-2, "weight":1, "comment":"Test comment<br>newline"},"q1":{"answer":-2, "weight":1, "comment":"Test comment"},"q2":{"answer":-2, "weight":1, "comment":"Test comment"},"q3":{"answer":-2, "weight":1, "comment":"Test comment"},"q4":{"answer":-2, "weight":1, "comment":"Test comment"},"q5":{"answer":-2, "weight":1, "comment":"Test comment"},"q6":{"answer":-2, "weight":1, "comment":"Test comment"},"q7":{"answer":-2, "weight":1, "comment":"Test comment"},"q8":{"answer":-2, "weight":1, "comment":"Test comment"}},
 	{"name":"All Strongly Agree", "cid":"109000795", "q0":{"answer":2, "weight":1, "comment":"Test comment"},"q1":{"answer":2, "weight":1, "comment":"Test comment"},"q2":{"answer":2, "weight":1, "comment":"Test comment"},"q3":{"answer":2, "weight":1, "comment":"Test comment"},"q4":{"answer":2, "weight":1, "comment":"Test comment"},"q5":{"answer":2, "weight":1, "comment":"Test comment"},"q6":{"answer":2, "weight":1, "comment":"Test comment"},"q7":{"answer":2, "weight":1, "comment":"Test comment"},"q8":{"answer":2, "weight":1, "comment":"Test comment"}},
 	{"name":"Agree", "cid":"109000795", "q0":{"answer":1, "weight":1, "comment":"Test comment"},"q1":{"answer":1, "weight":1, "comment":"Test comment"},"q2":{"answer":1, "weight":1, "comment":"Test comment"},"q3":{"answer":1, "weight":1, "comment":"Test comment"},"q4":{"answer":1, "weight":1, "comment":"Test comment"},"q5":{"answer":1, "weight":1, "comment":"Test comment"},"q6":{"answer":1, "weight":1, "comment":"Test comment"},"q7":{"answer":1, "weight":1, "comment":"Test comment"},"q8":{"answer":1, "weight":1, "comment":"Test comment"}},
 	{"name":"Disagree", "cid":"109000795", "q0":{"answer":-1, "weight":1, "comment":"Test comment"},"q1":{"answer":-1, "weight":1, "comment":"Test comment"},"q2":{"answer":-1, "weight":1, "comment":"Test comment"},"q3":{"answer":-1, "weight":1, "comment":"Test comment"},"q4":{"answer":-1, "weight":1, "comment":"Test comment"},"q5":{"answer":-1, "weight":1, "comment":"Test comment"},"q6":{"answer":-1, "weight":1, "comment":"Test comment"},"q7":{"answer":-1, "weight":1, "comment":"Test comment"},"q8":{"answer":-1, "weight":1, "comment":"Test comment"}},
@@ -90,7 +90,7 @@ var candidates = [
 	{"name":"Mister Mix", "cid":"109000795", "q0":{"answer":-2, "weight":0.5, "comment":"Test comment"},"q1":{"answer":2, "weight":1.5, "comment":"Test comment"},"q2":{"answer":0, "weight":0.5, "comment":"Test comment"},"q3":{"answer":-1, "weight":1.5, "comment":"Test comment"},"q4":{"answer":-1, "weight":0.5, "comment":"Test comment"},"q5":{"answer":1, "weight":0.8, "comment":"Test comment"},"q6":{"answer":2, "weight":1.7, "comment":"Test comment"},"q7":{"answer":1, "weight":1.3, "comment":"Test comment"},"q8":{"answer":-1, "weight":0.7, "comment":"Test comment"}}
 ];
 
-var matchCandidates = [1,2,3,4,5,6];
+var matchCandidates = [1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24];
 
 
 var matchUser = candidates[0];
@@ -122,6 +122,11 @@ var language = 0;
 	</div>
 </div>
 
+<div style="display:none;">
+
+</div>
+
 <script src="js/compare.js"></script>
+<script src="js/opentip-jquery.js"></script>
 
 <?php include 'footer.php'; ?>
