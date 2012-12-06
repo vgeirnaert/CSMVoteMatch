@@ -151,7 +151,7 @@ tr.qrow:hover{
 
 th {
 	vertical-align: bottom;
-	text-align: left;
+	text-align: center;
 	font-weight: normal;
 	font-size: 9pt;
 	border: 1px solid #888888;
@@ -220,22 +220,26 @@ input[type="text"] {
 	font-weight: bold;
 }
 
-td.verybad {
+.verybad {
 	background: #dd0000;
 }
 
-td.bad {
+.bad {
 	background: #dd8800;
 }
 
-td.neutral {
+.neutral {
 	background: #cccccc;
 }
 
-td.good {
+.good {
 	background: #6699dd;
 }
 
-td.verygood {
+.verygood {
 	background: #2266ff;
+}
+
+.comment {
+	background-image: url('../img/balloon.png');
 }

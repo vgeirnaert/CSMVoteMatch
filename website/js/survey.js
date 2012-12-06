@@ -1,6 +1,10 @@
 function changeLanguage(lang) {
 	language = lang;
 	
+	changeDisplayLanguage();
+}
+
+function changeDisplayLanguage() {
 	$('.question').each(function(index, element){
 		element.innerHTML = (questions[index])[language];
 	});
@@ -8,6 +12,8 @@ function changeLanguage(lang) {
 	$('th.answer').each(function(index, element){
 		element.innerHTML = (opinions[index])[language];
 	});
+	
+	$('#explanation').html(explanations[language]);
 }
 
 function changeWeightValue(index, change) {
@@ -79,8 +85,8 @@ function start() {
 		if ( e.which == 13 )
 			return false;
 	});
-	changeLanguage(0);
 	changeCounter();
+	changeDisplayLanguage();
 }
 
 function validateForm() {

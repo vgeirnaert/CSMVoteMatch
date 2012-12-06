@@ -74,15 +74,15 @@ function getQuestionKey(intQuestion) {
 // 		"q1" ... "qN": {"fidelity": int, "weight": int}, // one for each question in matchQuestions[]
 //		"score": int
 // 	}
-function matchCandidate(user, candidate, comparer, index) {
+function matchCandidate(user, comparer, index) {
 	var score = 0;
-	
+	var candidate = candidates[index];
 	var candidateScore = [];
 	candidateScore["candidate"] = index;
 	
 	for(var i = 0; i < matchQuestions.length; i++) {
 		// first, get the answers and weights from our user and candidate
-		var answerA =user[getQuestionKey(matchQuestions[i])]["answer"];
+		var answerA = user[getQuestionKey(matchQuestions[i])]["answer"];
 		var weightA = user[getQuestionKey(matchQuestions[i])]["weight"];
 		var answerB = candidate[getQuestionKey(matchQuestions[i])]["answer"];
 		var weightB = candidate[getQuestionKey(matchQuestions[i])]["weight"];
@@ -99,16 +99,25 @@ function matchCandidate(user, candidate, comparer, index) {
 	return candidateScore;
 }
 
+var theComparer = null;
+
+function getComparer() {
+	if(theComparer == null)
+		theComparer = new TraditionalCompareClass();
+		
+	return theComparer;
+}
+
 // iterate over all relevant candidates and questions 
 // to determine their fidelity score
 function makeMatches() {
-	var comparer = new TraditionalCompareClass();
+	var mycomparer = getComparer();
 	
 	var allMatches = [];
 	// for each value in the matchCandidates array...
 	for(var i = 0; i < matchCandidates.length; i++) {
 		// match this candidate to the user
-		var match = matchCandidate(matchUser, candidates[matchCandidates[i]], comparer, matchCandidates[i]);
+		var match = matchCandidate(matchUser, mycomparer, matchCandidates[i]);
 		allMatches.push(match);
 	}
 	
@@ -141,19 +150,22 @@ function printResults(matches) {
 		
 	$("#contentholder").html(html);
 	$("#showexcess").html("&laquo; Hide results");
+	
+	// TODO: Add code to reinitialise opentip so we can see tooltips again
 }
 
 function makeRow(matches, row) {
 	
 	var html = "<tr class=\"" + getEvenRow(row) + "\">";
 	var tclass = "";
+	var question = matchQuestions[row];
 	
 	html = html + makeQuestion(row, language);
 	
 	for(var i = 0; i < matches.length; i++) {
 		tclass = getClass(i);
-		background = getBackground(((matches[i])[getQuestionKey(matchQuestions[row])])["fidelity"]);
-		html = html + "<td class=\"answer " + tclass + " " + background + "\">" + getCellContents( ((candidates[(matches[i])["candidate"]])[getQuestionKey(row)])["answer"], ((candidates[(matches[i])["candidate"]])[getQuestionKey(row)])["weight"], ((candidates[(matches[i])["candidate"]])[getQuestionKey(row)])["comment"], (candidates[(matches[i])["candidate"]])["name"]  ) + "</td>";
+		background = getBackground(((matches[i])[getQuestionKey(question)])["fidelity"], ((candidates[(matches[i])["candidate"]])[getQuestionKey(question)])["comment"]);
+		html = html + "<td class=\"answer " + tclass + " " + background + "\">" + getCellContents( ((candidates[(matches[i])["candidate"]])[getQuestionKey(question)])["answer"], ((candidates[(matches[i])["candidate"]])[getQuestionKey(question)])["weight"], ((candidates[(matches[i])["candidate"]])[getQuestionKey(question)])["comment"], (candidates[(matches[i])["candidate"]])["name"]  ) + "</td>";
 	}
 	
 	html = html + "</tr>";
@@ -180,13 +192,21 @@ function makeTableHeader(matches) {
 		tclass = getClass(i);
 		html = html + "<th class=\"answer " + tclass + "\">";
 		html = html + "<div class=\"check\"><input type=\"checkbox\" value=\"" + (matches[i])["candidate"] + "\" name=\"c\" /></div>";
-		html = html + "<a href=\"candidate.php?cid=" + (candidates[(matches[i])["candidate"]])["cid"] +"\"><img src=\"https://image.eveonline.com/Character/" + (candidates[(matches[i])["candidate"]])["cid"] + "_64.jpg\" class=\"rounded\" /><br>" + (candidates[(matches[i])["candidate"]])["name"] + " (" + Math.round((matches[i])["score"] * 100) / 100 + ")</a>";
+		html = html + "<a href=\"candidate.php?cid=" + (candidates[(matches[i])["candidate"]])["cid"] +"\"><img src=\"https://image.eveonline.com/Character/" + (candidates[(matches[i])["candidate"]])["cid"] + "_64.jpg\" class=\"rounded\" /><br>" + (candidates[(matches[i])["candidate"]])["name"] + " (" + getPercentage(Math.round((matches[i])["score"] * 100) / 100, getComparer().getMinFidelityScore(matchQuestions.length), getComparer().getMaxFidelityScore(matchQuestions.length)) + "% match)</a>";
 		html = html + "</th>";
 	}
 	
 	html = html + "</tr>";
 	
 	return html;
+}
+
+function getPercentage(score, min, max) { 
+	var scale = max - min; 
+	
+	score = score + Math.abs(min);
+	
+	return Math.min(Math.round((score / scale) * 100), 100);
 }
 
 function getClass(column) {
@@ -203,45 +223,52 @@ function getClass(column) {
 	return c;
 }
 
-function getBackground(fidelity) {
+function getBackground(fidelity, comment) {
+	var html = "";
+	
 	if(fidelity <= -2)
-		return "verybad";
+		html = "verybad";
+	else if(fidelity < 0)
+		html = "bad";
+	else if(fidelity == 0)
+		html = "neutral";
+	else if(fidelity >= 2)
+		html = "verygood";
+	else if(fidelity > 0)
+		html = "good";
 		
-	if(fidelity < 0)
-		return "bad";
+	if(comment != "")
+		html += " comment";
 		
-	if(fidelity == 0)
-		return "neutral";
-		
-	if(fidelity >= 2)
-		return "verygood";
-		
-	if(fidelity > 0)
-		return "good";
+	return html;
 }
 
 function getCellContents(vote, weight, comment, name) {
-	var html = '<div data-ot="' + comment + '" data-ot-title="' + name + '" data-ot-show-on="click" data-ot-containInViewport="true" data-ot-hide-trigger="closeButton" data-ot-fixed="true" data-ot-target="true" data-ot-offset="[-20,-10]" data-ot-close-button-radius="11" data-ot-close-button-cross-size="10" data-ot-close-button-cross-line-width="3" >';
+	var html = "";
+	
+	if(comment != "")
+		html += '<div data-ot="' + comment + '" data-ot-title="' + name + '" data-ot-containInViewport="true" data-ot-tip-joint="bottom left" data-ot-fixed="true" data-ot-target="true" data-ot-close-button-radius="11" data-ot-close-button-cross-size="10" data-ot-close-button-cross-line-width="3" >';
+		
 	switch(vote) {
 		case -2:
-			html += '<img src="img/doublethumbsdown.png" alt="Strongly disagree" />';
+			html += '<img src="img/doublethumbsdown.png" title="Strongly disagree" />';
 			break;
 		case -1:
-			html += '<img src="img/thumbsdown.png" alt="Disagree" />';
+			html += '<img src="img/thumbsdown.png" title="Disagree" />';
 			break;
 		case 0:
-			html += '<img src="img/noopinion.png" alt="No opinion" />';
+			html += '<img src="img/noopinion.png" title="No opinion" />';
 			break;
 		case 1:
-			html += '<img src="img/thumbsup.png" alt="Agree" />';
+			html += '<img src="img/thumbsup.png" title="Agree" />';
 			break;
 		case 2:
-			html += '<img src="img/doublethumbsup.png"  alt="Strongly agree"/>';
+			html += '<img src="img/doublethumbsup.png"  title="Strongly agree"/>';
 			break;
 	}
 	
 	if(weight > 1)
-		html = html + '<img src="img/comment.png" alt="" />';
+		html = html + '<img src="img/comment.png" title="" />';
 		
 	html = html + '</div>';
 		
@@ -335,7 +362,7 @@ function includeCandidates() {
 }
 
 function excludeCandidates() {
-	matchCandidates = [];
+	var newCandidates = [];
 	var excluding = [];
 	
 	// add all checked candidates to exclude list
@@ -346,10 +373,12 @@ function excludeCandidates() {
 	});
 	
 	// build match list of all candidates not in the exclude list
-	for(var i = 0; i < candidates.length; i++) {
-		if(jQuery.inArray(i, excluding) == -1)
-			matchCandidates.push(i);
+	for(var i = 0; i < matchCandidates.length; i++) {
+		if(jQuery.inArray(matchCandidates[i], excluding) == -1)
+			newCandidates.push(matchCandidates[i]);
 	}
+	
+	matchCandidates = newCandidates;
 	
 	// recalculate and draw
 	printNewGrid();
@@ -394,8 +423,8 @@ function includeQuestions() {
 }
 
 function excludeQuestions() {
-	matchQuestions = [];
 	var excluding = [];
+	var newQuestions = [];
 	
 	// add all checked questions to exclude list
 	$('input').each(function(index, element){
@@ -405,12 +434,36 @@ function excludeQuestions() {
 	});
 	
 	// build match list of all questions not in the exclude list
-	for(var i = 0; i < questions.length; i++) {
-		if(jQuery.inArray(i, excluding) == -1)
-			matchQuestions.push(i);
+	for(var i = 0; i < matchQuestions.length; i++) {
+		if(jQuery.inArray(matchQuestions[i], excluding) == -1)
+			newQuestions.push(matchQuestions[i]);
 	}
 	
+	matchQuestions = newQuestions;
+	
 	// recalculate and draw
+	printNewGrid();
+}
+
+function toggleUser() {
+	// if the matchCandidates array contains a 0
+	if(jQuery.inArray(0, matchCandidates) != -1) {
+		$('#showuser').html("Show my answers");
+		
+		var newArray = [];
+		
+		// make a new array with all elements except 0
+		for(var i = 0; i < matchCandidates.length; i++) {
+			if(matchCandidates[i] != 0)
+				newArray.push(matchCandidates[i]);
+		}
+		
+		matchCandidates = newArray;
+	} else {
+		$('#showuser').html("Hide my answers");
+		matchCandidates.push(0);
+	}
+	
 	printNewGrid();
 }
 

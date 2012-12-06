@@ -64,12 +64,12 @@ var matchQuestions = [0,1,2,3,4,5,6,7,8];
 
 var candidates = [
 	<?php echo makeUserAnswers(); ?>
-	{"name":"All Strongly Disagree", "cid":"109000795", "q0":{"answer":-2, "weight":1, "comment":"Test comment<br>newline"},"q1":{"answer":-2, "weight":1, "comment":"Test comment"},"q2":{"answer":-2, "weight":1, "comment":"Test comment"},"q3":{"answer":-2, "weight":1, "comment":"Test comment"},"q4":{"answer":-2, "weight":1, "comment":"Test comment"},"q5":{"answer":-2, "weight":1, "comment":"Test comment"},"q6":{"answer":-2, "weight":1, "comment":"Test comment"},"q7":{"answer":-2, "weight":1, "comment":"Test comment"},"q8":{"answer":-2, "weight":1, "comment":"Test comment"}},
-	{"name":"All Strongly Agree", "cid":"109000795", "q0":{"answer":2, "weight":1, "comment":"Test comment"},"q1":{"answer":2, "weight":1, "comment":"Test comment"},"q2":{"answer":2, "weight":1, "comment":"Test comment"},"q3":{"answer":2, "weight":1, "comment":"Test comment"},"q4":{"answer":2, "weight":1, "comment":"Test comment"},"q5":{"answer":2, "weight":1, "comment":"Test comment"},"q6":{"answer":2, "weight":1, "comment":"Test comment"},"q7":{"answer":2, "weight":1, "comment":"Test comment"},"q8":{"answer":2, "weight":1, "comment":"Test comment"}},
-	{"name":"Agree", "cid":"109000795", "q0":{"answer":1, "weight":1, "comment":"Test comment"},"q1":{"answer":1, "weight":1, "comment":"Test comment"},"q2":{"answer":1, "weight":1, "comment":"Test comment"},"q3":{"answer":1, "weight":1, "comment":"Test comment"},"q4":{"answer":1, "weight":1, "comment":"Test comment"},"q5":{"answer":1, "weight":1, "comment":"Test comment"},"q6":{"answer":1, "weight":1, "comment":"Test comment"},"q7":{"answer":1, "weight":1, "comment":"Test comment"},"q8":{"answer":1, "weight":1, "comment":"Test comment"}},
-	{"name":"Disagree", "cid":"109000795", "q0":{"answer":-1, "weight":1, "comment":"Test comment"},"q1":{"answer":-1, "weight":1, "comment":"Test comment"},"q2":{"answer":-1, "weight":1, "comment":"Test comment"},"q3":{"answer":-1, "weight":1, "comment":"Test comment"},"q4":{"answer":-1, "weight":1, "comment":"Test comment"},"q5":{"answer":-1, "weight":1, "comment":"Test comment"},"q6":{"answer":-1, "weight":1, "comment":"Test comment"},"q7":{"answer":-1, "weight":1, "comment":"Test comment"},"q8":{"answer":-1, "weight":1, "comment":"Test comment"}},
-	{"name":"Strongly Disagree important", "cid":"109000795", "q0":{"answer":-2, "weight":0.5, "comment":"Test comment"},"q1":{"answer":-2, "weight":1.5, "comment":"Test comment"},"q2":{"answer":-2, "weight":0.5, "comment":"Test comment"},"q3":{"answer":-2, "weight":1.5, "comment":"Test comment"},"q4":{"answer":-2, "weight":0.5, "comment":"Test comment"},"q5":{"answer":-2, "weight":0.5, "comment":"Test comment"},"q6":{"answer":-2, "weight":2, "comment":"Test comment"},"q7":{"answer":-2, "weight":1, "comment":"Test comment"},"q8":{"answer":-2, "weight":1, "comment":"Test comment"}},
-	{"name":"Mister Mix", "cid":"109000795", "q0":{"answer":-2, "weight":0.5, "comment":"Test comment"},"q1":{"answer":2, "weight":1.5, "comment":"Test comment"},"q2":{"answer":0, "weight":0.5, "comment":"Test comment"},"q3":{"answer":-1, "weight":1.5, "comment":"Test comment"},"q4":{"answer":-1, "weight":0.5, "comment":"Test comment"},"q5":{"answer":1, "weight":0.8, "comment":"Test comment"},"q6":{"answer":2, "weight":1.7, "comment":"Test comment"},"q7":{"answer":1, "weight":1.3, "comment":"Test comment"},"q8":{"answer":-1, "weight":0.7, "comment":"Test comment"}},
+	{"name":"All Strongly Disagree", "cid":"109000795", "q0":{"answer":-2, "weight":1, "comment":"Test comment<br>newline"},"q1":{"answer":-2, "weight":1, "comment":""},"q2":{"answer":-2, "weight":1, "comment":""},"q3":{"answer":-2, "weight":1, "comment":""},"q4":{"answer":-2, "weight":1, "comment":""},"q5":{"answer":-2, "weight":1, "comment":""},"q6":{"answer":-2, "weight":1, "comment":""},"q7":{"answer":-2, "weight":1, "comment":""},"q8":{"answer":-2, "weight":1, "comment":""}},
+	{"name":"All Strongly Agree", "cid":"109000795", "q0":{"answer":2, "weight":1, "comment":""},"q1":{"answer":2, "weight":1, "comment":""},"q2":{"answer":2, "weight":1, "comment":""},"q3":{"answer":2, "weight":1, "comment":""},"q4":{"answer":2, "weight":1, "comment":""},"q5":{"answer":2, "weight":1, "comment":""},"q6":{"answer":2, "weight":1, "comment":""},"q7":{"answer":2, "weight":1, "comment":""},"q8":{"answer":2, "weight":1, "comment":""}},
+	{"name":"Agree", "cid":"109000795", "q0":{"answer":1, "weight":1, "comment":""},"q1":{"answer":1, "weight":1, "comment":""},"q2":{"answer":1, "weight":1, "comment":""},"q3":{"answer":1, "weight":1, "comment":""},"q4":{"answer":1, "weight":1, "comment":""},"q5":{"answer":1, "weight":1, "comment":""},"q6":{"answer":1, "weight":1, "comment":""},"q7":{"answer":1, "weight":1, "comment":""},"q8":{"answer":1, "weight":1, "comment":""}},
+	{"name":"Disagree", "cid":"109000795", "q0":{"answer":-1, "weight":1, "comment":""},"q1":{"answer":-1, "weight":1, "comment":""},"q2":{"answer":-1, "weight":1, "comment":""},"q3":{"answer":-1, "weight":1, "comment":""},"q4":{"answer":-1, "weight":1, "comment":""},"q5":{"answer":-1, "weight":1, "comment":""},"q6":{"answer":-1, "weight":1, "comment":""},"q7":{"answer":-1, "weight":1, "comment":""},"q8":{"answer":-1, "weight":1, "comment":""}},
+	{"name":"Strongly Disagree important", "cid":"109000795", "q0":{"answer":-2, "weight":0.5, "comment":""},"q1":{"answer":-2, "weight":1.5, "comment":""},"q2":{"answer":-2, "weight":0.5, "comment":""},"q3":{"answer":-2, "weight":1.5, "comment":""},"q4":{"answer":-2, "weight":0.5, "comment":""},"q5":{"answer":-2, "weight":0.5, "comment":""},"q6":{"answer":-2, "weight":2, "comment":""},"q7":{"answer":-2, "weight":1, "comment":""},"q8":{"answer":-2, "weight":1, "comment":""}},
+	{"name":"Mister Mix", "cid":"109000795", "q0":{"answer":-2, "weight":0.5, "comment":""},"q1":{"answer":2, "weight":1.5, "comment":""},"q2":{"answer":0, "weight":0.5, "comment":""},"q3":{"answer":-1, "weight":1.5, "comment":""},"q4":{"answer":-1, "weight":0.5, "comment":""},"q5":{"answer":1, "weight":0.8, "comment":""},"q6":{"answer":2, "weight":1.7, "comment":""},"q7":{"answer":1, "weight":1.3, "comment":""},"q8":{"answer":-1, "weight":0.7, "comment":""}},
 	{"name":"All Strongly Disagree", "cid":"109000795", "q0":{"answer":-2, "weight":1, "comment":"Test comment"},"q1":{"answer":-2, "weight":1, "comment":"Test comment"},"q2":{"answer":-2, "weight":1, "comment":"Test comment"},"q3":{"answer":-2, "weight":1, "comment":"Test comment"},"q4":{"answer":-2, "weight":1, "comment":"Test comment"},"q5":{"answer":-2, "weight":1, "comment":"Test comment"},"q6":{"answer":-2, "weight":1, "comment":"Test comment"},"q7":{"answer":-2, "weight":1, "comment":"Test comment"},"q8":{"answer":-2, "weight":1, "comment":"Test comment"}},
 	{"name":"All Strongly Agree", "cid":"109000795", "q0":{"answer":2, "weight":1, "comment":"Test comment"},"q1":{"answer":2, "weight":1, "comment":"Test comment"},"q2":{"answer":2, "weight":1, "comment":"Test comment"},"q3":{"answer":2, "weight":1, "comment":"Test comment"},"q4":{"answer":2, "weight":1, "comment":"Test comment"},"q5":{"answer":2, "weight":1, "comment":"Test comment"},"q6":{"answer":2, "weight":1, "comment":"Test comment"},"q7":{"answer":2, "weight":1, "comment":"Test comment"},"q8":{"answer":2, "weight":1, "comment":"Test comment"}},
 	{"name":"Agree", "cid":"109000795", "q0":{"answer":1, "weight":1, "comment":"Test comment"},"q1":{"answer":1, "weight":1, "comment":"Test comment"},"q2":{"answer":1, "weight":1, "comment":"Test comment"},"q3":{"answer":1, "weight":1, "comment":"Test comment"},"q4":{"answer":1, "weight":1, "comment":"Test comment"},"q5":{"answer":1, "weight":1, "comment":"Test comment"},"q6":{"answer":1, "weight":1, "comment":"Test comment"},"q7":{"answer":1, "weight":1, "comment":"Test comment"},"q8":{"answer":1, "weight":1, "comment":"Test comment"}},
@@ -92,7 +92,6 @@ var candidates = [
 
 var matchCandidates = [1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24];
 
-
 var matchUser = candidates[0];
 
 var language = 0;
@@ -105,9 +104,29 @@ var language = 0;
 <br>
 
 <div class="row rounded" >
+	<div class="span12">
+		<div class="span6 coverview rounded">
+			<b>Their opinion:</b><br>
+			<img src="img/doublethumbsdown.png" title="Strongly disagree" /> Strongly disagree, 
+			<img src="img/thumbsdown.png" title="Disagree" /> Disagree, 
+			<img src="img/noopinion.png" title="No opinion" /> No opinion, 
+			<img src="img/thumbsup.png" title="Agree" /> Agree, 
+			<img src="img/doublethumbsup.png"  title="Strongly agree"/> Strongly agree
+			<br><br>
+			<img src="img/balloon.png" title="Comment" /> Mouse over to see this candidate's explanation of their answer
+		</div>
+		<div class="span5 coverview rounded">
+			<b>Match with you:</b><br>
+			<span class="verybad">Terrible match</span>
+			<span class="bad">Bad match</span>
+			<span class="neutral">Neutral match</span>
+			<span class="good">Good match</span>
+			<span class="verygood">Perfect match</span>
+		</div>
+	</div>
 	<a href="#" class="btn pull-right" onclick="toggleCandidates();return false;" id="showexcess">&laquo; Hide results </a>
 	<div>
-		<a href="#" class="btn" onclick="toggleButtonPanel('questionbuttons');">Question options</a> <a href="#" class="btn" onclick="toggleButtonPanel('candidatebuttons');">Candidate options</a>
+		<a href="#" class="btn" onclick="toggleButtonPanel('questionbuttons');">Question options</a> <a href="#" class="btn" onclick="toggleButtonPanel('candidatebuttons');">Candidate options</a> <?php if(isset($_POST["q0"])) echo '<a href="#" class="btn" onclick="toggleUser();" id="showuser">Show my answers</a>'; ?>
 		<div class="buttonholder">
 			<div class="questionbuttons buttonpanel rounded">
 				<a href="#" class="btn" onclick="excludeQuestions();toggleButtonPanel('questionbuttons');">Ignore checked questions</a><br><a href="#" class="btn" onclick="includeQuestions();toggleButtonPanel('questionbuttons');">Include only checked questions</a><br><a href="#" class="btn" onclick="resetQuestions();toggleButtonPanel('questionbuttons');">Reset all questions</a>
