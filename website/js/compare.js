@@ -151,7 +151,7 @@ function printResults(matches) {
 	$("#contentholder").html(html);
 	$("#showexcess").html("&laquo; Hide results");
 	
-	// TODO: Add code to reinitialise opentip so we can see tooltips again
+	Opentip.findElements();
 }
 
 function makeRow(matches, row) {
@@ -192,7 +192,7 @@ function makeTableHeader(matches) {
 		tclass = getClass(i);
 		html = html + "<th class=\"answer " + tclass + "\">";
 		html = html + "<div class=\"check\"><input type=\"checkbox\" value=\"" + (matches[i])["candidate"] + "\" name=\"c\" /></div>";
-		html = html + "<a href=\"candidate.php?cid=" + (candidates[(matches[i])["candidate"]])["cid"] +"\"><img src=\"https://image.eveonline.com/Character/" + (candidates[(matches[i])["candidate"]])["cid"] + "_64.jpg\" class=\"rounded\" /><br>" + (candidates[(matches[i])["candidate"]])["name"] + " (" + getPercentage(Math.round((matches[i])["score"] * 100) / 100, getComparer().getMinFidelityScore(matchQuestions.length), getComparer().getMaxFidelityScore(matchQuestions.length)) + "% match)</a>";
+		html = html + "<img src=\"https://image.eveonline.com/Character/" + (candidates[(matches[i])["candidate"]])["cid"] + "_64.jpg\" class=\"rounded\" /><br><a href=\"candidate.php?cid=" + (candidates[(matches[i])["candidate"]])["cid"] +"\">" + (candidates[(matches[i])["candidate"]])["name"] + " (" + getPercentage(Math.round((matches[i])["score"] * 100) / 100, getComparer().getMinFidelityScore(matchQuestions.length), getComparer().getMaxFidelityScore(matchQuestions.length)) + "% match)</a>";
 		html = html + "</th>";
 	}
 	

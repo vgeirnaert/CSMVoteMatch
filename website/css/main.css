@@ -243,3 +243,7 @@ input[type="text"] {
 .comment {
 	background-image: url('../img/balloon.png');
 }
+
+footer p {
+	font-size: 12px;
+}
