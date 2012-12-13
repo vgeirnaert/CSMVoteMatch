@@ -334,16 +334,28 @@ function toggleButtonPanel(panel) {
 // Next are the functions dealing with checking
 // and unchecking questions and candidates
 //===============================================
-function resetQuestions() {
+function resetMatchQuestions() {
 	for(var i = 0; i < questions.length; i++)
 		matchQuestions[i] = i;
+}
+
+function resetQuestions() {
+	resetMatchQuestions();
 		
 	printNewGrid();
 }
 
+function resetMatchCandidates() {
+	// not 0 based, since 0 is the user
+	for(var i = 1; i < candidates.length; i++)
+		matchCandidates[i-1] = i;
+}
+
 function resetCandidates() {
-	for(var i = 0; i < candidates.length; i++)
-		matchCandidates[i] = i;
+	resetMatchCandidates();
+		
+	// since we exclude the user
+	$('#showuser').html("Show my answers");
 		
 	printNewGrid();
 }
@@ -468,6 +480,8 @@ function toggleUser() {
 }
 
 // Entry point of our script!
+resetMatchQuestions();
+resetMatchCandidates();
 printNewGrid();
 
 function printNewGrid() {

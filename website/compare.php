@@ -1,5 +1,6 @@
 <?php include 'header.php'; 
 
+// code to handle the user supplied answers if he came here from survey.php
 function makeUserAnswers() {
 	$num_questions = 9;
 	
@@ -18,6 +19,7 @@ function makeUserAnswers() {
 	return $line;
 }
 
+// change text code for answer to numeric answer value
 function parseAnswer($ans) {
 	switch($ans) {
 		case "SD":
@@ -38,6 +40,7 @@ function parseAnswer($ans) {
 	}
 }
 
+// turn unsupplied weights into value 1
 function parseWeight($weight) {
 	if($weight == "")
 		return 1;
@@ -45,6 +48,38 @@ function parseWeight($weight) {
 	return $weight;
 }
 
+/*
+// database related code to retrieve questions and candidate answers
+include 'database.php';
+
+// connect to our database
+$mysqli = connectDB();
+
+// get all questions from the db
+include 'questions.php';
+
+// get the candidate answers from the db
+$stmt = $mysqli->prepare("SELECT * FROM answers AS a LEFT JOIN candidates AS c ON a.candidateid = c.id LEFT JOIN questions AS q ON a.questionid = q.id WHERE q.electionid = ? GROUP BY c.id");
+$stmt->bind_param("i", Config::active_election);
+$stmt->execute();
+
+// print start of our javascript candidates array:
+echo 'var candidates = [';
+
+// include user details
+makeUserAnswers();
+
+// print database result rows as javascript array elements
+while($row = $result->fetch_assoc()){
+	echo '{"name":"All Strongly Disagree", "cid":"109000795", "q0":{"answer":-2, "weight":1, "comment":"Test comment <br>newline"},"q1":{"answer":-2, "weight":1, "comment":""},"q2":{"answer":-2, "weight":1, "comment":""},"q3":{"answer":-2, "weight":1, "comment":""},"q4":{"answer":-2, "weight":1, "comment":""},"q5":{"answer":-2, "weight":1, "comment":""},"q6":{"answer":-2, "weight":1, "comment":""},"q7":{"answer":-2, "weight":1, "comment":""},"q8":{"answer":-2, "weight":1, "comment":""}},';
+}
+
+// print end of the javascript array
+echo '];';
+
+// close the db connection
+disconnectDB($mysqli);
+*/
 ?>
 
 <script type="text/javascript">
@@ -60,7 +95,8 @@ var questions = [
 	["question9_en", "question9_ger", "question9_rus", "question9_jp"],
 	];
 	
-var matchQuestions = [0,1,2,3,4,5,6,7,8];
+
+var matchQuestions = [];
 
 var candidates = [
 	<?php echo makeUserAnswers(); ?>
@@ -90,7 +126,7 @@ var candidates = [
 	{"name":"Mister Mix", "cid":"109000795", "q0":{"answer":-2, "weight":0.5, "comment":"Test comment"},"q1":{"answer":2, "weight":1.5, "comment":"Test comment"},"q2":{"answer":0, "weight":0.5, "comment":"Test comment"},"q3":{"answer":-1, "weight":1.5, "comment":"Test comment"},"q4":{"answer":-1, "weight":0.5, "comment":"Test comment"},"q5":{"answer":1, "weight":0.8, "comment":"Test comment"},"q6":{"answer":2, "weight":1.7, "comment":"Test comment"},"q7":{"answer":1, "weight":1.3, "comment":"Test comment"},"q8":{"answer":-1, "weight":0.7, "comment":"Test comment"}}
 ];
 
-var matchCandidates = [1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24];
+var matchCandidates = [];
 
 var matchUser = candidates[0];
 
@@ -129,10 +165,10 @@ var language = 0;
 		<a href="#" class="btn" onclick="toggleButtonPanel('questionbuttons');">Question options</a> <a href="#" class="btn" onclick="toggleButtonPanel('candidatebuttons');">Candidate options</a> <?php if(isset($_POST["q0"])) echo '<a href="#" class="btn" onclick="toggleUser();" id="showuser">Show my answers</a>'; ?>
 		<div class="buttonholder">
 			<div class="questionbuttons buttonpanel rounded">
-				<a href="#" class="btn" onclick="excludeQuestions();toggleButtonPanel('questionbuttons');">Ignore checked questions</a><br><a href="#" class="btn" onclick="includeQuestions();toggleButtonPanel('questionbuttons');">Include only checked questions</a><br><a href="#" class="btn" onclick="resetQuestions();toggleButtonPanel('questionbuttons');">Reset all questions</a>
+				<a href="#" class="btn" onclick="excludeQuestions();toggleButtonPanel('questionbuttons');">Exclude checked questions</a><br><a href="#" class="btn" onclick="includeQuestions();toggleButtonPanel('questionbuttons');">Include only checked questions</a><br><a href="#" class="btn" onclick="resetQuestions();toggleButtonPanel('questionbuttons');">Reset all questions</a>
 			</div>
 			<div class="candidatebuttons buttonpanel rounded">
-				<a href="#" class="btn" onclick="excludeCandidates();toggleButtonPanel('candidatebuttons');">Ignore checked candidates</a><br><a href="#" class="btn" onclick="includeCandidates();toggleButtonPanel('candidatebuttons');">Include only checked candidates</a><br><a href="#" class="btn" onclick="compareCandidatesWith();toggleButtonPanel('candidatebuttons');">Compare candidates with...</a><br><a href="#" class="btn" onclick="resetCandidates();toggleButtonPanel('candidatebuttons');">Reset all candidates</a>
+				<a href="#" class="btn" onclick="excludeCandidates();toggleButtonPanel('candidatebuttons');">Exclude checked candidates</a><br><a href="#" class="btn" onclick="includeCandidates();toggleButtonPanel('candidatebuttons');">Include only checked candidates</a><br><a href="#" class="btn" onclick="compareCandidatesWith();toggleButtonPanel('candidatebuttons');">Compare candidates with...</a><br><a href="#" class="btn" onclick="resetCandidates();toggleButtonPanel('candidatebuttons');">Reset all candidates</a>
 			</div>
 		</div>
 	</div>

@@ -246,6 +246,20 @@
 </div>
 <script src="js/survey.js"></script>
 <script type="text/javascript">
+<?php
+/*
+// database related code to retrieve questions 
+include 'database.php';
+
+// connect to our database
+$mysqli = connectDB();
+
+include 'questions.php';
+
+// close the db connection
+disconnectDB($mysqli);
+*/
+?>
 var questions = [
 	["question1_en", "question1_ger", "question1_rus", "question1_jp"],
 	["question2_en", "question2_ger", "question2_rus", "question2_jp"],
