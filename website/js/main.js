@@ -8,4 +8,24 @@ function randomBackground() {
 	var spot = Math.floor(Math.random()* imgarray.length);  
 	theBody.style.backgroundImage = "url('"+imgarray[spot]+"')";  
 }
- 
+
+// smooth scrolling and making sure anchors aren't hidden by our nav bar
+$('a[href*=#]').click(function() {
+	if (location.pathname.replace(/^\//,'') == this.pathname.replace(/^\//,'') && location.hostname == this.hostname) {
+		var $target = $(this.hash);
+		$target = $target.length && $target || $('[name=' + this.hash.slice(1) +']');
+
+		if ($target.length) {
+			var targetOffset = $target.offset().top - 50;
+			$('html,body').animate({scrollTop: targetOffset}, 200);
+			return false;
+		}
+	}
+});
+
+// google+ button
+(function() {
+    var po = document.createElement('script'); po.type = 'text/javascript'; po.async = true;
+    po.src = 'https://apis.google.com/js/plusone.js';
+    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(po, s);
+  })();

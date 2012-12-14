@@ -4,14 +4,22 @@
 <div class="row inverted rounded">
 	<div class="span6"><h1>Candidates overview</h1></div>
 	<div class="span5"><br><a class="btn pull-right" href="#" onclick="toggleFilterButton();">Hide filters</a></div>
-	<div class="span9 filters">
+	<div class="span11 filters">
 		<h3>Filters</h3>
 		<div class="span2">
-			<h4>Location</h4>
+			<h4>Flies most in</h4>
 			<input type="checkbox" onclick="toggleCandidateVisibility();" checked value="high" /> Highsec<br>
 			<input type="checkbox" onclick="toggleCandidateVisibility();" checked value="low" /> Lowsec<br>
 			<input type="checkbox" onclick="toggleCandidateVisibility();" checked value="null" /> Nullsec<br>
 			<input type="checkbox" onclick="toggleCandidateVisibility();" checked value="wh" /> Wormhole
+		</div>
+		<div class="span4">
+			<h4>Main playstyle</h4>
+			<input type="checkbox" onclick="toggleCandidateVisibility();" checked value="pvp" /> PvP (player vs player combat)<br>
+			<input type="checkbox" onclick="toggleCandidateVisibility();" checked value="pve" /> PvE (missions, exploration, etc)<br>
+			<input type="checkbox" onclick="toggleCandidateVisibility();" checked value="ind" /> Industry (mining, manufacturing, trading, etc)<br>
+			<input type="checkbox" onclick="toggleCandidateVisibility();" checked value="ldr" /> Leadership (corp/alliance managment, etc)<br>
+			<input type="checkbox" onclick="toggleCandidateVisibility();" checked value="meta" /> Metagaming (scamming, espionage, etc)
 		</div>
 		<div class="span3">
 			<h4>CSM Experience</h4>

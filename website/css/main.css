@@ -247,3 +247,7 @@ input[type="text"] {
 footer p {
 	font-size: 12px;
 }
+
+.social {
+  width: 110px;
+}

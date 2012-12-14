@@ -1,5 +1,5 @@
 <?php include 'header.php'; ?>
-
+<script type="text/javascript" src="http://vk.com/js/api/share.js?11" charset="windows-1251"></script>
 <div class="row inverted rounded">
 	<h1>Candidate: Dierdra Vaal</h1>
 </div>
@@ -147,13 +147,21 @@
 				findsomething.to@obfuscate.email
 			</div>
 		</div>
-		<div class="span5">
-			<div class="span2">
-				Skype
-			</div>
-			<div class="span3">
-				findsomething.to@obfuscate.email
-			</div>
+	</div>
+	<div class="span5 coverview rounded pull-right">
+		<h2>Promote this candidate</h2>
+		<div class="span1" style="width: 110px;">
+			<a href="https://twitter.com/share" class="twitter-share-button" data-text="I support Dierdra Vaal for CSM!" data-via="EveVoteMatch" data-size="small" data-hashtags="tweetfleet,eveonline,csm8">Tweet</a>
+			<script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0];if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src="//platform.twitter.com/widgets.js";fjs.parentNode.insertBefore(js,fjs);}}(document,"script","twitter-wjs");</script>
+		</div>
+		<div class="span1" style="width: 110px;">
+			<div class="fb-like" data-send="false" data-layout="button_count" data-width="450" data-show-faces="true"></div>
+		</div>
+		<div class="span1" style="width: 110px;">
+			<div class="g-plusone" data-size="medium"></div>
+		</div>
+		<div class="span1" style="width: 110px;">
+			<script type="text/javascript">document.write(VK.Share.button(false,{type: "button", text: "Share"}));</script>
 		</div>
 	</div>
 	<div class="span6 coverview rounded">

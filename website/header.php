@@ -30,7 +30,16 @@
         <!--[if lt IE 7]>
             <p class="chromeframe">You are using an outdated browser. <a href="http://browsehappy.com/">Upgrade your browser today</a> or <a href="http://www.google.com/chromeframe/?redirect=true">install Google Chrome Frame</a> to better experience this site.</p>
         <![endif]-->
-
+		<!-- facebook like button code -->
+		<div id="fb-root"></div>
+		<script>(function(d, s, id) {
+		  var js, fjs = d.getElementsByTagName(s)[0];
+		  if (d.getElementById(id)) return;
+		  js = d.createElement(s); js.id = id;
+		  js.src = "//connect.facebook.net/en_GB/all.js#xfbml=1";
+		  fjs.parentNode.insertBefore(js, fjs);
+		}(document, 'script', 'facebook-jssdk'));
+		</script>
 		<noscript><div class="warning inverted">
 			<img src="img/warning.png" />
 			Javascript needs to be enabled in order for this website to function!
@@ -59,6 +68,7 @@
                                     <li><a href="faq.php#matching">How does matching work?</a></li>
                                     <li><a href="faq.php#trust">How do I know I can trust this website?</a></li>
 									<li><a href="faq.php#who">Who runs this website?</a></li>
+									<li><a href="faq.php#candidates">Are all candidates on this website?</a></li>
                                     <li class="divider"></li>
                                     <li class="nav-header">Help</li>
 									<li><a href="faq.php#most">How to get the most out of Vote Match</a></li>
