@@ -13,7 +13,7 @@ TraditionalCompareClass.prototype.scoreQuestion = function(answerA, weightA, ans
 		score = 0; // neutral fidelity, regardless of person B's answer
 	else if(answerA == answerB) // if both are exactly the same 
 		score = 2;	// strong positive fidelity
-	else if( ((answerA == 1 || answerA == 2) && (answerB == 1 || answerB == 2)) || ((answerA == -1 || answerA == -2) && (answerB == -1 || answerB == -2)) ) // if both have 'agree' and 'strongly agree', or both have 'disagree' and 'strongly disagree'
+	else if( (Math.max(answerA, answerB) == 2 && Math.min(answerA, answerB) == 1 ) || (Math.max(answerA, answerB) == -1 && Math.min(answerA, answerB) == -2 ) ) // if both have 'agree' and 'strongly agree', or both have 'disagree' and 'strongly disagree'
 		score = 1; // weak positive fidelity
 	else {
 		var difference = Math.min(answerA, answerB) - Math.max(answerA, answerB); // get relative distance between answer A and B
@@ -26,13 +26,15 @@ TraditionalCompareClass.prototype.scoreQuestion = function(answerA, weightA, ans
 	var weight = this.getWeight(weightA, weightB, answerA, answerB);
 	
 	// return weighted score
-	return (score * weight);
+	return (score * weight) * weightA;
 }
 
 // return the combined weight of two weights
 TraditionalCompareClass.prototype.getWeight = function(weightA, weightB, answerA, answerB) {
 	// what do we consider to be the cutoff (inclusive) between important and not important:
 	var important = 1;
+	
+	// the multipliers we return for fidelity increases and decreases
 	var increase = 2;
 	var decrease = 0.5;
 	
@@ -83,11 +85,11 @@ function getQuestionKey(intQuestion) {
 // 		"q1" ... "qN": {"fidelity": int, "weight": int}, // one for each question in matchQuestions[]
 //		"score": int
 // 	}
-function matchCandidate(user, comparer, index) {
+function matchCandidate(user, comparer, candidateIndex) {
 	var score = 0;
-	var candidate = candidates[index];
+	var candidate = candidates[candidateIndex];
 	var candidateScore = [];
-	candidateScore["candidate"] = index;
+	candidateScore["candidate"] = candidateIndex;
 	
 	for(var i = 0; i < matchQuestions.length; i++) {
 		// first, get the answers and weights from our user and candidate
