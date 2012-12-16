@@ -23,6 +23,7 @@ USERS
 
 QUESTIONS
 	* Questions tagged with relevant subjects ("0.0", "industry", etc).
+	* OKCupid style questions?
 
 WEBSITE
 	* Allow users to quickly see all candidate answers, without questionaire
