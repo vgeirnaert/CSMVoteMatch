@@ -1,4 +1,19 @@
-<?php include 'header.php'; ?>
+<?php 
+$pagetitle = "Dierdra Vaal for CSM - Eve Vote Match 2.0";
+
+include 'header.php'; 
+
+?>
+<!-- facebook like button code -->
+<div id="fb-root"></div>
+<script>(function(d, s, id) {
+  var js, fjs = d.getElementsByTagName(s)[0];
+  if (d.getElementById(id)) return;
+  js = d.createElement(s); js.id = id;
+  js.src = "//connect.facebook.net/en_GB/all.js#xfbml=1";
+  fjs.parentNode.insertBefore(js, fjs);
+}(document, 'script', 'facebook-jssdk'));
+</script>
 <script type="text/javascript" src="http://vk.com/js/api/share.js?11" charset="windows-1251"></script>
 <div class="row inverted rounded">
 	<h1>Candidate: Dierdra Vaal</h1>
@@ -128,7 +143,7 @@
 				Evemail
 			</div>
 			<div class="span3 bold green">
-				Yes
+				<a href="https://gate.eveonline.com/Mail/Compose/Dierdra%20Vaal" target="_blank">Yes</a>
 			</div>
 		</div>
 		<div class="span5">
@@ -144,7 +159,10 @@
 				Email
 			</div>
 			<div class="span3">
-				findsomething.to@obfuscate.email
+				<script type="text/javascript">
+				document.write("<n uers=\"znvygb:xvpx@vaprcgvba.pbz\" ery=\"absbyybj\">Fraq n zrffntr</n>".replace(/[a-zA-Z]/g, 
+				function(c){return String.fromCharCode((c<="Z"?90:122)>=(c=c.charCodeAt(0)+13)?c:c-26);}));
+				</script>
 			</div>
 		</div>
 	</div>
@@ -176,6 +194,8 @@
 
 	<div class="span21 coverview rounded">
 		<h2>Questions</h2>
+		<h3>What, if anything, do you think the CSM needs to improve on?</h3>
+		Integer placerat varius dictum. Aliquam sit amet lectus eu massa consectetur pulvinar. Pellentesque ornare est et arcu congue accumsan. Sed aliquam, eros suscipit mollis consequat, ante urna egestas tellus, ut aliquet augue neque nec tortor. Donec vitae nisi non ante euismod pellentesque vel a felis. Praesent urna tellus, tempus vitae aliquam et, ultricies vitae lacus. In hac habitasse platea dictumst. 
 		<h3>Why will you be an effective council member?</h3>
 		Integer placerat varius dictum. Aliquam sit amet lectus eu massa consectetur pulvinar. Pellentesque ornare est et arcu congue accumsan. Sed aliquam, eros suscipit mollis consequat, ante urna egestas tellus, ut aliquet augue neque nec tortor. Donec vitae nisi non ante euismod pellentesque vel a felis. Praesent urna tellus, tempus vitae aliquam et, ultricies vitae lacus. In hac habitasse platea dictumst. 
 		<h3>Which area of the game do you feel deserves special attention, and why?</h3>

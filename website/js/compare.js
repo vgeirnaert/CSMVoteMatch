@@ -10,29 +10,50 @@ TraditionalCompareClass.prototype.scoreQuestion = function(answerA, weightA, ans
 	var score = 0;
 	
 	if(answerA == 0) // if person A (you, the user) doesn't care about this question
-		score = 0; // neutral fidelity
+		score = 0; // neutral fidelity, regardless of person B's answer
 	else if(answerA == answerB) // if both are exactly the same 
 		score = 2;	// strong positive fidelity
 	else if( ((answerA == 1 || answerA == 2) && (answerB == 1 || answerB == 2)) || ((answerA == -1 || answerA == -2) && (answerB == -1 || answerB == -2)) ) // if both have 'agree' and 'strongly agree', or both have 'disagree' and 'strongly disagree'
 		score = 1; // weak positive fidelity
 	else {
 		var difference = Math.min(answerA, answerB) - Math.max(answerA, answerB); // get relative distance between answer A and B
-		if(difference >= -2) // if the distance is -2 or less (0 or -1)
+		if(difference >= -2) // if the distance is -2 or less (0 or -1) -- examples: "disagree" vs "agree", "agree" vs "no opinion"
 			score = -1; // weak negative fidelity
-		else // if the distance is more than -2 (-3 or -4)
+		else // if the distance is more than -2 (-3 or -4) -- examples: "agree" vs "strongly disagree", "strongly disagree" vs "no opinion"
 			score = -2; // strong negative fidelity
 	}
 	
-	var weight = this.getWeight(weightA, weightB);
+	var weight = this.getWeight(weightA, weightB, answerA, answerB);
 	
 	// return weighted score
 	return (score * weight);
 }
 
 // return the combined weight of two weights
-TraditionalCompareClass.prototype.getWeight = function(weightA, weightB) {
-	// set the weight as average of both weights
-	return (weightA + weightB) / 2;
+TraditionalCompareClass.prototype.getWeight = function(weightA, weightB, answerA, answerB) {
+	// what do we consider to be the cutoff (inclusive) between important and not important:
+	var important = 1;
+	var increase = 2;
+	var decrease = 0.5;
+	
+	// if both people agree this is important (or of neutral importance)
+	// increase their fidelity (tend away from 0)
+	if(weightA >= important && weightB >= important)
+		return increase;
+		
+	// if both people agree this is not important
+	if(weightA < important && weightB < important) {
+		// if they agree on their answer, increase their fidelity (tend away from 0)
+		if( (answerA > 0 && answerB > 0) || (answerA < 0 && answerB < 0) )
+			return increase;
+		else // decrease their fidelity (tend towards 0)
+			return decrease;
+	}
+	
+	// if the people disagree on this question's importance
+	// decrease their fidelity (tend towards 0)
+	if( Math.max(weightA, weightB) >= important && Math.min(weightA, weightB) < important)
+		return decrease;
 }
 
 // getMaxFidelityScore returns the maximum fidelty score
@@ -47,20 +68,8 @@ TraditionalCompareClass.prototype.getMinFidelityScore = function(totalQuestions)
 	return this.scoreQuestion(2,1,-2,1) * totalQuestions;
 }
 
-// transform question array position integer to key string for question answer
-/*function getAnswerKey(intQuestion) {
-	return getQuestionKey(intQuestion) + "_answer";
-}
-
-// transform question array position integer to key string for question weight
-function getWeightKey(intQuestion) {
-	return getQuestionKey(intQuestion) + "_weight";
-}
-
-function getScoreKey(intQuestion) {
-	return getQuestionKey(intQuestion) + "_score";
-}*/
-
+// takes an integer number and returns a string
+// format "qX" where X is the number
 function getQuestionKey(intQuestion) {
 	return "q" + (intQuestion);
 }
@@ -91,7 +100,7 @@ function matchCandidate(user, comparer, index) {
 		var questionFidelity = comparer.scoreQuestion(answerA, weightA, answerB, weightB);
 		score += questionFidelity;
 		
-		var questionScore = {fidelity:questionFidelity, weight:comparer.getWeight(weightA, weightB)};
+		var questionScore = {fidelity:questionFidelity, weight:comparer.getWeight(weightA, weightB, answerA, answerB)};
 		candidateScore[getQuestionKey(matchQuestions[i])] = questionScore;
 	}
 	candidateScore["score"] = score;
@@ -126,6 +135,8 @@ function makeMatches() {
 	return allMatches;
 }
 
+// we store matches that we've made here, for cases where we need to redraw the table, 
+// but not need to recalculate matches
 var madeMatches;
 
 // sort function, people with a higher score will be sorted ahead of those with a lower score
@@ -151,6 +162,10 @@ function printResults(matches) {
 	$("#contentholder").html(html);
 	$("#showexcess").html("&laquo; Hide results");
 	
+	window.setTimeout(refreshComments,50);
+}
+
+function refreshComments() {
 	Opentip.findElements();
 }
 
