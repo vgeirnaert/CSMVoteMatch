@@ -8,7 +8,7 @@ A Vote Match website for the Eve Online Council of Stellar Management elections.
 The matching algorithm works by calculating a fidelity score for each answer of a candidate and making a total of all the scores. The fidelity score of a question is a product of three variables: the answer score, the importance score and the weight.
 
 ##The answer score
-Statements can be answered in 5 ways: Strongly disagree, Disagree, No opinion, Agree and Strongly agree. Depending on the answer of the user and the answer of the candidate, the answer score will be one of the following: Strong positive match (2), Weak positive match (1), Neutral match (0), Weak negative match (-1), Strong negative match (-2). These values are assigned as follows (user answrs on X axis, candidate answers on Y axis):
+Statements can be answered in 5 ways: Strongly disagree, Disagree, No opinion, Agree and Strongly agree. Depending on the answer of the user and the answer of the candidate, the answer score will be one of the following: Strong positive match (2), Weak positive match (1), Neutral match (0), Weak negative match (-1), Strong negative match (-2). These values are assigned as follows (user answers on X axis, candidate answers on Y axis):
 
 <table>
   <tr>
@@ -93,7 +93,7 @@ Keep in mind that a negative match score will never flip to positive match score
 
 ## Weight
 
-The last factor in the fidelity score is the weight assigned to the answer by the user. This means that questions the user has rated as more important (importance score higher than 1) will have more impact on his overall match with a candidate than questions he has market as being less important (less than 1).
+The last factor in the fidelity score is the weight assigned to the answer by the user. This means that questions the user has rated as more important (importance score higher than 1) will have more impact on his overall match with a candidate than questions he has marked as being less important (less than 1).
 
 ## Putting it all together
 
@@ -147,7 +147,7 @@ Both people have the same answer, and both agree that the question is not unimpo
   </tr>
 </table>
 
-Both people have similar answers, but the small difference (Strongly disagree vs disagree) indicates a small difference in opinion. This only results in a 1 point answer match (weak positive match). They differ in opinion on importance however, with the user feeling this is an important issue and the candidate feeling it is significantly less important. This results in a decrease of the weak positive match with the importance multiplier of 0.5. The resulting score of 0.5 is then multiplied by the user's 1.5 weight for a total fidelity score of 0.75.
+Both people have similar answers, but the small difference in answers (Strongly disagree vs disagree) indicates a small difference in opinion. This only results in a 1 point answer match (weak positive match). They differ in opinion on importance however, with the user feeling this is an important issue and the candidate feeling it is significantly less important. This results in a decrease of the weak positive match with the importance multiplier of 0.5. The resulting score of 0.5 is then multiplied by the user's 1.5 weight for a total fidelity score of 0.75.
 
 <table>
   <tr>
