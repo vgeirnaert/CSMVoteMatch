@@ -113,12 +113,12 @@ Imagine the following statement:
     <th>Weight</th>
   </tr>
   <tr>
-    <th>User</th>
+    <td>User</td>
     <td>Strongly disagree</td>
     <td>1.5</td>
   </tr>
   <tr>
-    <th>Candidate</th>
+    <td>Candidate</td>
     <td>Strongly disagree</td>
     <td>1.0</td>
   </tr>
@@ -136,12 +136,12 @@ Both people have the same answer, and both agree that the question is not unimpo
     <th>Weight</th>
   </tr>
   <tr>
-    <th>User</th>
+    <td>User</td>
     <td>Strongly disagree</td>
     <td>1.5</td>
   </tr>
   <tr>
-    <th>Candidate</th>
+    <td>Candidate</td>
     <td>Disagree</td>
     <td>0.5</td>
   </tr>
@@ -159,12 +159,12 @@ Both people have similar answers, but the small difference (Strongly disagree vs
     <th>Weight</th>
   </tr>
   <tr>
-    <th>User</th>
+    <td>User</td>
     <td>Disagree</td>
     <td>1.5</td>
   </tr>
   <tr>
-    <th>Candidate</th>
+    <td>Candidate</td>
     <td>Agree</td>
     <td>1.3</td>
   </tr>
@@ -182,12 +182,12 @@ The user and the candidate have significantly different answers this time, resul
     <th>Weight</th>
   </tr>
   <tr>
-    <th>User</th>
+    <td>User</td>
     <td>Disagree</td>
     <td>1.5</td>
   </tr>
   <tr>
-    <th>Candidate</th>
+    <td>Candidate</td>
     <td>Agree</td>
     <td>0.3</td>
   </tr>
@@ -195,4 +195,4 @@ The user and the candidate have significantly different answers this time, resul
 
 The user and the candidate have opposing views, again resulting in a weak negative match of -1. However, while this is an important issue to the user, it is significantly less so for the candidate. As a result the importance modifier is 0.5, resulting in a combined score -0.5. This is then multiplied by the user's 1.5 points for a fidelity score of -0.75. 
 
-Note that In the fourth case, the negative match is made less severe by the difference in opinion on weight rather than more servere.
+Note that In the fourth case, the negative match is made less severe by the difference in opinion on weight rather than more servere, because the fact that one person doesn't care that much about this issue means it's less of a bad match than a situation described in Case 3.
