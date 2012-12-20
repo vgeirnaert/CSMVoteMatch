@@ -1,5 +1,7 @@
 <?php include 'header.php'; ?>
 
+<script type="text/javascript" src="js/vendor/jquery.carouFredSel-6.1.0-packed.js"></script>
+
 <div class="row inverted rounded">
 	<h1>Questionnaire</h1>
 </div>
@@ -15,9 +17,10 @@
 		<b>Points to distribute:</b>
 		<h2 id="counter"></h2>
 		<b>Adjust all questions:</b><br>
-		<a href="#" class="btn" onclick="changeAllValues(-0.1);"><b>-</b></a> <a href="#" class="btn" onclick="changeAllValues(0.1);"><b>+</b></a>
+		<a href="#" class="btn" onclick="changeAllValues(-0.1); return false;"><b>-</b></a> <a href="#" class="btn" onclick="changeAllValues(0.1); return false;"><b>+</b></a>
 	</div>
-	<div class="span9">
+	<div class="span9 coverview rounded">
+	<h2>Statements</h2>
 	<table>
 		<tr class="header">
 			<th><div class="flags span2"><img src="img/gb.png" onclick="changeLanguage(0);"> <img src="img/de.png" onclick="changeLanguage(1);"> <img src="img/ru.png" onclick="changeLanguage(2);"> <img src="img/jp.png" onclick="changeLanguage(3);"></div></th>
@@ -59,7 +62,7 @@
 				<input type="radio" name="q0" value="SA" />
 			</td>
 			<td class="answer">
-				<a href="#" onclick="decrementWeight(0);" class="btn btnsmall">-</a><input type="text" name="q0_weight" value="1" width="2" onchange="changeValue(0);" class="noEnterSubmit" /><a href="#" onclick="incrementWeight(0);" class="btn btnsmall">+</a>
+				<a href="#" onclick="decrementWeight(0); return false;" class="btn btnsmall">-</a><input type="text" name="q0_weight" value="1" width="2" onchange="changeValue(0);" class="noEnterSubmit" /><a href="#" onclick="incrementWeight(0); return false;" class="btn btnsmall">+</a>
 			</td>
 		</tr>
 		<tr class="qrow uneven">
@@ -81,7 +84,7 @@
 				<input type="radio" name="q1" value="SA" />
 			</td>
 			<td class="answer">
-				<a href="#" onclick="decrementWeight(1);" class="btn btnsmall">-</a><input type="text" name="q1_weight" value="1" width="2"  onchange="changeValue(1);" class="noEnterSubmit" /><a href="#" onclick="incrementWeight(1);" class="btn btnsmall">+</a>
+				<a href="#" onclick="decrementWeight(1); return false;" class="btn btnsmall">-</a><input type="text" name="q1_weight" value="1" width="2"  onchange="changeValue(1);" class="noEnterSubmit" /><a href="#" onclick="incrementWeight(1); return false;" class="btn btnsmall">+</a>
 			</td>
 		</tr>
 		<tr class="qrow even">
@@ -103,7 +106,7 @@
 				<input type="radio" name="q2" value="SA" />
 			</td>
 			<td class="answer">
-				<a href="#" onclick="decrementWeight(2);" class="btn btnsmall">-</a><input type="text" name="q2_weight" value="1" width="2"  onchange="changeValue(2);" class="noEnterSubmit" /><a href="#" onclick="incrementWeight(2);" class="btn btnsmall">+</a>
+				<a href="#" onclick="decrementWeight(2); return false;" class="btn btnsmall">-</a><input type="text" name="q2_weight" value="1" width="2"  onchange="changeValue(2);" class="noEnterSubmit" /><a href="#" onclick="incrementWeight(2); return false;" class="btn btnsmall">+</a>
 			</td>
 		</tr>
 		<tr class="qrow uneven">
@@ -125,7 +128,7 @@
 				<input type="radio" name="q3" value="SA" />
 			</td>
 			<td class="answer">
-				<a href="#" onclick="decrementWeight(3);" class="btn btnsmall">-</a><input type="text" name="q3_weight" value="1" width="2"  onchange="changeValue(3);" class="noEnterSubmit" /><a href="#" onclick="incrementWeight(3);" class="btn btnsmall">+</a>
+				<a href="#" onclick="decrementWeight(3); return false;" class="btn btnsmall">-</a><input type="text" name="q3_weight" value="1" width="2"  onchange="changeValue(3);" class="noEnterSubmit" /><a href="#" onclick="incrementWeight(3); return false;" class="btn btnsmall">+</a>
 			</td>
 		</tr>
 		<tr class="qrow even">
@@ -147,7 +150,7 @@
 				<input type="radio" name="q4" value="SA" />
 			</td>
 			<td class="answer">
-				<a href="#" onclick="decrementWeight(4);" class="btn btnsmall">-</a><input type="text" name="q4_weight" value="1" width="2"  onchange="changeValue(4);" class="noEnterSubmit" /><a href="#" onclick="incrementWeight(4);" class="btn btnsmall">+</a>
+				<a href="#" onclick="decrementWeight(4); return false;" class="btn btnsmall">-</a><input type="text" name="q4_weight" value="1" width="2"  onchange="changeValue(4);" class="noEnterSubmit" /><a href="#" onclick="incrementWeight(4); return false;" class="btn btnsmall">+</a>
 			</td>
 		</tr>
 		<tr class="qrow uneven">
@@ -169,7 +172,7 @@
 				<input type="radio" name="q5" value="SA" />
 			</td>
 			<td class="answer">
-				<a href="#" onclick="decrementWeight(5);" class="btn btnsmall">-</a><input type="text" name="q5_weight" value="1" width="2"  onchange="changeValue(5);" class="noEnterSubmit" /><a href="#" onclick="incrementWeight(5);" class="btn btnsmall">+</a>
+				<a href="#" onclick="decrementWeight(5); return false;" class="btn btnsmall">-</a><input type="text" name="q5_weight" value="1" width="2"  onchange="changeValue(5);" class="noEnterSubmit" /><a href="#" onclick="incrementWeight(5); return false;" class="btn btnsmall">+</a>
 			</td>
 		</tr>
 		<tr class="qrow even">
@@ -191,7 +194,7 @@
 				<input type="radio" name="q6" value="SA" />
 			</td>
 			<td class="answer">
-				<a href="#" onclick="decrementWeight(6);" class="btn btnsmall">-</a><input type="text" name="q6_weight" value="1" width="2"  onchange="changeValue(6);" class="noEnterSubmit" /><a href="#" onclick="incrementWeight(6);" class="btn btnsmall">+</a>
+				<a href="#" onclick="decrementWeight(6); return false;" class="btn btnsmall">-</a><input type="text" name="q6_weight" value="1" width="2"  onchange="changeValue(6);" class="noEnterSubmit" /><a href="#" onclick="incrementWeight(6); return false;" class="btn btnsmall">+</a>
 			</td>
 		</tr>
 		<tr class="qrow uneven">
@@ -213,7 +216,7 @@
 				<input type="radio" name="q7" value="SA" />
 			</td>
 			<td class="answer">
-				<a href="#" onclick="decrementWeight(7);" class="btn btnsmall">-</a><input type="text" name="q7_weight" value="1" width="2"  onchange="changeValue(7);" class="noEnterSubmit" /><a href="#" onclick="incrementWeight(7);" class="btn btnsmall">+</a>
+				<a href="#" onclick="decrementWeight(7); return false;" class="btn btnsmall">-</a><input type="text" name="q7_weight" value="1" width="2"  onchange="changeValue(7);" class="noEnterSubmit" /><a href="#" onclick="incrementWeight(7); return false;" class="btn btnsmall">+</a>
 			</td>
 		</tr>
 		<tr class="qrow even">
@@ -235,12 +238,132 @@
 				<input type="radio" name="q8" value="SA" />
 			</td>
 			<td class="answer">
-				<a href="#" onclick="decrementWeight(8);" class="btn btnsmall">-</a><input type="text" name="q8_weight" value="1" width="2"  onchange="changeValue(8);" class="noEnterSubmit" /><a href="#" onclick="incrementWeight(8);" class="btn btnsmall">+</a>
+				<a href="#" onclick="decrementWeight(8); return false;" class="btn btnsmall">-</a><input type="text" name="q8_weight" value="1" width="2"  onchange="changeValue(8);" class="noEnterSubmit" /><a href="#" onclick="incrementWeight(8); return false;" class="btn btnsmall">+</a>
 			</td>
 		</tr>
 	</table>
+	</div>
 	<br>
-	<input type="submit" value="Compare!" class="pull-right" />
+	<div class="span9 coverview rounded">
+		<h2>Questions</h2>
+		<div id="carousel">
+			<div>
+				<h3>Question 1</h3>
+				Acceptable answers from a candidate:<br>
+				<input type="checkbox" /> Answer 1 <br>
+				<input type="checkbox" /> Answer 2 <br>
+				<input type="checkbox" /> Answer 3 <br>
+				<input type="checkbox" /> Answer 4 <br>
+				<br>
+				How important is this issue to you?<br>
+				<select>
+					<option>Not important at all</option>
+					<option>A little important</option>
+					<option>Somewhat important</option>
+					<option>Very important</option>
+					<option>Mandatory</option>
+				</select>
+			</div>
+			<div>
+				<h3>Question 2</h3>
+				Acceptable answers from a candidate:<br>
+				<input type="checkbox" /> Answer 1 <br>
+				<input type="checkbox" /> Answer 2 <br>
+				<input type="checkbox" /> Answer 3 <br>
+				<br>
+				How important is this issue to you?<br>
+				<select>
+					<option>Not important at all</option>
+					<option>A little important</option>
+					<option>Somewhat important</option>
+					<option>Very important</option>
+					<option>Mandatory</option>
+				</select>
+			</div>
+			<div>
+				<h3>Question 3</h3>
+				Acceptable answers from a candidate:<br>
+				<input type="checkbox" /> Answer 1 <br>
+				<input type="checkbox" /> Answer 2 <br>
+				<input type="checkbox" /> Answer 3 <br>
+				<br>
+				How important is this issue to you?<br>
+				<select>
+					<option>Not important at all</option>
+					<option>A little important</option>
+					<option>Somewhat important</option>
+					<option>Very important</option>
+					<option>Mandatory</option>
+				</select>
+			</div>
+			<div>
+				<h3>Question 4</h3>
+				Acceptable answers from a candidate:<br>
+				<input type="checkbox" /> Answer 1 <br>
+				<input type="checkbox" /> Answer 2 <br>
+				<input type="checkbox" /> Answer 3 <br>
+				<input type="checkbox" /> Answer 4 <br>
+				<input type="checkbox" /> Answer 5 <br>
+				<br>
+				How important is this issue to you?<br>
+				<select>
+					<option>Not important at all</option>
+					<option>A little important</option>
+					<option>Somewhat important</option>
+					<option>Very important</option>
+					<option>Mandatory</option>
+				</select>
+			</div>
+			<div>
+				<h3>Question 5 it's really long just look at it go oh lawdy lawd it's so long I can't believe it, it's like a giant train or a really big snake</h3>
+				Acceptable answers from a candidate:<br>
+				<input type="checkbox" /> Answer 1 <br>
+				<input type="checkbox" /> Answer 2 <br>
+				<input type="checkbox" /> Answer 3 <br>
+				<input type="checkbox" /> Answer 4 <br>
+				<br>
+				How important is this issue to you?<br>
+				<select>
+					<option>Not important at all</option>
+					<option>A little important</option>
+					<option>Somewhat important</option>
+					<option>Very important</option>
+					<option>Mandatory</option>
+				</select>
+			</div>
+			<div>
+				<h3>Question 6</h3>
+				Acceptable answers from a candidate:<br>
+				<input type="checkbox" /> Answer 1 <br>
+				<input type="checkbox" /> Answer 2 <br>
+				<input type="checkbox" /> Answer 3 <br>
+				<input type="checkbox" /> Answer 4 <br>
+				<br>
+				How important is this issue to you?<br>
+				<select>
+					<option>Not important at all</option>
+					<option>A little important</option>
+					<option>Somewhat important</option>
+					<option>Very important</option>
+					<option>Mandatory</option>
+				</select>
+			</div>
+		</div>
+		<br>
+		<div class="span9">
+			<div class="span4">
+				<a class="btn prev" id="prev" href="#"><span>&laquo; Previous question</span></a>
+			</div>
+			<div class="span4" id="pagination">
+			</div>
+			<div class="span2 pull-right">
+				<a class="btn next pull-right" id="next" href="#"><span>Next question &raquo;</span></a>
+			</div>
+		</div>
+	</div>
+	<div class="span6">
+		<br><br>
+		<input type="submit" value="Calculate match!" class="pull-right btn" style="font-size:30px; line-height: 60px;" />
 	</div>
 	</form>
 </div>
@@ -320,6 +443,37 @@ var maxPoints = questions.length;
 
 // script entry point
 start();
+
+$(document).ready(function() {
+	/*	CarouFredSel: a circular, responsive jQuery carousel.
+	Configuration created by the "Configuration Robot"
+	at caroufredsel.dev7studios.com
+	*/
+	$("#carousel").carouFredSel({
+		height: "variable",
+		direction: "up",
+		circular: false,
+		infinite: false,
+		items: {
+			visible: 1,
+			height: "variable"
+		},
+		scroll: 400,
+		auto: false,
+		prev: "#prev",
+		next: "#next",
+		pagination: {
+			container: "#pagination",
+			anchorBuilder: function( nr ) {
+				var str  = '<a href="#" class="page rounded">';
+				str += nr;
+				str += '</a>';
+				return str;
+				
+			}
+		}
+	});
+});
 </script>
 
 <?php include 'footer.php'; ?>

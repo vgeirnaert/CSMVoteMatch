@@ -251,3 +251,20 @@ footer p {
 .social {
   width: 110px;
 }
+
+.carousel div {
+	display: block;
+}
+
+a.page {
+	background:#222222;
+	color: #dddddd;
+	font-weight: bold;
+	padding: 2px 5px 2px;
+	margin: 5px;
+}
+
+a.selected {
+	background: #aa2222;
+}
+}

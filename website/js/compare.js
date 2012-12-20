@@ -29,13 +29,13 @@ TraditionalCompareClass.prototype.scoreQuestion = function(answerA, weightA, ans
 	return (score * weight) * weightA;
 }
 
-// return the combined weight of two weights
+// return the matching score of two weights
 TraditionalCompareClass.prototype.getWeight = function(weightA, weightB, answerA, answerB) {
 	// what do we consider to be the cutoff (inclusive) between important and not important:
 	var important = 1;
 	
 	// the multipliers we return for fidelity increases and decreases
-	var increase = 2;
+	var increase = 1.5;
 	var decrease = 0.5;
 	
 	// if both people agree this is important (or of neutral importance)

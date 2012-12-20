@@ -64,7 +64,7 @@ Statements can be answered in 5 ways: Strongly disagree, Disagree, No opinion, A
 ## Importance score
 It is important to keep in mind that we're trying to calculate how well person A matches with person B, and their fidelity score should reflect the interpersonal match rather than the importance of the specific statement. That is why we use the weight assigned by both the user and candidate as a second matching dimension. 
 
-The weight score is used to modified the answer score, and either doubles or halves the answer score. The weight score is decided as follows:
+The weight score is used to modified the answer score, and either increases the answer score by 50% (score times 1.5) or reduces the answer score by 50% (score times 0.5). The weight score is decided as follows:
 
 <table>
   <tr>
@@ -124,7 +124,7 @@ Imagine the following statement:
   </tr>
 </table>
 
-Both people have the same answer, and both agree that the question is not unimportant. As such, they have a 2 point answer match (strong positive match), with a 2 point importance multiplier. These four points will then be multiplied by the user's weight of 1.5 for a total 6 point fidelity score.
+Both people have the same answer, and both agree that the question is not unimportant. As such, they have a 2 point answer match (strong positive match), with a 1.5 point importance multiplier. These three points will then be multiplied by the user's weight of 1.5 for a total 4.5 point fidelity score.
 
 <table>
   <tr>
@@ -170,7 +170,7 @@ Both people have similar answers, but the small difference in answers (Strongly 
   </tr>
 </table>
 
-The user and the candidate have significantly different answers this time, resulting in a weak negative match of -1. Their difference in opinion is even greater when you see that they both feel this is an important issue (with opposing views), resulting in an importance multiplier of 2. The resulting -2 score is then multiplied by 1.5 for a total -3 fidelity score on this statement.
+The user and the candidate have significantly different answers this time, resulting in a weak negative match of -1. Their difference in opinion is even greater when you see that they both feel this is an important issue (with opposing views), resulting in an importance multiplier of 1.5. The resulting -1.5 score is then multiplied by 1.5 for a total -2.25 fidelity score on this statement.
 
 <table>
   <tr>

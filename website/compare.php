@@ -182,6 +182,6 @@ var language = 0;
 </div>
 
 <script src="js/compare.js"></script>
-<script src="js/opentip-jquery.js"></script>
+<script src="js/vendor/opentip-jquery.js"></script>
 
 <?php include 'footer.php'; ?>
