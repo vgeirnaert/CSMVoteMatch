@@ -1,25 +1,54 @@
 <?php 
 // load our variables
-// ../config.php is stored outside the webtree
-include_once '../config.php';
+// ../config2.php is stored outside the webtree
+require_once '../config2.php';
 
-//========================================================
-// Connect to the database
-//
-// returns MySQLi connection
-//========================================================
-function connectDB()
-{
-	$mysqli = new mysqli(Config::db_server, Config::db_username, Config::db_password, Config::database);
-	
-	return $mysqli;
-}
 
-//========================================================
-// Disconnect
-//========================================================
+
+
 function disconnectDB($mysqli) {
 	$mysqli->close();
 }
 
+class VotematchDB {
+	private static $conn = NULL;
+	
+	public static function getConnection() {
+		echo "<!-- CONN GET -->";
+		// if the connection isn't set yet
+		if(self::$conn == NULL) {
+			self::$conn = self::connectDB(); // connect
+			echo "<!-- CONN MaKE -->";
+		}
+		
+		return self::$conn;
+	}
+	
+	//========================================================
+	// Connect to the database
+	//
+	// returns MySQLi connection
+	//========================================================
+	private static function connectDB() {
+		$mysqli = new mysqli(Config::db_server, Config::db_username, Config::db_password, Config::database);
+		
+		return $mysqli;
+	}
+	
+	//========================================================
+	// Disconnect
+	//========================================================
+	public static function close() {
+		echo "<!-- CLOSE REQUEST -->";
+		// if it's an object
+		if(self::$conn != null) {
+			// and if the connection exists without error AND if we have no other open connections anymore
+			if(!self::$conn->connect_errno) {
+				// close it
+				self::$conn->close();
+				echo "<!-- CONN CLOSE -->";
+			}
+		}
+	}
+}
 ?>

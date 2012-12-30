@@ -1,4 +1,7 @@
-<?php include 'header.php'; ?>
+<?php 
+require 'questions.php';
+require 'header.php'; 
+?>
 
 <script type="text/javascript" src="js/vendor/jquery.carouFredSel-6.1.0-packed.js"></script>
 
@@ -43,311 +46,21 @@
 				Importance
 			</th>
 		</tr>
-		<tr class="qrow even">
-			<td class="question">
-			</td>
-			<td class="answer">
-				<input type="radio" name="q0" value="SD" />
-			</td>
-			<td class="answer">
-				<input type="radio" name="q0" value="D" />
-			</td>
-			<td class="answer">
-				<input type="radio" name="q0" value="NO" checked />
-			</td>
-			<td class="answer">
-				<input type="radio" name="q0" value="A" />
-			</td>
-			<td class="answer">
-				<input type="radio" name="q0" value="SA" />
-			</td>
-			<td class="answer">
-				<a href="#" onclick="decrementWeight(0); return false;" class="btn btnsmall">-</a><input type="text" name="q0_weight" value="1" width="2" onchange="changeValue(0);" class="noEnterSubmit" /><a href="#" onclick="incrementWeight(0); return false;" class="btn btnsmall">+</a>
-			</td>
-		</tr>
-		<tr class="qrow uneven">
-			<td class="question">
-			</td>
-			<td class="answer">
-				<input type="radio" name="q1" value="SD" />
-			</td>
-			<td class="answer">
-				<input type="radio" name="q1" value="D" />
-			</td>
-			<td class="answer">
-				<input type="radio" name="q1" value="NO" checked />
-			</td>
-			<td class="answer">
-				<input type="radio" name="q1" value="A" />
-			</td>
-			<td class="answer">
-				<input type="radio" name="q1" value="SA" />
-			</td>
-			<td class="answer">
-				<a href="#" onclick="decrementWeight(1); return false;" class="btn btnsmall">-</a><input type="text" name="q1_weight" value="1" width="2"  onchange="changeValue(1);" class="noEnterSubmit" /><a href="#" onclick="incrementWeight(1); return false;" class="btn btnsmall">+</a>
-			</td>
-		</tr>
-		<tr class="qrow even">
-			<td class="question">
-			</td>
-			<td class="answer">
-				<input type="radio" name="q2" value="SD" />
-			</td>
-			<td class="answer">
-				<input type="radio" name="q2" value="D" />
-			</td>
-			<td class="answer">
-				<input type="radio" name="q2" value="NO" checked />
-			</td>
-			<td class="answer">
-				<input type="radio" name="q2" value="A" />
-			</td>
-			<td class="answer">
-				<input type="radio" name="q2" value="SA" />
-			</td>
-			<td class="answer">
-				<a href="#" onclick="decrementWeight(2); return false;" class="btn btnsmall">-</a><input type="text" name="q2_weight" value="1" width="2"  onchange="changeValue(2);" class="noEnterSubmit" /><a href="#" onclick="incrementWeight(2); return false;" class="btn btnsmall">+</a>
-			</td>
-		</tr>
-		<tr class="qrow uneven">
-			<td class="question">
-			</td>
-			<td class="answer">
-				<input type="radio" name="q3" value="SD" />
-			</td>
-			<td class="answer">
-				<input type="radio" name="q3" value="D" />
-			</td>
-			<td class="answer">
-				<input type="radio" name="q3" value="NO" checked />
-			</td>
-			<td class="answer">
-				<input type="radio" name="q3" value="A" />
-			</td>
-			<td class="answer">
-				<input type="radio" name="q3" value="SA" />
-			</td>
-			<td class="answer">
-				<a href="#" onclick="decrementWeight(3); return false;" class="btn btnsmall">-</a><input type="text" name="q3_weight" value="1" width="2"  onchange="changeValue(3);" class="noEnterSubmit" /><a href="#" onclick="incrementWeight(3); return false;" class="btn btnsmall">+</a>
-			</td>
-		</tr>
-		<tr class="qrow even">
-			<td class="question">
-			</td>
-			<td class="answer">
-				<input type="radio" name="q4" value="SD" />
-			</td>
-			<td class="answer">
-				<input type="radio" name="q4" value="D" />
-			</td>
-			<td class="answer">
-				<input type="radio" name="q4" value="NO" checked />
-			</td>
-			<td class="answer">
-				<input type="radio" name="q4" value="A" />
-			</td>
-			<td class="answer">
-				<input type="radio" name="q4" value="SA" />
-			</td>
-			<td class="answer">
-				<a href="#" onclick="decrementWeight(4); return false;" class="btn btnsmall">-</a><input type="text" name="q4_weight" value="1" width="2"  onchange="changeValue(4);" class="noEnterSubmit" /><a href="#" onclick="incrementWeight(4); return false;" class="btn btnsmall">+</a>
-			</td>
-		</tr>
-		<tr class="qrow uneven">
-			<td class="question">
-			</td>
-			<td class="answer">
-				<input type="radio" name="q5" value="SD" />
-			</td>
-			<td class="answer">
-				<input type="radio" name="q5" value="D" />
-			</td>
-			<td class="answer">
-				<input type="radio" name="q5" value="NO" checked />
-			</td>
-			<td class="answer">
-				<input type="radio" name="q5" value="A" />
-			</td>
-			<td class="answer">
-				<input type="radio" name="q5" value="SA" />
-			</td>
-			<td class="answer">
-				<a href="#" onclick="decrementWeight(5); return false;" class="btn btnsmall">-</a><input type="text" name="q5_weight" value="1" width="2"  onchange="changeValue(5);" class="noEnterSubmit" /><a href="#" onclick="incrementWeight(5); return false;" class="btn btnsmall">+</a>
-			</td>
-		</tr>
-		<tr class="qrow even">
-			<td class="question">
-			</td>
-			<td class="answer">
-				<input type="radio" name="q6" value="SD" />
-			</td>
-			<td class="answer">
-				<input type="radio" name="q6" value="D" />
-			</td>
-			<td class="answer">
-				<input type="radio" name="q6" value="NO" checked />
-			</td>
-			<td class="answer">
-				<input type="radio" name="q6" value="A" />
-			</td>
-			<td class="answer">
-				<input type="radio" name="q6" value="SA" />
-			</td>
-			<td class="answer">
-				<a href="#" onclick="decrementWeight(6); return false;" class="btn btnsmall">-</a><input type="text" name="q6_weight" value="1" width="2"  onchange="changeValue(6);" class="noEnterSubmit" /><a href="#" onclick="incrementWeight(6); return false;" class="btn btnsmall">+</a>
-			</td>
-		</tr>
-		<tr class="qrow uneven">
-			<td class="question">
-			</td>
-			<td class="answer">
-				<input type="radio" name="q7" value="SD" />
-			</td>
-			<td class="answer">
-				<input type="radio" name="q7" value="D" />
-			</td>
-			<td class="answer">
-				<input type="radio" name="q7" value="NO" checked />
-			</td>
-			<td class="answer">
-				<input type="radio" name="q7" value="A" />
-			</td>
-			<td class="answer">
-				<input type="radio" name="q7" value="SA" />
-			</td>
-			<td class="answer">
-				<a href="#" onclick="decrementWeight(7); return false;" class="btn btnsmall">-</a><input type="text" name="q7_weight" value="1" width="2"  onchange="changeValue(7);" class="noEnterSubmit" /><a href="#" onclick="incrementWeight(7); return false;" class="btn btnsmall">+</a>
-			</td>
-		</tr>
-		<tr class="qrow even">
-			<td class="question">
-			</td>
-			<td class="answer">
-				<input type="radio" name="q8" value="SD" />
-			</td>
-			<td class="answer">
-				<input type="radio" name="q8" value="D" />
-			</td>
-			<td class="answer">
-				<input type="radio" name="q8" value="NO" checked />
-			</td>
-			<td class="answer">
-				<input type="radio" name="q8" value="A" />
-			</td>
-			<td class="answer">
-				<input type="radio" name="q8" value="SA" />
-			</td>
-			<td class="answer">
-				<a href="#" onclick="decrementWeight(8); return false;" class="btn btnsmall">-</a><input type="text" name="q8_weight" value="1" width="2"  onchange="changeValue(8);" class="noEnterSubmit" /><a href="#" onclick="incrementWeight(8); return false;" class="btn btnsmall">+</a>
-			</td>
-		</tr>
+<?php
+Questions::initClassicQuestions();
+Questions::printClassicQuestionTable();
+?>
 	</table>
 	</div>
 	<br>
+	<?php  ?>
 	<div class="span9 coverview rounded">
 		<h2>Questions</h2>
 		<div id="carousel">
-			<div>
-				<h3>Question 1</h3>
-				Acceptable answers from a candidate:<br>
-				<input type="checkbox" /> Answer 1 <br>
-				<input type="checkbox" /> Answer 2 <br>
-				<input type="checkbox" /> Answer 3 <br>
-				<input type="checkbox" /> Answer 4 <br>
-				<br>
-				How important is this issue to you?<br>
-				<select>
-					<option>Not important at all</option>
-					<option>A little important</option>
-					<option>Somewhat important</option>
-					<option>Very important</option>
-					<option>Mandatory</option>
-				</select>
-			</div>
-			<div>
-				<h3>Question 2</h3>
-				Acceptable answers from a candidate:<br>
-				<input type="checkbox" /> Answer 1 <br>
-				<input type="checkbox" /> Answer 2 <br>
-				<input type="checkbox" /> Answer 3 <br>
-				<br>
-				How important is this issue to you?<br>
-				<select>
-					<option>Not important at all</option>
-					<option>A little important</option>
-					<option>Somewhat important</option>
-					<option>Very important</option>
-					<option>Mandatory</option>
-				</select>
-			</div>
-			<div>
-				<h3>Question 3</h3>
-				Acceptable answers from a candidate:<br>
-				<input type="checkbox" /> Answer 1 <br>
-				<input type="checkbox" /> Answer 2 <br>
-				<input type="checkbox" /> Answer 3 <br>
-				<br>
-				How important is this issue to you?<br>
-				<select>
-					<option>Not important at all</option>
-					<option>A little important</option>
-					<option>Somewhat important</option>
-					<option>Very important</option>
-					<option>Mandatory</option>
-				</select>
-			</div>
-			<div>
-				<h3>Question 4</h3>
-				Acceptable answers from a candidate:<br>
-				<input type="checkbox" /> Answer 1 <br>
-				<input type="checkbox" /> Answer 2 <br>
-				<input type="checkbox" /> Answer 3 <br>
-				<input type="checkbox" /> Answer 4 <br>
-				<input type="checkbox" /> Answer 5 <br>
-				<br>
-				How important is this issue to you?<br>
-				<select>
-					<option>Not important at all</option>
-					<option>A little important</option>
-					<option>Somewhat important</option>
-					<option>Very important</option>
-					<option>Mandatory</option>
-				</select>
-			</div>
-			<div>
-				<h3>Question 5 it's really long just look at it go oh lawdy lawd it's so long I can't believe it, it's like a giant train or a really big snake</h3>
-				Acceptable answers from a candidate:<br>
-				<input type="checkbox" /> Answer 1 <br>
-				<input type="checkbox" /> Answer 2 <br>
-				<input type="checkbox" /> Answer 3 <br>
-				<input type="checkbox" /> Answer 4 <br>
-				<br>
-				How important is this issue to you?<br>
-				<select>
-					<option>Not important at all</option>
-					<option>A little important</option>
-					<option>Somewhat important</option>
-					<option>Very important</option>
-					<option>Mandatory</option>
-				</select>
-			</div>
-			<div>
-				<h3>Question 6</h3>
-				Acceptable answers from a candidate:<br>
-				<input type="checkbox" /> Answer 1 <br>
-				<input type="checkbox" /> Answer 2 <br>
-				<input type="checkbox" /> Answer 3 <br>
-				<input type="checkbox" /> Answer 4 <br>
-				<br>
-				How important is this issue to you?<br>
-				<select>
-					<option>Not important at all</option>
-					<option>A little important</option>
-					<option>Somewhat important</option>
-					<option>Very important</option>
-					<option>Mandatory</option>
-				</select>
-			</div>
+<?php
+Questions::initOKCQuestions();
+echo Questions::getOKCHTML(); 
+?>
 		</div>
 		<br>
 		<div class="span9">
@@ -370,31 +83,11 @@
 <script src="js/survey.js"></script>
 <script type="text/javascript">
 <?php
-/*
-// database related code to retrieve questions 
-include 'database.php';
-
-// connect to our database
-$mysqli = connectDB();
-
-include 'questions.php';
-
-// close the db connection
-disconnectDB($mysqli);
-*/
+echo Questions::getClassicQuestionsArray();
+echo "\n\n";
+echo Questions::getOKCQuestionsArray();
 ?>
-var questions = [
-	["question1_en", "question1_ger", "question1_rus", "question1_jp"],
-	["question2_en", "question2_ger", "question2_rus", "question2_jp"],
-	["question3_en", "question3_ger", "question3_rus", "question3_jp"],
-	["question4_en", "question4_ger", "question4_rus", "question4_jp"],
-	["question5_en", "question5_ger", "question5_rus", "question5_jp"],
-	["question6_en", "question6_ger", "question6_rus", "question6_jp"],
-	["question7_en", "question7_ger", "question7_rus", "question7_jp"],
-	["question8_en", "question8_ger", "question8_rus", "question8_jp"],
-	["question9_en", "question9_ger", "question9_rus", "question9_jp"],
-];
-	
+
 var opinions = [
 	["Strongly disagree", "Trifft gar nicht zu", "&#1050;&#1072;&#1090;&#1077;&#1075;&#1086;&#1088;&#1080;&#1095;&#1077;&#1089;&#1082;&#1080;&#32;&#1085;&#1077;&#32;&#1089;&#1086;&#1075;&#1083;&#1072;&#1089;&#1077;&#1085;", "&#20840;&#12367;&#21516;&#24847;&#12391;&#12365;&#12394;&#12356;"],
 	["Disagree", "Nicht &uuml;bereinstimmen", "&#1085;&#1077;&#32;&#1089;&#1086;&#1075;&#1083;&#1072;&#1096;&#1072;&#1090;&#1100;&#1089;&#1103;", "&#21516;&#24847;&#12375;&#12394;&#12356;"],
@@ -409,6 +102,14 @@ var explanations = ["<b>Election questionnaire</b><br>After filling in this ques
 "<b>&#1042;&#1099;&#1073;&#1086;&#1088;&#1099;&#32;&#1072;&#1085;&#1082;&#1077;&#1090;&#1099;</b><br>&#1055;&#1086;&#1089;&#1083;&#1077;&#32;&#1079;&#1072;&#1087;&#1086;&#1083;&#1085;&#1077;&#1085;&#1080;&#1103;&#32;&#1101;&#1090;&#1086;&#1081;&#32;&#1072;&#1085;&#1082;&#1077;&#1090;&#1099;&#44;&#32;&#1042;&#1072;&#1096;&#1080;&#32;&#1086;&#1090;&#1074;&#1077;&#1090;&#1099;&#32;&#1073;&#1091;&#1076;&#1091;&#1090;&#32;&#1089;&#1088;&#1072;&#1074;&#1085;&#1080;&#1074;&#1072;&#1090;&#1100;&#1089;&#1103;&#32;&#1089;&#32;&#1086;&#1090;&#1074;&#1077;&#1090;&#1072;&#1084;&#1080;&#32;&#1086;&#1090;&#32;&#67;&#83;&#77;&#32;&#1082;&#1072;&#1085;&#1076;&#1080;&#1076;&#1072;&#1090;&#1086;&#1074;&#32;&#1080;&#32;&#1089;&#1086;&#1086;&#1090;&#1074;&#1077;&#1090;&#1089;&#1090;&#1074;&#1091;&#1102;&#1097;&#1080;&#1077;&#32;&#1087;&#1088;&#1086;&#1094;&#1077;&#1085;&#1090;&#32;&#1073;&#1091;&#1076;&#1077;&#1090;&#32;&#1088;&#1072;&#1089;&#1089;&#1095;&#1080;&#1090;&#1072;&#1085;&#46;&#32;&#1042;&#1099;&#32;&#1084;&#1086;&#1078;&#1077;&#1090;&#1077;&#32;&#1085;&#1072;&#1089;&#1090;&#1088;&#1086;&#1080;&#1090;&#1100;&#32;&#1074;&#1072;&#1078;&#1085;&#1086;&#1089;&#1090;&#1100;&#32;&#1074;&#1086;&#1087;&#1088;&#1086;&#1089;&#1086;&#1074;&#32;&#1086;&#1090;&#1085;&#1086;&#1089;&#1080;&#1090;&#1077;&#1083;&#1100;&#1085;&#1086;&#32;&#1076;&#1088;&#1091;&#1075;&#32;&#1076;&#1088;&#1091;&#1075;&#1072;&#32;&#1089;&#32;&#1087;&#1083;&#1102;&#1089;&#1086;&#1084;&#32;&#1080;&#32;&#1084;&#1080;&#1085;&#1091;&#1089;&#1086;&#1084;&#32;&#1082;&#1085;&#1086;&#1087;&#1082;&#1072;&#1084;&#1080;&#46;",
 "<b>&#36984;&#25369;&#12450;&#12531;&#12465;&#12540;&#12488;</b><br>&#12371;&#12398;&#12450;&#12531;&#12465;&#12540;&#12488;&#12395;&#35352;&#20837;&#12375;&#12383;&#24460;&#12289;&#12354;&#12394;&#12383;&#12398;&#31572;&#12360;&#12399;&#67;&#83;&#77;&#20505;&#35036;&#32773;&#12363;&#12425;&#12398;&#22238;&#31572;&#12392;&#27604;&#36611;&#12377;&#12427;&#12392;&#12289;&#19968;&#33268;&#29575;&#12364;&#35336;&#31639;&#12373;&#12428;&#12414;&#12377;&#12290;&#12354;&#12394;&#12383;&#12399;&#12289;&#12503;&#12521;&#12473;&#12392;&#12510;&#12452;&#12490;&#12473;&#12398;&#12508;&#12479;&#12531;&#12434;&#20351;&#12387;&#12390;&#12362;&#20114;&#12356;&#12395;&#30456;&#23550;&#30340;&#12394;&#36074;&#21839;&#12398;&#37325;&#35201;&#24230;&#12434;&#35519;&#25972;&#12377;&#12427;&#12371;&#12392;&#12364;&#12391;&#12365;&#12414;&#12377;&#12290;"
 ];
+
+var okc_ans_translations = ["Answers I will accept from a candidate:", "Antworten werde ich von einem Kandidaten akzeptieren:", "&#1054;&#1090;&#1074;&#1077;&#1090;&#1099; &#1103; &#1073;&#1091;&#1076;&#1091; &#1087;&#1088;&#1080;&#1085;&#1080;&#1084;&#1072;&#1090;&#1100; &#1086;&#1090; &#1082;&#1072;&#1085;&#1076;&#1080;&#1076;&#1072;&#1090;&#1086;&#1074;:", "&#31572;&#12360;&#12399;&#31169;&#12364;&#20505;&#35036;&#12363;&#12425;&#21463;&#12369;&#20184;&#12369;&#12414;&#12377;&#12290;"];
+var okc_imp_translations = ["How important is this issue to you?", "Wie wichtig ist dieses Thema f&#252;r Sie?", "&#1053;&#1072;&#1089;&#1082;&#1086;&#1083;&#1100;&#1082;&#1086; &#1074;&#1072;&#1078;&#1085;&#1072; &#1101;&#1090;&#1072; &#1087;&#1088;&#1086;&#1073;&#1083;&#1077;&#1084;&#1072; &#1076;&#1083;&#1103; &#1074;&#1072;&#1089;?", "&#12354;&#12394;&#12383;&#12395;&#12371;&#12398;&#21839;&#38988;&#12364;&#12393;&#12428;&#12367;&#12425;&#12356;&#37325;&#35201;&#12391;&#12377;&#12363;&#65311;"];
+var okc_imp_ni_translations = ["Not important at all", "&#220;berhaupt nicht wichtig", "&#1053;&#1077; &#1074;&#1072;&#1078;&#1085;&#1086; &#1085;&#1072; &#1074;&#1089;&#1077;&#1093;", "&#12414;&#12387;&#12383;&#12367;&#37325;&#35201;&#12391;&#12399;&#12354;&#12426;&#12414;&#12379;&#12435;"];
+var okc_imp_li_translations = ["A little important", "Ein wenig wichtig", "&#1053;&#1077;&#1084;&#1085;&#1086;&#1075;&#1086; &#1074;&#1072;&#1078;&#1085;&#1099;&#1093;", "&#23569;&#12375;&#37325;&#35201;"];
+var okc_imp_si_translations = ["Somewhat important", "Etwas wichtig", "&#1053;&#1077;&#1089;&#1082;&#1086;&#1083;&#1100;&#1082;&#1086; &#1074;&#1072;&#1078;&#1085;&#1099;&#1093;", "&#12420;&#12420;&#37325;&#35201;"];
+var okc_imp_vi_translations = ["Very important", "Sehr wichtig", "&#1054;&#1095;&#1077;&#1085;&#1100; &#1074;&#1072;&#1078;&#1085;&#1086;", "&#38750;&#24120;&#12395;&#37325;&#35201;&#12394;"];
+var okc_imp_ma_translations = ["Mandatory", "Verpflichtend", "&#1086;&#1073;&#1103;&#1079;&#1072;&#1090;&#1077;&#1083;&#1100;&#1085;&#1099;&#1081;", "&#24517;&#38920;&#12398;"];
 
 <?php
 echo "var language=" . getLang($_GET["lang"]) . ";";
@@ -465,7 +166,7 @@ $(document).ready(function() {
 		pagination: {
 			container: "#pagination",
 			anchorBuilder: function( nr ) {
-				var str  = '<a href="#" class="page rounded">';
+				var str  = '<a href="#" class="page">';
 				str += nr;
 				str += '</a>';
 				return str;

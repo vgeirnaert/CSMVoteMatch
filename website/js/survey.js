@@ -5,15 +5,60 @@ function changeLanguage(lang) {
 }
 
 function changeDisplayLanguage() {
+	// change classic style statements
 	$('.question').each(function(index, element){
 		element.innerHTML = (questions[index])[language];
 	});
 	
+	// change table headers for classic style statements
 	$('th.answer').each(function(index, element){
 		element.innerHTML = (opinions[index])[language];
 	});
 	
+	// change page explanation
 	$('#explanation').html(explanations[language]);
+	
+	// change OKC style questions
+	$('.okcquestion').each(function(index, element){
+		element.innerHTML = ((okc_questions[index])["question"])[language];
+	});
+	
+	
+	for(var i = 0; i < okc_questions.length; i++) {
+		$('.option_' + i).each(function(index, element){
+			element.innerHTML = (((okc_questions[i])["options"])[index])[language];
+		});
+	}
+	
+	$('.okc_imp').each(function(index, element){
+		element.innerHTML = okc_imp_translations[language];
+	});
+	
+	$('.okc_ans').each(function(index, element){
+		element.innerHTML = okc_ans_translations[language];
+	});
+	
+	$('.okc_imp_ni').each(function(index, element){
+		element.innerHTML = okc_imp_ni_translations[language];
+	});
+	
+	$('.okc_imp_li').each(function(index, element){
+		element.innerHTML = okc_imp_li_translations[language];
+	});
+	
+	$('.okc_imp_si').each(function(index, element){
+		element.innerHTML = okc_imp_si_translations[language];
+	});
+	
+	$('.okc_imp_vi').each(function(index, element){
+		element.innerHTML = okc_imp_vi_translations[language];
+	});
+	
+	$('.okc_imp_ma').each(function(index, element){
+		element.innerHTML = okc_imp_ma_translations[language];
+	});
+	
+	// TODO: change calculate match button text
 }
 
 function changeWeightValue(index, change) {
