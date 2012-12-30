@@ -29,6 +29,10 @@ TraditionalCompareClass.prototype.scoreQuestion = function(answerA, weightA, ans
 	return (score * weight) * weightA;
 }
 
+TraditionalCompareClass.prototype.scoreQuestionOKC = function(answerA, weightA, answerB, weightB) {
+	
+}
+
 // return the matching score of two weights
 TraditionalCompareClass.prototype.getWeight = function(weightA, weightB, answerA, answerB) {
 	// what do we consider to be the cutoff (inclusive) between important and not important:
