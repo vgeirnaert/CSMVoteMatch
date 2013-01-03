@@ -29,8 +29,20 @@ TraditionalCompareClass.prototype.scoreQuestion = function(answerA, weightA, ans
 	return (score * weight) * weightA;
 }
 
-TraditionalCompareClass.prototype.scoreQuestionOKC = function(answerA, weightA, answerB, weightB) {
+// score questions according to the OKCupid method (more or less)
+// http://www.okcupid.com/help/match-percentages
+// userAnswer has to be a javascript array, even if it only contains one element
+// weight is a numerical value
+// candidateAnswer is a numerical value
+TraditionalCompareClass.prototype.scoreQuestionOKC = function(userAnswerArray, weight, candidateAnswer) {
+	// Test if our candidate's answer is acceptable to the user
+	if(jQuery.inArray(candidateAnswer, userAnswerArray) != -1) {
+		// if so, return the weight of this answer (which is the score)
+		return weight;
+	}
 	
+	// if the candidate's answer isn't acceptable, return score 0
+	return 0;
 }
 
 // return the matching score of two weights
@@ -138,7 +150,42 @@ function makeMatches() {
 	
 	allMatches.sort(sortCandidateArray);
 	
+	// NOTE: remember to change this loop structure away from test 
+	for(var i = 0; i < OKCcandidates.length; i++) {
+		var score = matchOKCcandidate(OKCcandidates[0], mycomparer, i);
+		// todo: merge this and above matching - requires combining okccandidates and candidates arrays
+	}
+	
 	return allMatches;
+}
+
+function matchOKCcandidate(user, comparer, matchIndex) {
+	var candidate = OKCcandidates[matchIndex];
+	var maxUserScore = 0.0;
+	var userScore = 0.0;
+	var maxCandidateScore = 0.0;
+	var candidateScore = 0.0;
+	// for each OKC style question included in the matching process...
+	for(var i = 0; i < matchOKCQuestions.length; i++) {
+		var questionIndex = "q" + matchOKCQuestions[i];
+		
+		// for this question, get the maximum score a user could have, and the actual score based on how he compares with the candidate
+		maxUserScore += user[questionIndex].weight;
+		userScore += comparer.scoreQuestionOKC(user[questionIndex].answer, user[questionIndex].weight, candidate[questionIndex].answer[0]);
+		
+		// do the same for the candidate->user. This essentially calculates how good an advocate this candidate would be to the user
+		// this could be different from the user->candidate score since we're using the candidate's assigned weight instead of the user's
+		maxCandidateScore += candidate[questionIndex].weight;
+		candidateScore += comparer.scoreQuestionOKC(user[questionIndex].answer, candidate[questionIndex].weight, candidate[questionIndex].answer[0]);
+	}
+	// make percentages
+	userScore = (userScore / maxUserScore) * 100;
+	candidateScore = (candidateScore / maxCandidateScore) * 100;
+	
+	// calculate one match from both relationship scores
+	var score = Math.sqrt(userScore * candidateScore);
+	
+	return score;
 }
 
 // we store matches that we've made here, for cases where we need to redraw the table, 

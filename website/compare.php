@@ -48,38 +48,25 @@ function parseWeight($weight) {
 	return $weight;
 }
 
-/*
-// database related code to retrieve questions and candidate answers
-include 'database.php';
-
-// connect to our database
-$mysqli = connectDB();
-
-// get all questions from the db
-include 'questions.php';
-
-// get the candidate answers from the db
-$stmt = $mysqli->prepare("SELECT * FROM answers AS a LEFT JOIN candidates AS c ON a.candidateid = c.id LEFT JOIN questions AS q ON a.questionid = q.id WHERE q.electionid = ? GROUP BY c.id");
-$stmt->bind_param("i", Config::active_election);
-$stmt->execute();
-
-// print start of our javascript candidates array:
-echo 'var candidates = [';
-
-// include user details
-makeUserAnswers();
-
-// print database result rows as javascript array elements
-while($row = $result->fetch_assoc()){
-	echo '{"name":"All Strongly Disagree", "cid":"109000795", "q0":{"answer":-2, "weight":1, "comment":"Test comment <br>newline"},"q1":{"answer":-2, "weight":1, "comment":""},"q2":{"answer":-2, "weight":1, "comment":""},"q3":{"answer":-2, "weight":1, "comment":""},"q4":{"answer":-2, "weight":1, "comment":""},"q5":{"answer":-2, "weight":1, "comment":""},"q6":{"answer":-2, "weight":1, "comment":""},"q7":{"answer":-2, "weight":1, "comment":""},"q8":{"answer":-2, "weight":1, "comment":""}},';
+function parseOKCWeight($weight) {	
+	switch($weight) {
+		case "li":
+			return 1;
+		break;
+		case "si":
+			return 5;
+		break;
+		case "vi":
+			return 10;
+		break;
+		case "ma":
+			return 50;
+		break;
+		default:
+			return 0;
+		break;
+	}
 }
-
-// print end of the javascript array
-echo '];';
-
-// close the db connection
-disconnectDB($mysqli);
-*/
 ?>
 
 <script type="text/javascript">
@@ -98,6 +85,7 @@ var questions = [
 
 var matchQuestions = [];
 
+// todo: merge regular answers with okc answers
 var candidates = [
 	<?php echo makeUserAnswers(); ?>
 	{"name":"All Strongly Disagree", "cid":"109000795", "q0":{"answer":-2, "weight":1, "comment":"Test comment <br>newline"},"q1":{"answer":-2, "weight":1, "comment":""},"q2":{"answer":-2, "weight":1, "comment":""},"q3":{"answer":-2, "weight":1, "comment":""},"q4":{"answer":-2, "weight":1, "comment":""},"q5":{"answer":-2, "weight":1, "comment":""},"q6":{"answer":-2, "weight":1, "comment":""},"q7":{"answer":-2, "weight":1, "comment":""},"q8":{"answer":-2, "weight":1, "comment":""}},
@@ -125,6 +113,15 @@ var candidates = [
 	{"name":"Strongly Disagree important", "cid":"109000795", "q0":{"answer":-2, "weight":0.5, "comment":"Test comment"},"q1":{"answer":-2, "weight":1.5, "comment":"Test comment"},"q2":{"answer":-2, "weight":0.5, "comment":"Test comment"},"q3":{"answer":-2, "weight":1.5, "comment":"Test comment"},"q4":{"answer":-2, "weight":0.5, "comment":"Test comment"},"q5":{"answer":-2, "weight":0.5, "comment":"Test comment"},"q6":{"answer":-2, "weight":2, "comment":"Test comment"},"q7":{"answer":-2, "weight":1, "comment":"Test comment"},"q8":{"answer":-2, "weight":1, "comment":"Test comment"}},
 	{"name":"Mister Mix", "cid":"109000795", "q0":{"answer":-2, "weight":0.5, "comment":"Test comment"},"q1":{"answer":2, "weight":1.5, "comment":"Test comment"},"q2":{"answer":0, "weight":0.5, "comment":"Test comment"},"q3":{"answer":-1, "weight":1.5, "comment":"Test comment"},"q4":{"answer":-1, "weight":0.5, "comment":"Test comment"},"q5":{"answer":1, "weight":0.8, "comment":"Test comment"},"q6":{"answer":2, "weight":1.7, "comment":"Test comment"},"q7":{"answer":1, "weight":1.3, "comment":"Test comment"},"q8":{"answer":-1, "weight":0.7, "comment":"Test comment"}}
 ];
+
+var OKCcandidates = [
+	{"name":"You", "cid":"0", "q0":{"answer":[1, 2], "weight": 50}, "q1":{"answer":[3], "weight": 1}, "q2":{"answer":[1,3], "weight": 10}, "q3":{"answer":[4], "weight": 50}, "q5":{"answer":[1,2], "weight": 1}, "q6":{"answer":[3], "weight": 0}, "q7":{"answer":[1,4], "weight": 5}, "q8":{"answer":[2,4], "weight": 5}, "q9":{"answer":[2,3], "weight": 10}},
+	{"name":"Test good", "cid":"0", "q0":{"answer":[2], "weight": 10}, "q1":{"answer":[2], "weight": 1}, "q2":{"answer":[3], "weight": 10}, "q3":{"answer":[1], "weight": 50}, "q5":{"answer":[2], "weight": 1}, "q6":{"answer":[3], "weight": 0}, "q7":{"answer":[1], "weight": 5}, "q8":{"answer":[3], "weight": 5}, "q9":{"answer":[3], "weight": 10}},
+	{"name":"Test bad", "cid":"0", "q0":{"answer":[3], "weight": 50}, "q1":{"answer":[3], "weight": 1}, "q2":{"answer":[2], "weight": 10}, "q3":{"answer":[4], "weight": 50}, "q5":{"answer":[1], "weight": 1}, "q6":{"answer":[3], "weight": 0}, "q7":{"answer":[1], "weight": 5}, "q8":{"answer":[4], "weight": 5}, "q9":{"answer":[3], "weight": 5}},
+	{"name":"Test med", "cid":"0", "q0":{"answer":[1], "weight": 50}, "q1":{"answer":[3], "weight": 1}, "q2":{"answer":[3], "weight": 10}, "q3":{"answer":[3], "weight": 50}, "q5":{"answer":[3], "weight": 1}, "q6":{"answer":[3], "weight": 0}, "q7":{"answer":[4], "weight": 5}, "q8":{"answer":[1], "weight": 10}, "q9":{"answer":[2], "weight": 50}}
+];
+
+var matchOKCQuestions = [0,1,2,3,5,6,7,8,9];
 
 var matchCandidates = [];
 
@@ -180,7 +177,7 @@ var language = 0;
 <div style="display:none;">
 
 </div>
-
+<?php print_r($_POST); ?>
 <script src="js/compare.js"></script>
 <script src="js/vendor/opentip-jquery.js"></script>
 

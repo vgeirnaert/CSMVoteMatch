@@ -77,12 +77,12 @@ class Questions {
 		if (mysqli_connect_errno()) {
 			echo '<p><h2>Error connecting to database:</h2>' . mysqli_connect_error() . '</p>';
 		} else {
-			$stmt = $mysqli->prepare("SELECT q.id, q.question_en, q.question_rus, q.question_ger, q.question_jp, o.option_en, o.option_rus, o.option_ger, o.option_jp, o.question_id FROM okc_questions AS q LEFT JOIN okc_options AS o ON o.question_id = q.id WHERE q.election_id = ? ORDER BY q.id ASC");
+			$stmt = $mysqli->prepare("SELECT q.id, q.question_en, q.question_rus, q.question_ger, q.question_jp, o.option_en, o.option_rus, o.option_ger, o.option_jp, o.question_id, o.id FROM okc_questions AS q LEFT JOIN okc_options AS o ON o.question_id = q.id WHERE q.election_id = ? ORDER BY q.id ASC");
 			$election = Config::active_election;
 			$stmt->bind_param("i", $election);
 			$stmt->execute();
 
-			$stmt->bind_result($id, $q_en, $q_rus, $q_ger, $q_jp, $o_en, $o_rus, $o_ger, $o_jp, $qid);
+			$stmt->bind_result($id, $q_en, $q_rus, $q_ger, $q_jp, $o_en, $o_rus, $o_ger, $o_jp, $qid, $optionid);
 			
 			$okc_js_array = "[";
 			$okc_html = "";
@@ -94,7 +94,7 @@ class Questions {
 					$count++;
 					
 				$okc_js_array .= self::addToJsArray($current_id, $qid, $q_en, $q_ger, $q_rus, $q_jp, $o_en, $o_ger, $o_rus, $o_jp);
-				$okc_html .= self::addToHtml($current_id, $qid, $q_en, $q_ger, $q_rus, $q_jp, $o_en, $o_ger, $o_rus, $o_jp, $count);
+				$okc_html .= self::addToHtml($current_id, $qid, $q_en, $q_ger, $q_rus, $q_jp, $o_en, $o_ger, $o_rus, $o_jp, $count, $optionid);
 				$current_id = $qid;
 			}
 			
@@ -130,7 +130,7 @@ class Questions {
 		return $okc_js_array;
 	}
 	
-	static function addToHtml($current_id, $qid, $q_en, $q_ger, $q_rus, $q_jp, $o_en, $o_ger, $o_rus, $o_jp, $i) {
+	static function addToHtml($current_id, $qid, $q_en, $q_ger, $q_rus, $q_jp, $o_en, $o_ger, $o_rus, $o_jp, $i, $optionid) {
 		$html = "";
 		if($current_id != $qid) {
 			// complete previous div unless this is the very first div in the series
@@ -139,14 +139,14 @@ class Questions {
 			}
 			$html .= "<div class=\"okcdiv\"><h3 class=\"okcquestion\">$q_en</h3><span class=\"okc_ans\">Answers I will accept from a candidate:</span><br>";
 		}
-		$html .= '<input type="checkbox" /> <span class="option_' . $i . '">' . $o_en . '</span><br>';
+		$html .= '<input type="checkbox" name="ans_' . $qid .'[]" value="' . $optionid . '" /> <span class="option_' . $i . '">' . $o_en . '</span><br>';
 		
 		return $html;
 	}
 	
 	static function completeHtmlDiv($question) {
 		$html = "<br><span class=\"okc_imp\">How important is this issue to you?</span><br>
-				<select name=\"$question\">
+				<select name=\"imp_$question\">
 					<option class=\"okc_imp_ni\" value=\"ni\">Not important at all</option>
 					<option class=\"okc_imp_li\" value=\"li\">A little important</option>
 					<option class=\"okc_imp_si\" value=\"si\">Somewhat important</option>

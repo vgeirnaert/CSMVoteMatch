@@ -10,6 +10,7 @@ require 'header.php';
 </div>
 <br>
 <div class="row rounded">
+	<div class="span2"><img src="img/gb.png" onclick="changeLanguage(0);"> <img src="img/de.png" onclick="changeLanguage(1);"> <img src="img/ru.png" onclick="changeLanguage(2);"> <img src="img/jp.png" onclick="changeLanguage(3);"></div>
 	<form method="post" action="compare.php" name="survey" onsubmit="return validateForm();">
 	<div class="span11 coverview rounded" id="explanation">
 		<b>Election questionnaire</b><br>
@@ -26,7 +27,7 @@ require 'header.php';
 	<h2>Statements</h2>
 	<table>
 		<tr class="header">
-			<th><div class="flags span2"><img src="img/gb.png" onclick="changeLanguage(0);"> <img src="img/de.png" onclick="changeLanguage(1);"> <img src="img/ru.png" onclick="changeLanguage(2);"> <img src="img/jp.png" onclick="changeLanguage(3);"></div></th>
+			<th></th>
 			<th class="answer even">
 				Strongly disagree
 			</th>

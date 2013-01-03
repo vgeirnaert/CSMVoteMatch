@@ -12,10 +12,11 @@ if(!isset($pagetitle))
         <meta charset="utf-8">
         <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
         <title><?php echo $pagetitle; ?></title>
-        <meta name="description" content="">
+        <meta name="description" content="Eve Vote Match helps capsuleers make an informed decision in the Eve Online CSM elections">
         <meta name="viewport" content="width=device-width">
+		<meta property="og:image" content="apple-touch-icon-144x144-precomposed.png" />
 		<meta http-equiv="Content-Type" content="text/html; charset="utf-8" />
-
+		<meta property="og:description"content="Eve Vote Match helps capsuleers make an informed decision in the Eve Online CSM elections"/>
         <link rel="stylesheet" href="css/bootstrap.min.css">
         <style>
             body {

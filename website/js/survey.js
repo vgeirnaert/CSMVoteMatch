@@ -18,11 +18,14 @@ function changeDisplayLanguage() {
 	// change page explanation
 	$('#explanation').html(explanations[language]);
 	
+	// reset carousel
+	//$("#carousel").trigger("slideTo", [0, {duration: 0}]);
+	$("#carousel").trigger("slideToPage", [0, {duration: 0}]);
+	
 	// change OKC style questions
 	$('.okcquestion').each(function(index, element){
 		element.innerHTML = ((okc_questions[index])["question"])[language];
 	});
-	
 	
 	for(var i = 0; i < okc_questions.length; i++) {
 		$('.option_' + i).each(function(index, element){
@@ -135,9 +138,10 @@ function start() {
 }
 
 function validateForm() {
-	if(freePoints == 0)
-		return true;
+	if(freePoints != 0) {
+		alert('You must allocate all your importance points! You currently have ' + freePoints.toFixed(1) + ' left.');
+		return false;
+	}	
 	
-	alert('You must allocate all your importance points! You currently have ' + freePoints.toFixed(1) + ' left.');
-	return false;
+	return true;
 }
