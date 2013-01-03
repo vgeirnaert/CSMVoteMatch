@@ -14,11 +14,9 @@ class VotematchDB {
 	private static $conn = NULL;
 	
 	public static function getConnection() {
-		echo "<!-- CONN GET -->";
 		// if the connection isn't set yet
 		if(self::$conn == NULL) {
 			self::$conn = self::connectDB(); // connect
-			echo "<!-- CONN MaKE -->";
 		}
 		
 		return self::$conn;
@@ -39,14 +37,12 @@ class VotematchDB {
 	// Disconnect
 	//========================================================
 	public static function close() {
-		echo "<!-- CLOSE REQUEST -->";
 		// if it's an object
 		if(self::$conn != null) {
 			// and if the connection exists without error AND if we have no other open connections anymore
 			if(!self::$conn->connect_errno) {
 				// close it
 				self::$conn->close();
-				echo "<!-- CONN CLOSE -->";
 			}
 		}
 	}

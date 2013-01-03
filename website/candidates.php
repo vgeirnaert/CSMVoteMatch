@@ -1,6 +1,8 @@
-<?php include 'header.php'; ?>
+<?php 
+include 'header.php'; 
+require_once 'database.php';
+?>
 
-<!-- Main hero unit for a primary marketing message or call to action -->
 <div class="row inverted rounded">
 	<div class="span6"><h1>Candidates overview</h1></div>
 	<div class="span5"><br><a class="btn pull-right" href="#" onclick="toggleFilterButton();">Hide filters</a></div>
@@ -40,90 +42,96 @@
 <script src="js/candidates.js"></script>
 <br>
 <div class="row rounded">
-	<div class="span4 candidate high nocsm lt1 rounded">
-		<a href="candidate.php"><h3>Dierdra Vaal 1</h3>
-		<img src="https://image.eveonline.com/Character/109000795_128.jpg" class="img-rounded" />
-		<p>Koshaku [KAZO]<br>
-		Gentlemen's Agreement [GENTS]
-		</p></a>
-	</div>
-	<div class="span4 candidate high csm 1t2 rounded">
-		<a href="candidate.php"><h3>Dierdra Vaal 2</h3>
-		<img src="https://image.eveonline.com/Character/109000795_128.jpg" class="img-rounded" />
-		<p>Koshaku [KAZO]<br>
-		Gentlemen's Agreement [GENTS]
-		</p></a>
-	</div>
-	<div class="span4 candidate null nocsm 2t3 rounded">
-		<a href="candidate.php"><h3>Dierdra Vaal 3</h3>
-		<img src="https://image.eveonline.com/Character/109000795_128.jpg" class="img-rounded" />
-		<p>Koshaku [KAZO]<br>
-		Gentlemen's Agreement [GENTS]
-		</p></a>
-	</div>
-	<div class="span4 candidate low nocsm 3t4 rounded">
-		<a href="candidate.php"><h3>Dierdra Vaal 4</h3>
-		<img src="https://image.eveonline.com/Character/109000795_128.jpg" class="img-rounded" />
-		<p>Koshaku [KAZO]<br>
-		Gentlemen's Agreement [GENTS]
-		</p></a>
-	</div>
-	<div class="span4 candidate null nocsm 4t5 rounded">
-		<a href="candidate.php"><h3>Dierdra Vaal 5</h3>
-		<img src="https://image.eveonline.com/Character/109000795_128.jpg" class="img-rounded" />
-		<p>Koshaku [KAZO]<br>
-		Gentlemen's Agreement [GENTS]
-		</p></a>
-	</div>
-	<div class="span4 candidate wh nocsm mt5 rounded">
-		<a href="candidate.php"><h3>Dierdra Vaal 6</h3>
-		<img src="https://image.eveonline.com/Character/109000795_128.jpg" class="img-rounded" />
-		<p>Koshaku [KAZO]<br>
-		Gentlemen's Agreement [GENTS]
-		</p></a>
-	</div>
-	<div class="span4 candidate high nocsm mt5 rounded">
-		<a href="candidate.php"><h3>Dierdra Vaal 7</h3>
-		<img src="https://image.eveonline.com/Character/109000795_128.jpg" class="img-rounded" />
-		<p>Koshaku [KAZO]<br>
-		Gentlemen's Agreement [GENTS]
-		</p></a>
-	</div>
-	<div class="span4 candidate wh csm 4t5 rounded">
-		<a href="candidate.php"><h3>Dierdra Vaal 8</h3>
-		<img src="https://image.eveonline.com/Character/109000795_128.jpg" class="img-rounded" />
-		<p>Koshaku [KAZO]<br>
-		Gentlemen's Agreement [GENTS]
-		</p></a>
-	</div>
-	<div class="span4 candidate low nocsm 3t4 rounded">
-		<a href="candidate.php"><h3>Dierdra Vaal 9</h3>
-		<img src="https://image.eveonline.com/Character/109000795_128.jpg" class="img-rounded" />
-		<p>Koshaku [KAZO]<br>
-		Gentlemen's Agreement [GENTS]
-		</p></a>
-	</div>
-	<div class="span4 candidate null nocsm 2t3 rounded">
-		<a href="candidate.php"><h3>Dierdra Vaal 10</h3>
-		<img src="https://image.eveonline.com/Character/109000795_128.jpg" class="img-rounded" />
-		<p>Koshaku [KAZO]<br>
-		Gentlemen's Agreement [GENTS]
-		</p></a>
-	</div>
-	<div class="span4 candidate null nocsm 1t2 rounded">
-		<a href="candidate.php"><h3>Dierdra Vaal 11</h3>
-		<img src="https://image.eveonline.com/Character/109000795_128.jpg" class="img-rounded" />
-		<p>Koshaku [KAZO]<br>
-		Gentlemen's Agreement [GENTS]
-		</p></a>
-	</div>
-	<div class="span4 candidate high nocsm lt1 rounded">
-		<a href="candidate.php"><h3>Dierdra Vaal 12</h3>
-		<img src="https://image.eveonline.com/Character/109000795_128.jpg" class="img-rounded" />
-		<p>Koshaku [KAZO]<br>
-		Gentlemen's Agreement [GENTS]
-		</p></a>
-	</div>
+<?php
+	$mysqli = VotematchDB::getConnection();
+	
+	if (mysqli_connect_errno()) {
+		echo '<p><h2>Error connecting to database:</h2>' . mysqli_connect_error() . '</p>';
+	} else {
+		$stmt = $mysqli->prepare("SELECT c.id, c.char_id, c.char_name, c.corp_name, c.alliance_name, c.flies_in, c.playstyle, h.csm, c.played_since FROM candidates AS c LEFT JOIN csm_history AS h ON c.char_id = h.character_id WHERE c.election_id = ? ORDER BY RAND()");
+		$election = Config::active_election;
+		$stmt->bind_param("i", $election);
+		$stmt->execute();
+
+		$stmt->bind_result($id, $charid, $charname, $corpname, $alliancename, $flies1, $play1, $csm, $played);
+		
+		$current_char = array();
+		while($stmt->fetch()) {
+			if(!in_array($id,$current_char)) {
+				// new char!
+				echo getCharHtml($id, $charid, $charname, $corpname, $alliancename, $flies1, $play1, $csm, $played);
+				
+				array_push($current_char,$id);
+			} 
+		}
+		
+		$stmt->close();
+	}
+	
+	VotematchDB::close();
+	
+	function getCharHtml($id, $charid, $charname, $corpname, $alliancename, $flies1, $play1, $csm, $played) {
+		$html = '<div class="span4 candidate ';
+		
+		$html .= getFlyClass($flies1) . ' ' . getCSMClass($csm) . ' ' . getPlaytimeClass($played) . ' ' . getActivityClass($play1) . ' rounded">';
+		
+		$html .= '<a href="candidate.php?id=' . $id . '"><h3>' . $charname . '</h3>';
+		$html .= '<img src="https://image.eveonline.com/Character/' . $charid . '_128.jpg" class="img-rounded" />';
+		$html .= "<p>$corpname<br>$alliancename &nbsp</p></a></div>";
+		
+		return $html;
+	}
+	
+	function getFlyClass($flies) {
+		if($flies == "0.0")
+			return "null";
+			
+		return $flies;
+	}
+	
+	function getCSMClass($csm) {
+		if($csm != 0)
+			return 'csm';
+			
+		return 'nocsm';
+	}
+	
+	function getPlaytimeClass($played) {
+		$time = strtotime($played);
+		
+		$elapsed = time() - $time;
+		
+		$year = 31556926; // in seconds, aproximate
+		
+		if($elapsed < $year)
+			return 'lt1';
+		else if($elapsed > $year && $elapsed <= ($year * 2))
+			return '1t2';
+		else if($elapsed > ($year * 2) && $elapsed <= ($year * 3))
+			return '2t3';
+		else if($elapsed > ($year * 3) && $elapsed <= ($year * 4))
+			return '3t4';
+		else if($elapsed > ($year * 4) && $elapsed <= ($year * 5))
+			return '4t5';
+		else if($elapsed > ($year * 5))
+			return 'mt5';
+	}
+	
+	function getActivityClass($play) {
+		switch($play) {
+			case "pvp":
+				return "pvp";
+			case "pve":
+				return "pve";
+			case "industry":
+				return "ind";
+			case "leadership":
+				return "ldr";
+			case "metagaming":
+				return "meta";
+		}
+	}
+?>
 </div>
 
 

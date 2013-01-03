@@ -20,14 +20,16 @@ CREATE TABLE IF NOT EXISTS candidates (
 	real_name TEXT,
 	real_location TEXT,
 	real_age INTEGER,
-	real_occuption TEXT,
-	time_played INTEGER,
-	can_evemail BIT(1),
-	can_convo BIT(1),
+	real_occupation TEXT,
+	played_since DATE,
+	flies_in TEXT,
+	playstyle TEXT,
+	can_evemail BOOL,
+	can_convo BOOL,
 	email TEXT,
-	campaign_statement LONGTEXT,
-	experience_eve LONGTEXT,
-	experience_real LONGTEXT,
+	campaign_statement TEXT,
+	experience_eve TEXT,
+	experience_real TEXT,
 	INDEX char_id_ind (char_id),
 	FOREIGN KEY (election_id) REFERENCES elections(id) ON DELETE CASCADE
 ) TYPE = INNODB CHARACTER SET utf8;
@@ -45,7 +47,7 @@ CREATE TABLE IF NOT EXISTS open_answers (
 	id INTEGER NOT NULL AUTO_INCREMENT PRIMARY KEY,
 	question_id INTEGER NOT NULL,
 	candidate_id INTEGER NOT NULL,
-	answer LONGTEXT NOT NULL,
+	answer TEXT NOT NULL,
 	FOREIGN KEY (question_id) REFERENCES open_questions(id) ON DELETE CASCADE,
 	FOREIGN KEY (candidate_id) REFERENCES candidates(id) ON DELETE CASCADE
 ) TYPE = INNODB CHARACTER SET utf8;
@@ -104,4 +106,12 @@ CREATE TABLE IF NOT EXISTS okc_answers (
 	comment TEXT,
 	FOREIGN KEY (answer_id) REFERENCES okc_options(id) ON DELETE CASCADE,
 	FOREIGN KEY (candidate_id) REFERENCES candidates(id) ON DELETE CASCADE
+) TYPE = INNODB CHARACTER SET utf8;
+
+# create table where we store preview CSM character id's (not FK)evecsm2
+CREATE TABLE IF NOT EXISTS csm_history (
+	id INTEGER NOT NULL AUTO_INCREMENT PRIMARY KEY,
+	character_id INTEGER NOT NULL,
+	csm TINYINT(2) NOT NULL,
+	INDEX char_id_ind (character_id),
 ) TYPE = INNODB CHARACTER SET utf8;
