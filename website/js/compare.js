@@ -36,7 +36,7 @@ TraditionalCompareClass.prototype.scoreQuestion = function(answerA, weightA, ans
 // candidateAnswer is a numerical value
 TraditionalCompareClass.prototype.scoreQuestionOKC = function(userAnswerArray, weight, candidateAnswer) {
 	// Test if our candidate's answer is acceptable to the user
-	if(jQuery.inArray(candidateAnswer, userAnswerArray) != -1) {
+	if(jQuery.inArray(candidateAnswer[0], userAnswerArray) != -1) {
 		// if so, return the weight of this answer (which is the score)
 		return weight;
 	}
@@ -104,7 +104,7 @@ function getQuestionKey(intQuestion) {
 function matchCandidate(user, comparer, candidateIndex) {
 	var score = 0;
 	var candidate = candidates[candidateIndex];
-	var candidateScore = [];
+	var candidateScore = {classic_score:[], okc_score:[]};
 	candidateScore["candidate"] = candidateIndex;
 	
 	for(var i = 0; i < matchQuestions.length; i++) {
@@ -119,24 +119,43 @@ function matchCandidate(user, comparer, candidateIndex) {
 		score += questionFidelity;
 		
 		var questionScore = {fidelity:questionFidelity, weight:comparer.getWeight(weightA, weightB, answerA, answerB)};
-		candidateScore[getQuestionKey(matchQuestions[i])] = questionScore;
+		candidateScore.classic_score[getQuestionKey(matchQuestions[i])] = questionScore;
 	}
 	
-	var okcScore = 0;
+	var okcScoreU = 0;
+	var maxUserScore = 0;
+	var okcScoreC = 0;
+	var maxCandidateScore = 0;
 	for(var i = 0; i < matchOKCQuestions .length; i++) {
 		var userAnswer = user.okc_answers[getQuestionKey(matchOKCQuestions[i])]["answer"];
 		var userWeight = user.okc_answers[getQuestionKey(matchOKCQuestions[i])]["weight"];
 		var candidateAnswer = candidate.okc_answers[getQuestionKey(matchOKCQuestions[i])]["answer"];
+		var candidateWeight = candidate.okc_answers[getQuestionKey(matchOKCQuestions[i])]["weight"];
 		
 		// calculate okc score and add
-		var questionScore = comparer.scoreQuestionOKC(userAnswer, userWeight, candidateAnswer);
-		okcScore += questionScore;
+		var questionScoreU = comparer.scoreQuestionOKC(userAnswer, userWeight, candidateAnswer);
+		var questionScoreC = comparer.scoreQuestionOKC(userAnswer, candidateWeight, candidateAnswer);
+		okcScoreU += questionScoreU;
+		maxUserScore += userWeight;
+		okcScoreC += questionScoreC;
+		maxCandidateScore += candidateWeight;
 		
-		var result = {score:questionScore};
-		//candidateScore.okc_scores[getQuestionKey(matchOKCQuestions[i])] = result;
+				
+		var result = {userScore:questionScoreU, maxUserScore:userWeight, candidateScore:questionScoreC, maxCandidateScore:candidateWeight};
+		candidateScore.okc_score[getQuestionKey(matchOKCQuestions[i])] = result;
 	}
 	
+	candidateScore["maxOkcScore"] = maxUserScore;
+	
+	// make OKC match percentage
+	var scoreOKC = Math.sqrt( (okcScoreU / maxUserScore) * (okcScoreC / maxCandidateScore) );
+	
+	// turn classic question score into match percentage
+	score = getPercentage(score, getComparer().getMinFidelityScore(matchQuestions.length), getComparer().getMaxFidelityScore(matchQuestions.length));
+	
 	candidateScore["score"] = score;
+	candidateScore["scoreOKC"] = scoreOKC;
+	candidateScore["combinedScore"] = score + scoreOKC;
 	
 	return candidateScore;
 }
@@ -160,11 +179,12 @@ function makeMatches() {
 	for(var i = 0; i < matchCandidates.length; i++) {
 		// match this candidate to the user
 		var match = matchCandidate(matchUser, mycomparer, matchCandidates[i]);
-		var okcscore = matchOKCcandidate(matchUser, mycomparer, matchCandidates[i]);
+		
+		/*var okcscore = matchOKCcandidate(matchUser, mycomparer, matchCandidates[i]);
 		// convert classic answer score to percentage
 		match["score"] = getPercentage(match["score"], getComparer().getMinFidelityScore(matchQuestions.length), getComparer().getMaxFidelityScore(matchQuestions.length));
 		// combine classic and okc style scores
-		match["score"] = Math.sqrt(match["score"] * okcscore);
+		match["score"] = Math.sqrt(match["score"] * okcscore);*/
 
 		allMatches.push(match);
 	}
@@ -209,7 +229,7 @@ var madeMatches;
 
 // sort function, people with a higher score will be sorted ahead of those with a lower score
 function sortCandidateArray(a,b) {
-	return (b["score"] - a["score"]);
+	return (b["combinedScore"] - a["combinedScore"]);
 }
 
 //===========================================
@@ -223,6 +243,12 @@ function printResults(matches) {
 	
 	for(var i = 0; i < matchQuestions.length; i++) {
 		html = html + makeRow(matches, i);
+	}
+	
+	// do we have an offset to determine even/uneven rows?
+	evenOffset = matchQuestions.length % 2;
+	for(var i = 0; i < matchOKCQuestions.length; i++) {
+		html = html + makeOKCRow(matches, i, evenOffset);
 	}
 	
 	html = html + makeTableFooter(matches);
@@ -243,12 +269,12 @@ function makeRow(matches, row) {
 	var tclass = "";
 	var question = matchQuestions[row];
 	
-	html = html + makeQuestion(row, language);
+	html = html + makeQuestion(row, language, false);
 	
 	for(var i = 0; i < matches.length; i++) {
 		tclass = getClass(i);
 		
-		background = getBackground( ((matches[i])[getQuestionKey(question)])["fidelity"], ((candidates[(matches[i])["candidate"]]).classic_answers[getQuestionKey(question)])["comment"] );
+		background = getBackground( ((matches[i]).classic_score[getQuestionKey(question)])["fidelity"], ((candidates[(matches[i])["candidate"]]).classic_answers[getQuestionKey(question)])["comment"] );
 		
 		html = html + "<td class=\"answer " + tclass + " " + background + "\">" + getCellContents( ((candidates[(matches[i])["candidate"]]).classic_answers[getQuestionKey(question)])["answer"], ((candidates[(matches[i])["candidate"]]).classic_answers[getQuestionKey(question)])["weight"], ((candidates[(matches[i])["candidate"]]).classic_answers[getQuestionKey(question)])["comment"], (candidates[(matches[i])["candidate"]])["name"]  ) + "</td>";
 	}
@@ -258,10 +284,36 @@ function makeRow(matches, row) {
 	return html;
 }
 
-function makeQuestion(qIndex, lIndex) {
+function makeOKCRow(matches, row, offset) {
+	var html = "<tr class=\"" + getEvenRow(row + offset) + "\">";
+	var tclass = "";
+	var question = matchOKCQuestions[row];
+	
+	html = html + makeQuestion(row, language, true);
+	
+	for(var i = 0; i < matches.length; i++) {
+		tclass = getClass(i);
+		
+		background = getBackgroundOKC( (matches[i]).okc_score[getQuestionKey(question)].userScore, (matches[i]).okc_score[getQuestionKey(question)].maxUserScore , (matches[i]).okc_score[getQuestionKey(question)].candidateScore , (matches[i]).okc_score[getQuestionKey(question)].maxCandidateScore );
+		
+		html = html + "<td class=\"answer " + tclass + " " + background + "\">" + "</td>";
+	}
+	
+	html = html + "</tr>";
+	
+	return html;
+}
+
+function makeQuestion(qIndex, lIndex, isOKC) {
 	var html = "<td class=\"question\">";
-	html = html + "<input type=\"checkbox\" value=\"" + matchQuestions[qIndex] + "\" name=\"q\" /> ";
-	html = html + questions[matchQuestions[qIndex]][lIndex] + "</td>";
+	
+	if(isOKC) {
+		html = html + "<input type=\"checkbox\" value=\"" + matchOKCQuestions[qIndex] + "\" name=\"okc\" /> ";
+		html = html + okc_questions[matchOKCQuestions[qIndex]].question[lIndex] + "</td>";
+	} else {
+		html = html + "<input type=\"checkbox\" value=\"" + matchQuestions[qIndex] + "\" name=\"q\" /> ";
+		html = html + questions[matchQuestions[qIndex]][lIndex] + "</td>";
+	}
 	return html;
 }
 
@@ -325,6 +377,30 @@ function getBackground(fidelity, comment) {
 	if(comment != "")
 		html += " comment";
 		
+	return html;
+}
+
+function getBackgroundOKC(userScore, maxUserScore, candidateScore, maxCandidateScore) {
+	var html = "";
+	
+	
+	if(userScore == 0) {
+		if(maxUserScore != 0) { // if its a bad match
+			if(maxCandidateScore != 0)
+				html = "verybad";
+			else
+				html = "bad";
+		} else {
+			// if its a neutral match
+			if(maxCandidateScore == 0)
+				html = "neutral";
+			else
+				html = "bad";
+		}
+	} else {
+		html = "verygood";
+	}
+	
 	return html;
 }
 
