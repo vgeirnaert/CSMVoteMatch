@@ -109,10 +109,10 @@ function matchCandidate(user, comparer, candidateIndex) {
 	
 	for(var i = 0; i < matchQuestions.length; i++) {
 		// first, get the answers and weights from our user and candidate
-		var answerA = user[getQuestionKey(matchQuestions[i])]["answer"];
-		var weightA = user[getQuestionKey(matchQuestions[i])]["weight"];
-		var answerB = candidate[getQuestionKey(matchQuestions[i])]["answer"];
-		var weightB = candidate[getQuestionKey(matchQuestions[i])]["weight"];
+		var answerA = user.classic_answers[getQuestionKey(matchQuestions[i])]["answer"];
+		var weightA = user.classic_answers[getQuestionKey(matchQuestions[i])]["weight"];
+		var answerB = candidate.classic_answers[getQuestionKey(matchQuestions[i])]["answer"];
+		var weightB = candidate.classic_answers[getQuestionKey(matchQuestions[i])]["weight"];
 		
 		// then calculate a fidelity score and add it to the tally
 		var questionFidelity = comparer.scoreQuestion(answerA, weightA, answerB, weightB);
@@ -121,6 +121,21 @@ function matchCandidate(user, comparer, candidateIndex) {
 		var questionScore = {fidelity:questionFidelity, weight:comparer.getWeight(weightA, weightB, answerA, answerB)};
 		candidateScore[getQuestionKey(matchQuestions[i])] = questionScore;
 	}
+	
+	var okcScore = 0;
+	for(var i = 0; i < matchOKCQuestions .length; i++) {
+		var userAnswer = user.okc_answers[getQuestionKey(matchOKCQuestions[i])]["answer"];
+		var userWeight = user.okc_answers[getQuestionKey(matchOKCQuestions[i])]["weight"];
+		var candidateAnswer = candidate.okc_answers[getQuestionKey(matchOKCQuestions[i])]["answer"];
+		
+		// calculate okc score and add
+		var questionScore = comparer.scoreQuestionOKC(userAnswer, userWeight, candidateAnswer);
+		okcScore += questionScore;
+		
+		var result = {score:questionScore};
+		//candidateScore.okc_scores[getQuestionKey(matchOKCQuestions[i])] = result;
+	}
+	
 	candidateScore["score"] = score;
 	
 	return candidateScore;
@@ -145,38 +160,38 @@ function makeMatches() {
 	for(var i = 0; i < matchCandidates.length; i++) {
 		// match this candidate to the user
 		var match = matchCandidate(matchUser, mycomparer, matchCandidates[i]);
+		var okcscore = matchOKCcandidate(matchUser, mycomparer, matchCandidates[i]);
+		// convert classic answer score to percentage
+		match["score"] = getPercentage(match["score"], getComparer().getMinFidelityScore(matchQuestions.length), getComparer().getMaxFidelityScore(matchQuestions.length));
+		// combine classic and okc style scores
+		match["score"] = Math.sqrt(match["score"] * okcscore);
+
 		allMatches.push(match);
 	}
 	
 	allMatches.sort(sortCandidateArray);
 	
-	// NOTE: remember to change this loop structure away from test 
-	for(var i = 0; i < OKCcandidates.length; i++) {
-		var score = matchOKCcandidate(OKCcandidates[0], mycomparer, i);
-		// todo: merge this and above matching - requires combining okccandidates and candidates arrays
-	}
-	
 	return allMatches;
 }
 
 function matchOKCcandidate(user, comparer, matchIndex) {
-	var candidate = OKCcandidates[matchIndex];
+	var candidate = candidates[matchIndex];
 	var maxUserScore = 0.0;
 	var userScore = 0.0;
 	var maxCandidateScore = 0.0;
 	var candidateScore = 0.0;
 	// for each OKC style question included in the matching process...
-	for(var i = 0; i < matchOKCQuestions.length; i++) {
+	for(var i = 0; i < matchQuestions.length; i++) {
 		var questionIndex = "q" + matchOKCQuestions[i];
 		
 		// for this question, get the maximum score a user could have, and the actual score based on how he compares with the candidate
-		maxUserScore += user[questionIndex].weight;
-		userScore += comparer.scoreQuestionOKC(user[questionIndex].answer, user[questionIndex].weight, candidate[questionIndex].answer[0]);
+		maxUserScore += user.okc_answers[questionIndex].weight;
+		userScore += comparer.scoreQuestionOKC(user.okc_answers[questionIndex].answer, user.okc_answers[questionIndex].weight, candidate.okc_answers[questionIndex].answer[0]);
 		
 		// do the same for the candidate->user. This essentially calculates how good an advocate this candidate would be to the user
 		// this could be different from the user->candidate score since we're using the candidate's assigned weight instead of the user's
-		maxCandidateScore += candidate[questionIndex].weight;
-		candidateScore += comparer.scoreQuestionOKC(user[questionIndex].answer, candidate[questionIndex].weight, candidate[questionIndex].answer[0]);
+		maxCandidateScore += candidate.okc_answers[questionIndex].weight;
+		candidateScore += comparer.scoreQuestionOKC(user.okc_answers[questionIndex].answer, candidate.okc_answers[questionIndex].weight, candidate.okc_answers[questionIndex].answer[0]);
 	}
 	// make percentages
 	userScore = (userScore / maxUserScore) * 100;
@@ -213,7 +228,7 @@ function printResults(matches) {
 	html = html + makeTableFooter(matches);
 		
 	$("#contentholder").html(html);
-	$("#showexcess").html("&laquo; Hide results");
+	$("#showexcess").html("Show all candidates &raquo;");
 	
 	window.setTimeout(refreshComments,50);
 }
@@ -232,8 +247,10 @@ function makeRow(matches, row) {
 	
 	for(var i = 0; i < matches.length; i++) {
 		tclass = getClass(i);
-		background = getBackground(((matches[i])[getQuestionKey(question)])["fidelity"], ((candidates[(matches[i])["candidate"]])[getQuestionKey(question)])["comment"]);
-		html = html + "<td class=\"answer " + tclass + " " + background + "\">" + getCellContents( ((candidates[(matches[i])["candidate"]])[getQuestionKey(question)])["answer"], ((candidates[(matches[i])["candidate"]])[getQuestionKey(question)])["weight"], ((candidates[(matches[i])["candidate"]])[getQuestionKey(question)])["comment"], (candidates[(matches[i])["candidate"]])["name"]  ) + "</td>";
+		
+		background = getBackground( ((matches[i])[getQuestionKey(question)])["fidelity"], ((candidates[(matches[i])["candidate"]]).classic_answers[getQuestionKey(question)])["comment"] );
+		
+		html = html + "<td class=\"answer " + tclass + " " + background + "\">" + getCellContents( ((candidates[(matches[i])["candidate"]]).classic_answers[getQuestionKey(question)])["answer"], ((candidates[(matches[i])["candidate"]]).classic_answers[getQuestionKey(question)])["weight"], ((candidates[(matches[i])["candidate"]]).classic_answers[getQuestionKey(question)])["comment"], (candidates[(matches[i])["candidate"]])["name"]  ) + "</td>";
 	}
 	
 	html = html + "</tr>";
@@ -260,7 +277,7 @@ function makeTableHeader(matches) {
 		tclass = getClass(i);
 		html = html + "<th class=\"answer " + tclass + "\">";
 		html = html + "<div class=\"check\"><input type=\"checkbox\" value=\"" + (matches[i])["candidate"] + "\" name=\"c\" /></div>";
-		html = html + "<img src=\"https://image.eveonline.com/Character/" + (candidates[(matches[i])["candidate"]])["cid"] + "_64.jpg\" class=\"rounded\" /><br><a href=\"candidate.php?cid=" + (candidates[(matches[i])["candidate"]])["cid"] +"\">" + (candidates[(matches[i])["candidate"]])["name"] + " (" + getPercentage(Math.round((matches[i])["score"] * 100) / 100, getComparer().getMinFidelityScore(matchQuestions.length), getComparer().getMaxFidelityScore(matchQuestions.length)) + "% match)</a>";
+		html = html + "<img src=\"https://image.eveonline.com/Character/" + (candidates[(matches[i])["candidate"]])["cid"] + "_64.jpg\" class=\"rounded\" /><br><a href=\"candidate.php?cid=" + (candidates[(matches[i])["candidate"]])["cid"] +"\">" + (candidates[(matches[i])["candidate"]])["name"] + " (" + Math.round((matches[i])["score"]) + "% match)</a>";
 		html = html + "</th>";
 	}
 	
@@ -274,7 +291,7 @@ function getPercentage(score, min, max) {
 	
 	score = score + Math.abs(min);
 	
-	return Math.min(Math.round((score / scale) * 100), 100);
+	return Math.min( (score / scale) * 100, 100);
 }
 
 function getClass(column) {
@@ -364,10 +381,10 @@ function makeTableFooter() {
 function toggleCandidates() {
 	if($(".excess").is(':hidden')) {
 		$(".excess").show(1000);
-		$("#showexcess").html("&laquo; Hide results");
+		$("#showexcess").html("&laquo; Hide candidates");
 	} else {
 		$(".excess").hide(1000);
-		$("#showexcess").html("Show all results &raquo;");
+		$("#showexcess").html("Show all candidates &raquo;");
 	}
 }
 

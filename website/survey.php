@@ -60,6 +60,7 @@ Questions::printClassicQuestionTable();
 		<div id="carousel">
 <?php
 Questions::initOKCQuestions();
+Questions::closeDB();
 echo Questions::getOKCHTML(); 
 ?>
 		</div>

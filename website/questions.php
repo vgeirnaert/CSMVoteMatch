@@ -104,8 +104,12 @@ class Questions {
 		
 			self::$okc_question_string = $okc_js_array;
 			self::$okc_html_string = $okc_html;
+			
+			$stmt->close();
 		}
-		
+	}
+	
+	static function closeDB() {
 		VotematchDB::close();
 	}
 	
@@ -119,7 +123,7 @@ class Questions {
 				$okc_js_array .=  " ]\n\t },";
 				
 			// since this is a new question, add a new question object
-			$okc_js_array .= "\n\t" . '{"question":["' . $q_en . '", "' . $q_ger . '", "' . $q_rus . '", "' . $q_jp . '"],' . "\n\t" . '"options":[';
+			$okc_js_array .= "\n\t" . '{"id": ' . $qid . ', "question":["' . $q_en . '", "' . $q_ger . '", "' . $q_rus . '", "' . $q_jp . '"],' . "\n\t" . '"options":[';
 			
 		} else
 			$okc_js_array .= ", "; // it's not a new question, just append a comma to seperate option arrays
@@ -147,7 +151,7 @@ class Questions {
 	static function completeHtmlDiv($question) {
 		$html = "<br><span class=\"okc_imp\">How important is this issue to you?</span><br>
 				<select name=\"imp_$question\">
-					<option class=\"okc_imp_ni\" value=\"ni\">Not important at all</option>
+					<option class=\"okc_imp_ni\" value=\"ni\">Irrelevant</option>
 					<option class=\"okc_imp_li\" value=\"li\">A little important</option>
 					<option class=\"okc_imp_si\" value=\"si\">Somewhat important</option>
 					<option class=\"okc_imp_vi\" value=\"vi\">Very important</option>

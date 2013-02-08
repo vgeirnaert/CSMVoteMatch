@@ -143,5 +143,8 @@ function validateForm() {
 		return false;
 	}	
 	
+	// TODO: add checks that all okc questions are filled in 
+	
+	
 	return true;
 }

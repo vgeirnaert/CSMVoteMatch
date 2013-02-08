@@ -1,22 +1,49 @@
 <?php include 'header.php'; 
+require_once 'questions.php';
+
+Questions::initClassicQuestions();
+Questions::initOKCQuestions();
+Questions::closeDB();
 
 // code to handle the user supplied answers if he came here from survey.php
 function makeUserAnswers() {
-	$num_questions = 9;
+	$line = '{"name":"You", "cid":"0", ';
+	$line .= makeClassicAnswers();
 	
-	$line = '{"name":"You", "cid":"0"';
+	$line .=', ';
+	
+	$line .= makeOKCAnswers(); 
+	
+	return $line;
+}
+
+function makeCandidateAnswers() {
+	
+}
+
+function makeClassicAnswers() {
+	$num_questions = Questions::getNumClassicQuestions();
+	
+	$line = '"classic_answers":{';
 	
 	for($i = 0; $i < $num_questions; $i++) {
 		$answer = parseAnswer($_POST["q" . $i]);
 		$weight = parseWeight($_POST["q" . $i . "_weight"]);
 		
-		$line = $line . ', "q' . $i . '":{"answer":' . $answer . ', "weight":' . $weight . ' , "comment":""}';
+		if($i > 0)
+			$line .= ",";
+			
+		$line = $line . ' "q' . $i . '":{"answer":' . $answer . ', "weight":' . $weight . ' , "comment":""}';
 
 	}
 	
-	$line = $line . '},';
+	$line .= "}";
 	
 	return $line;
+}
+
+function makeOKCAnswers() {
+	return '"okc_answers":{"q0":{"answer":[1, 2], "weight": 50}, "q1":{"answer":[3], "weight": 1}, "q2":{"answer":[1,3], "weight": 10}, "q3":{"answer":[4], "weight": 50}, "q4":{"answer":[2], "weight": 1}, "q5":{"answer":[1,2], "weight": 1}, "q6":{"answer":[3], "weight": 0}, "q7":{"answer":[1,4], "weight": 5}, "q8":{"answer":[2,4], "weight": 5}, "q9":{"answer":[2,3], "weight": 10}} },';
 }
 
 // change text code for answer to numeric answer value
@@ -70,55 +97,62 @@ function parseOKCWeight($weight) {
 ?>
 
 <script type="text/javascript">
-var questions = [
-	["question1_en", "question1_ger", "question1_rus", "question1_jp"],
-	["question2_en", "question2_ger", "question2_rus", "question2_jp"],
-	["question3_en", "question3_ger", "question3_rus", "question3_jp"],
-	["question4_en", "question4_ger", "question4_rus", "question4_jp"],
-	["question5_en", "question5_ger", "question5_rus", "question5_jp"],
-	["question6_en", "question6_ger", "question6_rus", "question6_jp"],
-	["question7_en", "question7_ger", "question7_rus", "question7_jp"],
-	["question8_en", "question8_ger", "question8_rus", "question8_jp"],
-	["question9_en", "question9_ger", "question9_rus", "question9_jp"],
-	];
-	
+<?php 
+echo Questions::getClassicQuestionsArray(); 
+echo "\n\n";
+echo Questions::getOKCQuestionsArray();
+?>	
 
 var matchQuestions = [];
 
-// todo: merge regular answers with okc answers
 var candidates = [
 	<?php echo makeUserAnswers(); ?>
-	{"name":"All Strongly Disagree", "cid":"109000795", "q0":{"answer":-2, "weight":1, "comment":"Test comment <br>newline"},"q1":{"answer":-2, "weight":1, "comment":""},"q2":{"answer":-2, "weight":1, "comment":""},"q3":{"answer":-2, "weight":1, "comment":""},"q4":{"answer":-2, "weight":1, "comment":""},"q5":{"answer":-2, "weight":1, "comment":""},"q6":{"answer":-2, "weight":1, "comment":""},"q7":{"answer":-2, "weight":1, "comment":""},"q8":{"answer":-2, "weight":1, "comment":""}},
-	{"name":"All Strongly Agree", "cid":"109000795", "q0":{"answer":2, "weight":1, "comment":""},"q1":{"answer":2, "weight":1, "comment":""},"q2":{"answer":2, "weight":1, "comment":""},"q3":{"answer":2, "weight":1, "comment":""},"q4":{"answer":2, "weight":1, "comment":""},"q5":{"answer":2, "weight":1, "comment":""},"q6":{"answer":2, "weight":1, "comment":""},"q7":{"answer":2, "weight":1, "comment":""},"q8":{"answer":2, "weight":1, "comment":""}},
-	{"name":"Agree", "cid":"109000795", "q0":{"answer":1, "weight":1, "comment":""},"q1":{"answer":1, "weight":1, "comment":""},"q2":{"answer":1, "weight":1, "comment":""},"q3":{"answer":1, "weight":1, "comment":""},"q4":{"answer":1, "weight":1, "comment":""},"q5":{"answer":1, "weight":1, "comment":""},"q6":{"answer":1, "weight":1, "comment":""},"q7":{"answer":1, "weight":1, "comment":""},"q8":{"answer":1, "weight":1, "comment":""}},
-	{"name":"Disagree", "cid":"109000795", "q0":{"answer":-1, "weight":1, "comment":""},"q1":{"answer":-1, "weight":1, "comment":""},"q2":{"answer":-1, "weight":1, "comment":""},"q3":{"answer":-1, "weight":1, "comment":""},"q4":{"answer":-1, "weight":1, "comment":""},"q5":{"answer":-1, "weight":1, "comment":""},"q6":{"answer":-1, "weight":1, "comment":""},"q7":{"answer":-1, "weight":1, "comment":""},"q8":{"answer":-1, "weight":1, "comment":""}},
-	{"name":"Strongly Disagree important", "cid":"109000795", "q0":{"answer":-2, "weight":0.5, "comment":""},"q1":{"answer":-2, "weight":1.5, "comment":""},"q2":{"answer":-2, "weight":0.5, "comment":""},"q3":{"answer":-2, "weight":1.5, "comment":""},"q4":{"answer":-2, "weight":0.5, "comment":""},"q5":{"answer":-2, "weight":0.5, "comment":""},"q6":{"answer":-2, "weight":2, "comment":""},"q7":{"answer":-2, "weight":1, "comment":""},"q8":{"answer":-2, "weight":1, "comment":""}},
-	{"name":"Mister Mix", "cid":"109000795", "q0":{"answer":-2, "weight":0.5, "comment":""},"q1":{"answer":2, "weight":1.5, "comment":""},"q2":{"answer":0, "weight":0.5, "comment":""},"q3":{"answer":-1, "weight":1.5, "comment":""},"q4":{"answer":-1, "weight":0.5, "comment":""},"q5":{"answer":1, "weight":0.8, "comment":""},"q6":{"answer":2, "weight":1.7, "comment":""},"q7":{"answer":1, "weight":1.3, "comment":""},"q8":{"answer":-1, "weight":0.7, "comment":""}},
-	{"name":"All Strongly Disagree", "cid":"109000795", "q0":{"answer":-2, "weight":1, "comment":"Test comment 1 "},"q1":{"answer":-2, "weight":1, "comment":"Test comment 2"},"q2":{"answer":-2, "weight":1, "comment":"Test comment 3"},"q3":{"answer":-2, "weight":1, "comment":"Test comment 4"},"q4":{"answer":-2, "weight":1, "comment":"Test comment 5"},"q5":{"answer":-2, "weight":1, "comment":"Test comment 6"},"q6":{"answer":-2, "weight":1, "comment":"Test comment"},"q7":{"answer":-2, "weight":1, "comment":"Test comment"},"q8":{"answer":-2, "weight":1, "comment":"Test comment"}},
-	{"name":"All Strongly Agree", "cid":"109000795", "q0":{"answer":2, "weight":1, "comment":"Test comment 1"},"q1":{"answer":2, "weight":1, "comment 2":"Test comment"},"q2":{"answer":2, "weight":1, "comment":"Test comment 3"},"q3":{"answer":2, "weight":1, "comment":"Test comment"},"q4":{"answer":2, "weight":1, "comment":"Test comment"},"q5":{"answer":2, "weight":1, "comment":"Test comment"},"q6":{"answer":2, "weight":1, "comment":"Test comment"},"q7":{"answer":2, "weight":1, "comment":"Test comment"},"q8":{"answer":2, "weight":1, "comment":"Test comment"}},
-	{"name":"Agree", "cid":"109000795", "q0":{"answer":1, "weight":1, "comment":"Test comment"},"q1":{"answer":1, "weight":1, "comment":"Test comment"},"q2":{"answer":1, "weight":1, "comment":"Test comment"},"q3":{"answer":1, "weight":1, "comment":"Test comment"},"q4":{"answer":1, "weight":1, "comment":"Test comment"},"q5":{"answer":1, "weight":1, "comment":"Test comment"},"q6":{"answer":1, "weight":1, "comment":"Test comment"},"q7":{"answer":1, "weight":1, "comment":"Test comment"},"q8":{"answer":1, "weight":1, "comment":"Test comment"}},
-	{"name":"Disagree", "cid":"109000795", "q0":{"answer":-1, "weight":1, "comment":"Test comment"},"q1":{"answer":-1, "weight":1, "comment":"Test comment"},"q2":{"answer":-1, "weight":1, "comment":"Test comment"},"q3":{"answer":-1, "weight":1, "comment":"Test comment"},"q4":{"answer":-1, "weight":1, "comment":"Test comment"},"q5":{"answer":-1, "weight":1, "comment":"Test comment"},"q6":{"answer":-1, "weight":1, "comment":"Test comment"},"q7":{"answer":-1, "weight":1, "comment":"Test comment"},"q8":{"answer":-1, "weight":1, "comment":"Test comment"}},
-	{"name":"Strongly Disagree important", "cid":"109000795", "q0":{"answer":-2, "weight":0.5, "comment":"Test comment"},"q1":{"answer":-2, "weight":1.5, "comment":"Test comment"},"q2":{"answer":-2, "weight":0.5, "comment":"Test comment"},"q3":{"answer":-2, "weight":1.5, "comment":"Test comment"},"q4":{"answer":-2, "weight":0.5, "comment":"Test comment"},"q5":{"answer":-2, "weight":0.5, "comment":"Test comment"},"q6":{"answer":-2, "weight":2, "comment":"Test comment"},"q7":{"answer":-2, "weight":1, "comment":"Test comment"},"q8":{"answer":-2, "weight":1, "comment":"Test comment"}},
-	{"name":"Mister Mix", "cid":"109000795", "q0":{"answer":-2, "weight":0.5, "comment":"Test comment"},"q1":{"answer":2, "weight":1.5, "comment":"Test comment"},"q2":{"answer":0, "weight":0.5, "comment":"Test comment"},"q3":{"answer":-1, "weight":1.5, "comment":"Test comment"},"q4":{"answer":-1, "weight":0.5, "comment":"Test comment"},"q5":{"answer":1, "weight":0.8, "comment":"Test comment"},"q6":{"answer":2, "weight":1.7, "comment":"Test comment"},"q7":{"answer":1, "weight":1.3, "comment":"Test comment"},"q8":{"answer":-1, "weight":0.7, "comment":"Test comment"}},
-	{"name":"All Strongly Disagree", "cid":"109000795", "q0":{"answer":-2, "weight":1, "comment":"Test comment"},"q1":{"answer":-2, "weight":1, "comment":"Test comment"},"q2":{"answer":-2, "weight":1, "comment":"Test comment"},"q3":{"answer":-2, "weight":1, "comment":"Test comment"},"q4":{"answer":-2, "weight":1, "comment":"Test comment"},"q5":{"answer":-2, "weight":1, "comment":"Test comment"},"q6":{"answer":-2, "weight":1, "comment":"Test comment"},"q7":{"answer":-2, "weight":1, "comment":"Test comment"},"q8":{"answer":-2, "weight":1, "comment":"Test comment"}},
-	{"name":"All Strongly Agree", "cid":"109000795", "q0":{"answer":2, "weight":1, "comment":"Test comment"},"q1":{"answer":2, "weight":1, "comment":"Test comment"},"q2":{"answer":2, "weight":1, "comment":"Test comment"},"q3":{"answer":2, "weight":1, "comment":"Test comment"},"q4":{"answer":2, "weight":1, "comment":"Test comment"},"q5":{"answer":2, "weight":1, "comment":"Test comment"},"q6":{"answer":2, "weight":1, "comment":"Test comment"},"q7":{"answer":2, "weight":1, "comment":"Test comment"},"q8":{"answer":2, "weight":1, "comment":"Test comment"}},
-	{"name":"Agree", "cid":"109000795", "q0":{"answer":1, "weight":1, "comment":"Test comment"},"q1":{"answer":1, "weight":1, "comment":"Test comment"},"q2":{"answer":1, "weight":1, "comment":"Test comment"},"q3":{"answer":1, "weight":1, "comment":"Test comment"},"q4":{"answer":1, "weight":1, "comment":"Test comment"},"q5":{"answer":1, "weight":1, "comment":"Test comment"},"q6":{"answer":1, "weight":1, "comment":"Test comment"},"q7":{"answer":1, "weight":1, "comment":"Test comment"},"q8":{"answer":1, "weight":1, "comment":"Test comment"}},
-	{"name":"Disagree", "cid":"109000795", "q0":{"answer":-1, "weight":1, "comment":"Test comment"},"q1":{"answer":-1, "weight":1, "comment":"Test comment"},"q2":{"answer":-1, "weight":1, "comment":"Test comment"},"q3":{"answer":-1, "weight":1, "comment":"Test comment"},"q4":{"answer":-1, "weight":1, "comment":"Test comment"},"q5":{"answer":-1, "weight":1, "comment":"Test comment"},"q6":{"answer":-1, "weight":1, "comment":"Test comment"},"q7":{"answer":-1, "weight":1, "comment":"Test comment"},"q8":{"answer":-1, "weight":1, "comment":"Test comment"}},
-	{"name":"Strongly Disagree important", "cid":"109000795", "q0":{"answer":-2, "weight":0.5, "comment":"Test comment"},"q1":{"answer":-2, "weight":1.5, "comment":"Test comment"},"q2":{"answer":-2, "weight":0.5, "comment":"Test comment"},"q3":{"answer":-2, "weight":1.5, "comment":"Test comment"},"q4":{"answer":-2, "weight":0.5, "comment":"Test comment"},"q5":{"answer":-2, "weight":0.5, "comment":"Test comment"},"q6":{"answer":-2, "weight":2, "comment":"Test comment"},"q7":{"answer":-2, "weight":1, "comment":"Test comment"},"q8":{"answer":-2, "weight":1, "comment":"Test comment"}},
-	{"name":"Mister Mix", "cid":"109000795", "q0":{"answer":-2, "weight":0.5, "comment":"Test comment"},"q1":{"answer":2, "weight":1.5, "comment":"Test comment"},"q2":{"answer":0, "weight":0.5, "comment":"Test comment"},"q3":{"answer":-1, "weight":1.5, "comment":"Test comment"},"q4":{"answer":-1, "weight":0.5, "comment":"Test comment"},"q5":{"answer":1, "weight":0.8, "comment":"Test comment"},"q6":{"answer":2, "weight":1.7, "comment":"Test comment"},"q7":{"answer":1, "weight":1.3, "comment":"Test comment"},"q8":{"answer":-1, "weight":0.7, "comment":"Test comment"}},
-	{"name":"All Strongly Disagree", "cid":"109000795", "q0":{"answer":-2, "weight":1, "comment":"Test comment"},"q1":{"answer":-2, "weight":1, "comment":"Test comment"},"q2":{"answer":-2, "weight":1, "comment":"Test comment"},"q3":{"answer":-2, "weight":1, "comment":"Test comment"},"q4":{"answer":-2, "weight":1, "comment":"Test comment"},"q5":{"answer":-2, "weight":1, "comment":"Test comment"},"q6":{"answer":-2, "weight":1, "comment":"Test comment"},"q7":{"answer":-2, "weight":1, "comment":"Test comment"},"q8":{"answer":-2, "weight":1, "comment":"Test comment"}},
-	{"name":"All Strongly Agree", "cid":"109000795", "q0":{"answer":2, "weight":1, "comment":"Test comment"},"q1":{"answer":2, "weight":1, "comment":"Test comment"},"q2":{"answer":2, "weight":1, "comment":"Test comment"},"q3":{"answer":2, "weight":1, "comment":"Test comment"},"q4":{"answer":2, "weight":1, "comment":"Test comment"},"q5":{"answer":2, "weight":1, "comment":"Test comment"},"q6":{"answer":2, "weight":1, "comment":"Test comment"},"q7":{"answer":2, "weight":1, "comment":"Test comment"},"q8":{"answer":2, "weight":1, "comment":"Test comment"}},
-	{"name":"Agree", "cid":"109000795", "q0":{"answer":1, "weight":1, "comment":"Test comment"},"q1":{"answer":1, "weight":1, "comment":"Test comment"},"q2":{"answer":1, "weight":1, "comment":"Test comment"},"q3":{"answer":1, "weight":1, "comment":"Test comment"},"q4":{"answer":1, "weight":1, "comment":"Test comment"},"q5":{"answer":1, "weight":1, "comment":"Test comment"},"q6":{"answer":1, "weight":1, "comment":"Test comment"},"q7":{"answer":1, "weight":1, "comment":"Test comment"},"q8":{"answer":1, "weight":1, "comment":"Test comment"}},
-	{"name":"Disagree", "cid":"109000795", "q0":{"answer":-1, "weight":1, "comment":"Test comment"},"q1":{"answer":-1, "weight":1, "comment":"Test comment"},"q2":{"answer":-1, "weight":1, "comment":"Test comment"},"q3":{"answer":-1, "weight":1, "comment":"Test comment"},"q4":{"answer":-1, "weight":1, "comment":"Test comment"},"q5":{"answer":-1, "weight":1, "comment":"Test comment"},"q6":{"answer":-1, "weight":1, "comment":"Test comment"},"q7":{"answer":-1, "weight":1, "comment":"Test comment"},"q8":{"answer":-1, "weight":1, "comment":"Test comment"}},
-	{"name":"Strongly Disagree important", "cid":"109000795", "q0":{"answer":-2, "weight":0.5, "comment":"Test comment"},"q1":{"answer":-2, "weight":1.5, "comment":"Test comment"},"q2":{"answer":-2, "weight":0.5, "comment":"Test comment"},"q3":{"answer":-2, "weight":1.5, "comment":"Test comment"},"q4":{"answer":-2, "weight":0.5, "comment":"Test comment"},"q5":{"answer":-2, "weight":0.5, "comment":"Test comment"},"q6":{"answer":-2, "weight":2, "comment":"Test comment"},"q7":{"answer":-2, "weight":1, "comment":"Test comment"},"q8":{"answer":-2, "weight":1, "comment":"Test comment"}},
-	{"name":"Mister Mix", "cid":"109000795", "q0":{"answer":-2, "weight":0.5, "comment":"Test comment"},"q1":{"answer":2, "weight":1.5, "comment":"Test comment"},"q2":{"answer":0, "weight":0.5, "comment":"Test comment"},"q3":{"answer":-1, "weight":1.5, "comment":"Test comment"},"q4":{"answer":-1, "weight":0.5, "comment":"Test comment"},"q5":{"answer":1, "weight":0.8, "comment":"Test comment"},"q6":{"answer":2, "weight":1.7, "comment":"Test comment"},"q7":{"answer":1, "weight":1.3, "comment":"Test comment"},"q8":{"answer":-1, "weight":0.7, "comment":"Test comment"}}
-];
-
-var OKCcandidates = [
-	{"name":"You", "cid":"0", "q0":{"answer":[1, 2], "weight": 50}, "q1":{"answer":[3], "weight": 1}, "q2":{"answer":[1,3], "weight": 10}, "q3":{"answer":[4], "weight": 50}, "q5":{"answer":[1,2], "weight": 1}, "q6":{"answer":[3], "weight": 0}, "q7":{"answer":[1,4], "weight": 5}, "q8":{"answer":[2,4], "weight": 5}, "q9":{"answer":[2,3], "weight": 10}},
-	{"name":"Test good", "cid":"0", "q0":{"answer":[2], "weight": 10}, "q1":{"answer":[2], "weight": 1}, "q2":{"answer":[3], "weight": 10}, "q3":{"answer":[1], "weight": 50}, "q5":{"answer":[2], "weight": 1}, "q6":{"answer":[3], "weight": 0}, "q7":{"answer":[1], "weight": 5}, "q8":{"answer":[3], "weight": 5}, "q9":{"answer":[3], "weight": 10}},
-	{"name":"Test bad", "cid":"0", "q0":{"answer":[3], "weight": 50}, "q1":{"answer":[3], "weight": 1}, "q2":{"answer":[2], "weight": 10}, "q3":{"answer":[4], "weight": 50}, "q5":{"answer":[1], "weight": 1}, "q6":{"answer":[3], "weight": 0}, "q7":{"answer":[1], "weight": 5}, "q8":{"answer":[4], "weight": 5}, "q9":{"answer":[3], "weight": 5}},
-	{"name":"Test med", "cid":"0", "q0":{"answer":[1], "weight": 50}, "q1":{"answer":[3], "weight": 1}, "q2":{"answer":[3], "weight": 10}, "q3":{"answer":[3], "weight": 50}, "q5":{"answer":[3], "weight": 1}, "q6":{"answer":[3], "weight": 0}, "q7":{"answer":[4], "weight": 5}, "q8":{"answer":[1], "weight": 10}, "q9":{"answer":[2], "weight": 50}}
+	{"name":"All Strongly Disagree", "cid":"109000795", 
+		"classic_answers":{"q0":{"answer":-2, "weight":1, "comment":"Test comment <br>newline"},"q1":{"answer":-2, "weight":1, "comment":""},"q2":{"answer":-2, "weight":1, "comment":""},"q3":{"answer":-2, "weight":1, "comment":""},"q4":{"answer":-2, "weight":1, "comment":""},"q5":{"answer":-2, "weight":1, "comment":""},"q6":{"answer":-2, "weight":1, "comment":""},"q7":{"answer":-2, "weight":1, "comment":""},"q8":{"answer":-2, "weight":1, "comment":""}},
+		"okc_answers":{"q0":{"answer":[2], "weight": 10}, "q1":{"answer":[2], "weight": 1}, "q2":{"answer":[3], "weight": 10}, "q3":{"answer":[1], "weight": 50}, "q4":{"answer":[2], "weight": 1}, "q5":{"answer":[2], "weight": 1}, "q6":{"answer":[3], "weight": 0}, "q7":{"answer":[1], "weight": 5}, "q8":{"answer":[3], "weight": 5}, "q9":{"answer":[3], "weight": 10}}},
+	{"name":"All Strongly Agree", "cid":"109000795", 
+		"classic_answers": {"q0":{"answer":2, "weight":1, "comment":""},"q1":{"answer":2, "weight":1, "comment":""},"q2":{"answer":2, "weight":1, "comment":""},"q3":{"answer":2, "weight":1, "comment":""},"q4":{"answer":2, "weight":1, "comment":""},"q5":{"answer":2, "weight":1, "comment":""},"q6":{"answer":2, "weight":1, "comment":""},"q7":{"answer":2, "weight":1, "comment":""},"q8":{"answer":2, "weight":1, "comment":""}},
+		"okc_answers":{"q0":{"answer":[3], "weight": 50}, "q1":{"answer":[3], "weight": 1}, "q2":{"answer":[2], "weight": 10}, "q3":{"answer":[4], "weight": 50}, "q4":{"answer":[2], "weight": 1}, "q5":{"answer":[1], "weight": 1}, "q6":{"answer":[3], "weight": 0}, "q7":{"answer":[1], "weight": 5}, "q8":{"answer":[4], "weight": 5}, "q9":{"answer":[3], "weight": 5}}
+		},
+	{"name":"Agree", "cid":"109000795", 
+		"classic_answers": {"q0":{"answer":1, "weight":1, "comment":""},"q1":{"answer":1, "weight":1, "comment":""},"q2":{"answer":1, "weight":1, "comment":""},"q3":{"answer":1, "weight":1, "comment":""},"q4":{"answer":1, "weight":1, "comment":""},"q5":{"answer":1, "weight":1, "comment":""},"q6":{"answer":1, "weight":1, "comment":""},"q7":{"answer":1, "weight":1, "comment":""},"q8":{"answer":1, "weight":1, "comment":""}},
+		"okc_answers":{"q0":{"answer":[1], "weight": 50}, "q1":{"answer":[3], "weight": 1}, "q2":{"answer":[3], "weight": 10}, "q3":{"answer":[3], "weight": 50}, "q4":{"answer":[2], "weight": 1}, "q5":{"answer":[3], "weight": 1}, "q6":{"answer":[3], "weight": 0}, "q7":{"answer":[4], "weight": 5}, "q8":{"answer":[1], "weight": 10}, "q9":{"answer":[2], "weight": 50}}
+	},
+	{"name":"Disagree", "cid":"109000795", 
+		"classic_answers": {"q0":{"answer":-1, "weight":1, "comment":""},"q1":{"answer":-1, "weight":1, "comment":""},"q2":{"answer":-1, "weight":1, "comment":""},"q3":{"answer":-1, "weight":1, "comment":""},"q4":{"answer":-1, "weight":1, "comment":""},"q5":{"answer":-1, "weight":1, "comment":""},"q6":{"answer":-1, "weight":1, "comment":""},"q7":{"answer":-1, "weight":1, "comment":""},"q8":{"answer":-1, "weight":1, "comment":""}},
+		"okc_answers":{"q0":{"answer":[3], "weight": 50}, "q1":{"answer":[3], "weight": 1}, "q2":{"answer":[2], "weight": 10}, "q3":{"answer":[4], "weight": 50}, "q4":{"answer":[2], "weight": 1}, "q5":{"answer":[1], "weight": 1}, "q6":{"answer":[3], "weight": 0}, "q7":{"answer":[1], "weight": 5}, "q8":{"answer":[4], "weight": 5}, "q9":{"answer":[3], "weight": 5}}
+	},
+	{"name":"Strongly Disagree important", "cid":"109000795", 
+		"classic_answers": {"q0":{"answer":-2, "weight":0.5, "comment":""},"q1":{"answer":-2, "weight":1.5, "comment":""},"q2":{"answer":-2, "weight":0.5, "comment":""},"q3":{"answer":-2, "weight":1.5, "comment":""},"q4":{"answer":-2, "weight":0.5, "comment":""},"q5":{"answer":-2, "weight":0.5, "comment":""},"q6":{"answer":-2, "weight":2, "comment":""},"q7":{"answer":-2, "weight":1, "comment":""},"q8":{"answer":-2, "weight":1, "comment":""}},
+		"okc_answers":{"q0":{"answer":[2], "weight": 10}, "q1":{"answer":[2], "weight": 1}, "q2":{"answer":[3], "weight": 10}, "q3":{"answer":[1], "weight": 50}, "q4":{"answer":[2], "weight": 1}, "q5":{"answer":[2], "weight": 1}, "q6":{"answer":[3], "weight": 0}, "q7":{"answer":[1], "weight": 5}, "q8":{"answer":[3], "weight": 5}, "q9":{"answer":[3], "weight": 10}}
+	},
+	{"name":"Mister Mix", "cid":"109000795", 
+		"classic_answers": {"q0":{"answer":-2, "weight":0.5, "comment":""},"q1":{"answer":2, "weight":1.5, "comment":""},"q2":{"answer":0, "weight":0.5, "comment":""},"q3":{"answer":-1, "weight":1.5, "comment":""},"q4":{"answer":-1, "weight":0.5, "comment":""},"q5":{"answer":1, "weight":0.8, "comment":""},"q6":{"answer":2, "weight":1.7, "comment":""},"q7":{"answer":1, "weight":1.3, "comment":""},"q8":{"answer":-1, "weight":0.7, "comment":""}},
+		"okc_answers":{"q0":{"answer":[1], "weight": 50}, "q1":{"answer":[3], "weight": 1}, "q2":{"answer":[3], "weight": 10}, "q3":{"answer":[3], "weight": 50}, "q4":{"answer":[2], "weight": 1}, "q5":{"answer":[3], "weight": 1}, "q6":{"answer":[3], "weight": 0}, "q7":{"answer":[4], "weight": 5}, "q8":{"answer":[1], "weight": 10}, "q9":{"answer":[2], "weight": 50}}
+	},	
+	{"name":"All Strongly Disagree", "cid":"109000795", 
+		"classic_answers":{"q0":{"answer":-2, "weight":1, "comment":"Test comment <br>newline"},"q1":{"answer":-2, "weight":1, "comment":""},"q2":{"answer":-2, "weight":1, "comment":""},"q3":{"answer":-2, "weight":1, "comment":""},"q4":{"answer":-2, "weight":1, "comment":""},"q5":{"answer":-2, "weight":1, "comment":""},"q6":{"answer":-2, "weight":1, "comment":""},"q7":{"answer":-2, "weight":1, "comment":""},"q8":{"answer":-2, "weight":1, "comment":""}},
+		"okc_answers":{"q0":{"answer":[2], "weight": 10}, "q1":{"answer":[2], "weight": 1}, "q2":{"answer":[3], "weight": 10}, "q3":{"answer":[1], "weight": 50}, "q4":{"answer":[2], "weight": 1}, "q5":{"answer":[2], "weight": 1}, "q6":{"answer":[3], "weight": 0}, "q7":{"answer":[1], "weight": 5}, "q8":{"answer":[3], "weight": 5}, "q9":{"answer":[3], "weight": 10}}},
+	{"name":"All Strongly Agree", "cid":"109000795", 
+		"classic_answers": {"q0":{"answer":2, "weight":1, "comment":""},"q1":{"answer":2, "weight":1, "comment":""},"q2":{"answer":2, "weight":1, "comment":""},"q3":{"answer":2, "weight":1, "comment":""},"q4":{"answer":2, "weight":1, "comment":""},"q5":{"answer":2, "weight":1, "comment":""},"q6":{"answer":2, "weight":1, "comment":""},"q7":{"answer":2, "weight":1, "comment":""},"q8":{"answer":2, "weight":1, "comment":""}},
+		"okc_answers":{"q0":{"answer":[3], "weight": 50}, "q1":{"answer":[3], "weight": 1}, "q2":{"answer":[2], "weight": 10}, "q3":{"answer":[4], "weight": 50}, "q4":{"answer":[2], "weight": 1}, "q5":{"answer":[1], "weight": 1}, "q6":{"answer":[3], "weight": 0}, "q7":{"answer":[1], "weight": 5}, "q8":{"answer":[4], "weight": 5}, "q9":{"answer":[3], "weight": 5}}
+		},
+	{"name":"Agree", "cid":"109000795", 
+		"classic_answers": {"q0":{"answer":1, "weight":1, "comment":""},"q1":{"answer":1, "weight":1, "comment":""},"q2":{"answer":1, "weight":1, "comment":""},"q3":{"answer":1, "weight":1, "comment":""},"q4":{"answer":1, "weight":1, "comment":""},"q5":{"answer":1, "weight":1, "comment":""},"q6":{"answer":1, "weight":1, "comment":""},"q7":{"answer":1, "weight":1, "comment":""},"q8":{"answer":1, "weight":1, "comment":""}},
+		"okc_answers":{"q0":{"answer":[1], "weight": 50}, "q1":{"answer":[3], "weight": 1}, "q2":{"answer":[3], "weight": 10}, "q3":{"answer":[3], "weight": 50}, "q4":{"answer":[2], "weight": 1}, "q5":{"answer":[3], "weight": 1}, "q6":{"answer":[3], "weight": 0}, "q7":{"answer":[4], "weight": 5}, "q8":{"answer":[1], "weight": 10}, "q9":{"answer":[2], "weight": 50}}
+	},
+	{"name":"Disagree", "cid":"109000795", 
+		"classic_answers": {"q0":{"answer":-1, "weight":1, "comment":""},"q1":{"answer":-1, "weight":1, "comment":""},"q2":{"answer":-1, "weight":1, "comment":""},"q3":{"answer":-1, "weight":1, "comment":""},"q4":{"answer":-1, "weight":1, "comment":""},"q5":{"answer":-1, "weight":1, "comment":""},"q6":{"answer":-1, "weight":1, "comment":""},"q7":{"answer":-1, "weight":1, "comment":""},"q8":{"answer":-1, "weight":1, "comment":""}},
+		"okc_answers":{"q0":{"answer":[3], "weight": 50}, "q1":{"answer":[3], "weight": 1}, "q2":{"answer":[2], "weight": 10}, "q3":{"answer":[4], "weight": 50}, "q4":{"answer":[2], "weight": 1}, "q5":{"answer":[1], "weight": 1}, "q6":{"answer":[3], "weight": 0}, "q7":{"answer":[1], "weight": 5}, "q8":{"answer":[4], "weight": 5}, "q9":{"answer":[3], "weight": 5}}
+	},
+	{"name":"Strongly Disagree important", "cid":"109000795", 
+		"classic_answers": {"q0":{"answer":-2, "weight":0.5, "comment":""},"q1":{"answer":-2, "weight":1.5, "comment":""},"q2":{"answer":-2, "weight":0.5, "comment":""},"q3":{"answer":-2, "weight":1.5, "comment":""},"q4":{"answer":-2, "weight":0.5, "comment":""},"q5":{"answer":-2, "weight":0.5, "comment":""},"q6":{"answer":-2, "weight":2, "comment":""},"q7":{"answer":-2, "weight":1, "comment":""},"q8":{"answer":-2, "weight":1, "comment":""}},
+		"okc_answers":{"q0":{"answer":[2], "weight": 10}, "q1":{"answer":[2], "weight": 1}, "q2":{"answer":[3], "weight": 10}, "q3":{"answer":[1], "weight": 50}, "q4":{"answer":[2], "weight": 1}, "q5":{"answer":[2], "weight": 1}, "q6":{"answer":[3], "weight": 0}, "q7":{"answer":[1], "weight": 5}, "q8":{"answer":[3], "weight": 5}, "q9":{"answer":[3], "weight": 10}}
+	},
+	{"name":"Mister Mix", "cid":"109000795", 
+		"classic_answers": {"q0":{"answer":-2, "weight":0.5, "comment":""},"q1":{"answer":2, "weight":1.5, "comment":""},"q2":{"answer":0, "weight":0.5, "comment":""},"q3":{"answer":-1, "weight":1.5, "comment":""},"q4":{"answer":-1, "weight":0.5, "comment":""},"q5":{"answer":1, "weight":0.8, "comment":""},"q6":{"answer":2, "weight":1.7, "comment":""},"q7":{"answer":1, "weight":1.3, "comment":""},"q8":{"answer":-1, "weight":0.7, "comment":""}},
+		"okc_answers":{"q0":{"answer":[1], "weight": 50}, "q1":{"answer":[3], "weight": 1}, "q2":{"answer":[3], "weight": 10}, "q3":{"answer":[3], "weight": 50}, "q4":{"answer":[2], "weight": 1}, "q5":{"answer":[3], "weight": 1}, "q6":{"answer":[3], "weight": 0}, "q7":{"answer":[4], "weight": 5}, "q8":{"answer":[1], "weight": 10}, "q9":{"answer":[2], "weight": 50}}
+	}	
 ];
 
 var matchOKCQuestions = [0,1,2,3,5,6,7,8,9];
@@ -157,7 +191,7 @@ var language = 0;
 			<span class="verygood">Perfect match</span>
 		</div>
 	</div>
-	<a href="#" class="btn pull-right" onclick="toggleCandidates();return false;" id="showexcess">&laquo; Hide results </a>
+	<a href="#" class="btn pull-right" onclick="toggleCandidates();return false;" id="showexcess">Show all candidates &raquo;</a>
 	<div>
 		<a href="#" class="btn" onclick="toggleButtonPanel('questionbuttons');">Question options</a> <a href="#" class="btn" onclick="toggleButtonPanel('candidatebuttons');">Candidate options</a> <?php if(isset($_POST["q0"])) echo '<a href="#" class="btn" onclick="toggleUser();" id="showuser">Show my answers</a>'; ?>
 		<div class="buttonholder">
