@@ -233,9 +233,6 @@ var language = 0;
 <div style="display:none;">
 
 </div>
-<?php print_r($_POST); 
-echo "<br>";
-print_r($_POST["ans_2"]);?>
 <script src="js/compare.js"></script>
 <script src="js/vendor/opentip-jquery.js"></script>
 

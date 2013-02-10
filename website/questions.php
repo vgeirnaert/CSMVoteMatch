@@ -67,7 +67,7 @@ class Questions {
 			 '<td class="answer"><input type="radio" name="q' . $i . '" value="NO" checked /></td>' .
 			 '<td class="answer"><input type="radio" name="q' . $i . '" value="A" /></td>' .
 			 '<td class="answer"><input type="radio" name="q' . $i . '" value="SA" /></td>' .
-			 '<td class="answer"><a href="#" onclick="decrementWeight(' . $i . '); return false;" class="btn btnsmall">-</a><input type="text" name="q' . $i . '_weight" value="1" width="2" onchange="changeValue(' . $i . ');" class="noEnterSubmit" /><a href="#" onclick="incrementWeight(' . $i . '); return false;" class="btn btnsmall">+</a></td></tr>';
+			 '<td class="answer"><a href="#" onclick="decrementWeight(' . $i . '); return false;" class="btn btnsmall">-</a><input type="text" class="tiny" name="q' . $i . '_weight" value="1" width="2" onchange="changeValue(' . $i . ');" class="noEnterSubmit" /><a href="#" onclick="incrementWeight(' . $i . '); return false;" class="btn btnsmall">+</a></td></tr>';
 		}
 	}
 	

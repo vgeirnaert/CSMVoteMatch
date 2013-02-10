@@ -212,7 +212,7 @@ div.buttonholder {
 	position: relative;
 }
 
-input[type="text"] {
+input.tiny {
 	width: 20px;
 	padding: 2px;
 	margin: 2px;

@@ -73,6 +73,7 @@ if(!isset($pagetitle))
 									<li><a href="faq.php#contact">How do I contact the Vote Match admin?</a></li>
                                 </ul>
                             </li>
+							<li><a href="login.php">Candidate login</a></li>
                         </ul>
                     </div><!--/.nav-collapse -->
                 </div>
