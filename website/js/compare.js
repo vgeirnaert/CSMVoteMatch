@@ -126,7 +126,7 @@ function matchCandidate(user, comparer, candidateIndex) {
 	var maxUserScore = 0;
 	var okcScoreC = 0;
 	var maxCandidateScore = 0;
-	for(var i = 0; i < matchOKCQuestions .length; i++) {
+	for(var i = 0; i < matchOKCQuestions.length; i++) {
 		var userAnswer = user.okc_answers[getQuestionKey(matchOKCQuestions[i])]["answer"];
 		var userWeight = user.okc_answers[getQuestionKey(matchOKCQuestions[i])]["weight"];
 		var candidateAnswer = candidate.okc_answers[getQuestionKey(matchOKCQuestions[i])]["answer"];
@@ -296,7 +296,7 @@ function makeOKCRow(matches, row, offset) {
 		
 		background = getBackgroundOKC( (matches[i]).okc_score[getQuestionKey(question)].userScore, (matches[i]).okc_score[getQuestionKey(question)].maxUserScore , (matches[i]).okc_score[getQuestionKey(question)].candidateScore , (matches[i]).okc_score[getQuestionKey(question)].maxCandidateScore );
 		
-		html = html + "<td class=\"answer " + tclass + " " + background + "\">" + "</td>";
+		html = html + "<td class=\"answer " + tclass + " " + background + "\">" + getOKCCellContents( question, (candidates[(matches[i])["candidate"]]).okc_answers[getQuestionKey(question)]["answer"][0], (matches[i])["candidate"]) + "</td>";
 	}
 	
 	html = html + "</tr>";
@@ -434,6 +434,10 @@ function getCellContents(vote, weight, comment, name) {
 	html = html + '</div>';
 		
 	return html;
+}
+
+function getOKCCellContents(questionId, optionId, candidateId) {
+	return okc_questions[questionId].question[language];
 }
 
 function getEvenRow(row) {

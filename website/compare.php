@@ -43,7 +43,29 @@ function makeClassicAnswers() {
 }
 
 function makeOKCAnswers() {
-	return '"okc_answers":{"q0":{"answer":[1, 2], "weight": 50}, "q1":{"answer":[3], "weight": 1}, "q2":{"answer":[1,3], "weight": 10}, "q3":{"answer":[4], "weight": 50}, "q4":{"answer":[2], "weight": 1}, "q5":{"answer":[1,2], "weight": 1}, "q6":{"answer":[3], "weight": 0}, "q7":{"answer":[1,4], "weight": 5}, "q8":{"answer":[2,4], "weight": 5}, "q9":{"answer":[2,3], "weight": 10}} },';
+	$id_array = unserialize($_POST["ids"]);
+	
+	$line = '"okc_answers":{';
+	for($i = 0; $i < count($id_array); $i++) {
+		$id = $id_array[$i];
+		$answer_array =  $_POST["ans_" . $id];
+		$answer = "[]";
+		$weight = parseOKCWeight("ni");
+		
+		if(is_array($answer_array)) {
+			$answer = "[" . implode(",", $answer_array) . "]";
+			$weight = parseOKCWeight($_POST["imp_" . $id]);
+		}
+		
+		if($i > 0 )
+			$line .= ", ";
+		
+		$line .= '"q' . $id . '":{"answer":' . $answer . ', "weight":' . $weight . ', "comment":""}';
+	}
+	
+	$line .= '} },';
+	return $line;
+	
 }
 
 // change text code for answer to numeric answer value
@@ -155,7 +177,7 @@ var candidates = [
 	}	
 ];
 
-var matchOKCQuestions = [0,1,2,3,5,6,7,8,9];
+var matchOKCQuestions = [1,2,3,5,6,7,8,9];
 
 var matchCandidates = [];
 
@@ -211,7 +233,9 @@ var language = 0;
 <div style="display:none;">
 
 </div>
-<?php print_r($_POST); ?>
+<?php print_r($_POST); 
+echo "<br>";
+print_r($_POST["ans_2"]);?>
 <script src="js/compare.js"></script>
 <script src="js/vendor/opentip-jquery.js"></script>
 

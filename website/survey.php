@@ -62,6 +62,7 @@ Questions::printClassicQuestionTable();
 Questions::initOKCQuestions();
 Questions::closeDB();
 echo Questions::getOKCHTML(); 
+echo Questions::getOKCIds();
 ?>
 		</div>
 		<br>

@@ -6,39 +6,43 @@ class Questions {
 	private static $question_string = NULL;
 	private static $okc_question_string = NULL;
 	private static $okc_html_string = NULL;
+	private static $question_ids = array();
 
 	static function getClassicQuestionsArray() {	
 		return self::$question_string;
 	}
 
 	static function initClassicQuestions() {		
-		$mysqli = VotematchDB::getConnection();
+	
+		if($okc_question_string == NULL) {
+			$mysqli = VotematchDB::getConnection();
 
-		if (mysqli_connect_errno()) {
-			echo '<p><h2>Error connecting to database:</h2>' . mysqli_connect_error() . '</p>';
-		} else {
-			$stmt = $mysqli->prepare("SELECT id, question_en, question_rus, question_ger, question_jp FROM classic_questions AS q WHERE q.election_id = ? ORDER BY q.id ASC");
-			$election = Config::active_election;
-			$stmt->bind_param("i", $election);
-			$stmt->execute();
+			if (mysqli_connect_errno()) {
+				echo '<p><h2>Error connecting to database:</h2>' . mysqli_connect_error() . '</p>';
+			} else {
+				$stmt = $mysqli->prepare("SELECT id, question_en, question_rus, question_ger, question_jp FROM classic_questions AS q WHERE q.election_id = ? ORDER BY q.id ASC");
+				$election = Config::active_election;
+				$stmt->bind_param("i", $election);
+				$stmt->execute();
 
-			$stmt->bind_result($id, $en, $rus, $ger, $jp);
+				$stmt->bind_result($id, $en, $rus, $ger, $jp);
 
-			self::$question_string = 'var questions = [';
+				self::$question_string = 'var questions = [';
 
-			$comma = "";
-			$num_questions = 0;
-			while($stmt->fetch()) {
-				self::$question_string = self::$question_string . "$comma [\"$en\", \"$ger\", \"$rus\", \"$jp\"]";
-				$comma = ",\n";
-				$num_questions++;
+				$comma = "";
+				$num_questions = 0;
+				while($stmt->fetch()) {
+					self::$question_string = self::$question_string . "$comma [\"$en\", \"$ger\", \"$rus\", \"$jp\"]";
+					$comma = ",\n";
+					$num_questions++;
+				}
+				
+				self::$number_of_questions = $num_questions;
+
+				self::$question_string = self::$question_string . '];';
+
+				$stmt->close();
 			}
-			
-			self::$number_of_questions = $num_questions;
-
-			self::$question_string = self::$question_string . '];';
-
-			$stmt->close();
 		}
 	}
 	
@@ -72,40 +76,44 @@ class Questions {
 	}
 	
 	static function initOKCQuestions() {
-		$mysqli = VotematchDB::getConnection();
-		
-		if (mysqli_connect_errno()) {
-			echo '<p><h2>Error connecting to database:</h2>' . mysqli_connect_error() . '</p>';
-		} else {
-			$stmt = $mysqli->prepare("SELECT q.id, q.question_en, q.question_rus, q.question_ger, q.question_jp, o.option_en, o.option_rus, o.option_ger, o.option_jp, o.question_id, o.id FROM okc_questions AS q LEFT JOIN okc_options AS o ON o.question_id = q.id WHERE q.election_id = ? ORDER BY q.id ASC");
-			$election = Config::active_election;
-			$stmt->bind_param("i", $election);
-			$stmt->execute();
+		if($okc_html_string == NULL) {
+			$mysqli = VotematchDB::getConnection();
+			
+			if (mysqli_connect_errno()) {
+				echo '<p><h2>Error connecting to database:</h2>' . mysqli_connect_error() . '</p>';
+			} else {
+				$stmt = $mysqli->prepare("SELECT q.id, q.question_en, q.question_rus, q.question_ger, q.question_jp, o.option_en, o.option_rus, o.option_ger, o.option_jp, o.question_id, o.id FROM okc_questions AS q LEFT JOIN okc_options AS o ON o.question_id = q.id WHERE q.election_id = ? ORDER BY q.id ASC");
+				$election = Config::active_election;
+				$stmt->bind_param("i", $election);
+				$stmt->execute();
 
-			$stmt->bind_result($id, $q_en, $q_rus, $q_ger, $q_jp, $o_en, $o_rus, $o_ger, $o_jp, $qid, $optionid);
+				$stmt->bind_result($id, $q_en, $q_rus, $q_ger, $q_jp, $o_en, $o_rus, $o_ger, $o_jp, $qid, $optionid);
+				
+				$okc_js_array = "[";
+				$okc_html = "";
+				
+				$current_id = "-1";
+				$count = -1;
+				while($stmt->fetch()) {
+					if($current_id != $qid) {
+						array_push(self::$question_ids, $qid);
+						$count++;
+					}
+						
+					$okc_js_array .= self::addToJsArray($current_id, $qid, $q_en, $q_ger, $q_rus, $q_jp, $o_en, $o_ger, $o_rus, $o_jp);
+					$okc_html .= self::addToHtml($current_id, $qid, $q_en, $q_ger, $q_rus, $q_jp, $o_en, $o_ger, $o_rus, $o_jp, $count, $optionid);
+					$current_id = $qid;
+				}
+				
+				// we're finished, add closing brackets for last object and final array closing bracket
+				$okc_js_array .= " ]\n\t}\n];";
+				$okc_html .= self::completeHtmlDiv($qid);
 			
-			$okc_js_array = "[";
-			$okc_html = "";
-			
-			$current_id = "-1";
-			$count = -1;
-			while($stmt->fetch()) {
-				if($current_id != $qid)
-					$count++;
-					
-				$okc_js_array .= self::addToJsArray($current_id, $qid, $q_en, $q_ger, $q_rus, $q_jp, $o_en, $o_ger, $o_rus, $o_jp);
-				$okc_html .= self::addToHtml($current_id, $qid, $q_en, $q_ger, $q_rus, $q_jp, $o_en, $o_ger, $o_rus, $o_jp, $count, $optionid);
-				$current_id = $qid;
+				self::$okc_question_string = $okc_js_array;
+				self::$okc_html_string = $okc_html;
+				
+				$stmt->close();
 			}
-			
-			// we're finished, add closing brackets for last object and final array closing bracket
-			$okc_js_array .= " ]\n\t}\n];";
-			$okc_html .= self::completeHtmlDiv($qid);
-		
-			self::$okc_question_string = $okc_js_array;
-			self::$okc_html_string = $okc_html;
-			
-			$stmt->close();
 		}
 	}
 	
@@ -167,6 +175,10 @@ class Questions {
 	
 	static function getOKCHTML() {
 		return self::$okc_html_string;
+	}
+	
+	static function getOKCIds() {
+		return '<input type="hidden" name="ids" value="' . serialize(self::$question_ids) . '" />';
 	}
 }
 ?>
