@@ -12,12 +12,15 @@ function disconnectDB($mysqli) {
 
 class VotematchDB {
 	private static $conn = NULL;
+	private static $numconn = 0;
 	
 	public static function getConnection() {
 		// if the connection isn't set yet
 		if(self::$conn == NULL) {
 			self::$conn = self::connectDB(); // connect
 		}
+		
+		self::$numconn++;
 		
 		return self::$conn;
 	}
@@ -40,9 +43,10 @@ class VotematchDB {
 		// if it's an object
 		if(self::$conn != null) {
 			// and if the connection exists without error AND if we have no other open connections anymore
-			if(!self::$conn->connect_errno) {
+			if(!self::$conn->connect_errno && self::$numconn < 1) {
 				// close it
 				self::$conn->close();
+				self::$numconn--;
 			}
 		}
 	}

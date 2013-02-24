@@ -6,7 +6,7 @@
 <br>
 <div class="row rounded">
 	<h1>Login</h1>
-	<form method="post" action="editcandidate.php" name="loginform">
+	<form method="post" action="processlogin.php" name="loginform">
 	<div class="span12">
 		<div class="span2">
 			Character name
@@ -23,7 +23,7 @@
 			<input type="password" name="password">
 		</div>
 	</div>
-	<input type="Submit" class="btn" onClick="javascript: submitform(); return false;">
+	<input type="Submit" class="btn" onclick="javascript: submitform(); return false;" value="Log in">
 	</form>
 </div>
 <script type="text/javascript">

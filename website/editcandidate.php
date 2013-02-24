@@ -1,98 +1,27 @@
 <?php 
-require_once 'database.php';
+session_start();
 
-$mysqli = VotematchDB::getConnection();
+if(isset($_SESSION["cdata"])) {
+	$cdetails = $_SESSION["cdata"];
 	
-if (mysqli_connect_errno()) {
-	echo '<p><h2>Error connecting to database:</h2>' . mysqli_connect_error() . '</p>';
-} else {
+	$pagetitle = $cdetails["charname"] . " for CSM - Eve Vote Match 2.0";
 
-	if(isset($_POST["username"]) && isset($_POST["password"])) {
-	
-		$username = $_POST["username"];
-		$password = $_POST["password"];
-		// get candidate details
-		$stmt = $mysqli->prepare("SELECT c.id, c.website, c.thread, c.twitter, c.char_id, c.char_name, c.corp_name, c.alliance_name, c.real_name, c.real_location, c.real_age, c.real_occupation, c.played_since, c.flies_in, c.playstyle, c.can_evemail, c.can_convo, c.email, c.campaign_statement, c.experience_eve, c.experience_real, h.csm FROM candidates AS c LEFT JOIN csm_history AS h ON c.char_id = h.character_id WHERE c.username = ? AND c.password = ?");
-		$stmt->bind_param("ss", $username, $password);
-		$stmt->execute();
-
-		$stmt->bind_result($id, $website, $thread, $twitter, $charid, $charname, $corpname, $alliancename, $realname, $realloc, $realage, $realocc, $played, $flies, $playstyle, $bevemail, $bconvo, $email, $campaignstmt, $eveexp, $realexp, $csm);
-		
-		$cdetails = array();
-		$csmarray = array();
-		$recordfound = false;
-		while($stmt->fetch()) {
-			$recordfound = true;
-			if(count($cdetails) == null) {
-				$cdetails["id"] = $id;
-				$cdetails["website"] = $website;
-				$cdetails["thread"] = $thread;
-				$cdetails["twitter"] = htmlspecialchars($twitter);
-				$cdetails["charid"] = htmlspecialchars($charid);
-				$cdetails["charname"] = htmlspecialchars($charname);
-				$cdetails["corpname"] = htmlspecialchars($corpname);
-				$cdetails["alliancename"] = htmlspecialchars($alliancename);
-				$cdetails["realname"] = htmlspecialchars($realname);
-				$cdetails["realloc"] = htmlspecialchars($realloc);
-				$cdetails["realage"] = htmlspecialchars($realage);
-				$cdetails["realocc"] = htmlspecialchars($realocc);
-				$cdetails["played"] = htmlspecialchars($played);
-				$cdetails["flies"] = htmlspecialchars($flies);
-				$cdetails["playstyle"] = htmlspecialchars($playstyle);
-				$cdetails["bevemail"] = htmlspecialchars($bevemail);
-				$cdetails["bconvo"] = htmlspecialchars($bconvo);
-				$cdetails["email"] = htmlspecialchars($email);
-				$cdetails["statement"] = htmlspecialchars($campaignstmt);
-				$cdetails["eveexp"] = htmlspecialchars($eveexp);
-				$cdetails["realexp"] = htmlspecialchars($realexp);
-				
-				if($csm != 0)
-					array_push($csmarray, $csm);
-			} else {
-				if($csm != 0)
-					array_push($csmarray, $csm);
-			}
-		}
-		
-		$cdetails["csm"] = $csmarray;
-		
-		$stmt->close();
-		
-		if($recordfound) {
-		
-			// get open questions and answers
-			$stmt = $mysqli->prepare("SELECT q.question, a.answer FROM open_questions AS q LEFT JOIN open_answers AS a ON q.id = a.question_id WHERE q.election_id = ? AND a.candidate_id = ? ORDER BY q.id");
-			
-			$election = Config::active_election;
-			$stmt->bind_param("ii", $election, $cdetails["id"]);
-			
-			$stmt->execute();
-			
-			$stmt->bind_result($question, $answer);
-			
-			$questions = array();
-			while($stmt->fetch()) {
-				array_push($questions, array("question"=>$question, "answer"=>htmlspecialchars($answer)));
-			}
-			
-			$stmt->close();
-	
-			$pagetitle = $cdetails["charname"] . " for CSM - Eve Vote Match 2.0";
-
-			include 'header.php'; 
+	include 'header.php'; 
 ?>
 <div class="row inverted rounded">
 	<h1>Edit candidate: <?php echo $cdetails["charname"]; ?></h1>
 </div>
 <br>
 <div class="row rounded">
-	<form>
+	<form name="candidatedetails" method="post" action="processcandidate.php">
+	<div class="span11 coverview rounded">
+		<a href="editquestions.php" class="btn btn-large btn-primary">&laquo; Click here to set or change your answers to the questionnaire</a>
+		<a href="processlogin.php" class="btn btn-large btn-danger pull-right">Log out</a>
+	</div>
 	<div class="span5 coverview rounded pull-right">
 		<img src="https://image.eveonline.com/Character/<?php echo $cdetails["charid"]; ?>_512.jpg" />
 	</div>
-	<div class="span6 coverview rounded">
-		<a href="editquestions.php" class="btn btn-large btn-primary">&laquo; Click here to set or change your answers to the questionnaire</a>
-	</div>
+	
 	<div class="span6 coverview rounded">
 		<h2>In Eve Online</h2>
 		<div class="span6">
@@ -141,7 +70,35 @@ if (mysqli_connect_errno()) {
 				Playing since
 			</div>
 			<div class="span4 bold">
-				<input type="text" value="<?php echo $cdetails["played"]; ?>">
+				<input type="text" value="<?php echo $cdetails["played"]; ?>" name="playsince" placeholder="YYYY-MM-DD">
+			</div>
+		</div>
+		<div class="span6">
+			<div class="span2">
+				You fly most in
+			</div>
+			<div class="span4 bold">
+				<select name="playspace" class="span3">
+					<option value="1" <?php if($cdetails["flies"] == "high") echo "selected";?>>High sec</option>
+					<option value="2" <?php if($cdetails["flies"] == "low") echo "selected";?>>Low sec</option>
+					<option value="3" <?php if($cdetails["flies"] == "null") echo "selected";?>>0.0</option>
+					<option value="4" <?php if($cdetails["flies"] == "wh") echo "selected";?>>W-space</option>
+				</select>
+			</div>
+		</div>
+		<div class="span6">
+			<div class="span2">
+				Your <i>main</i> playstyle is
+			</div>
+			<div class="span4 bold">
+				<select name="playstyle" class="span3">
+					<option value="1" <?php if($cdetails["playstyle"] == "pvp") echo "selected";?>>PvP (solo combat, fleet ops, etc)</option>
+					<option value="2" <?php if($cdetails["playstyle"] == "pve") echo "selected";?>>PvE (missions, exploration, ratting, etc)</option>
+					<option value="3" <?php if($cdetails["playstyle"] == "ind") echo "selected";?>>Industry (mining, manufacturing, trading, etc)</option>
+					<option value="4" <?php if($cdetails["playstyle"] == "ldr") echo "selected";?>>Leadership (corp/alliance managment, etc)</option>
+					<option value="5" <?php if($cdetails["playstyle"] == "meta") echo "selected";?>>Metagaming (scamming, espionage, etc)</option>
+					<option value="6" <?php if($cdetails["playstyle"] == "oth") echo "selected";?>>Other</option>
+				</select>
 			</div>
 		</div>
 	</div>
@@ -152,7 +109,7 @@ if (mysqli_connect_errno()) {
 				Name
 			</div>
 			<div class="span4 bold">
-				<input type="text" value="<?php echo $cdetails["realname"]; ?>">
+				<input type="text" value="<?php echo $cdetails["realname"]; ?>" name="rlname">
 			</div>
 		</div>
 		<div class="span6">
@@ -160,7 +117,7 @@ if (mysqli_connect_errno()) {
 				Location
 			</div>
 			<div class="span4 bold">
-				<input type="text" value="<?php echo $cdetails["realloc"]; ?>">
+				<input type="text" value="<?php echo $cdetails["realloc"]; ?>" name="rllocation">
 			</div>
 		</div>
 		<div class="span6">
@@ -168,7 +125,7 @@ if (mysqli_connect_errno()) {
 				Occupation
 			</div>
 			<div class="span4 bold">
-				<input type="text" value="<?php echo $cdetails["realocc"]; ?>">
+				<input type="text" value="<?php echo $cdetails["realocc"]; ?>" name="rljob">
 			</div>
 		</div>
 		<div class="span6">
@@ -176,15 +133,13 @@ if (mysqli_connect_errno()) {
 				Age
 			</div>
 			<div class="span4 bold">
-				<input type="text" value="<?php echo $cdetails["realage"]; ?>">
+				<input type="text" value="<?php echo $cdetails["realage"]; ?>" name="rlage">
 			</div>
 		</div>
 	</div>
 	<div class="span6 coverview rounded">
 		<h2>Campaign statement</h2>
-		<textarea style="width: 95%" rows="10">
-		<?php echo $cdetails["statement"]; ?>
-		</textarea>
+		<textarea style="width: 95%" rows="10" name="campaign"><?php echo $cdetails["statement"]; ?></textarea>
 	</div>
 	<div class="span5 coverview rounded pull-right">
 		<h2>Contact information</h2>
@@ -193,7 +148,7 @@ if (mysqli_connect_errno()) {
 				Website URL
 			</div>
 			<div class="span3">
-				<input type="text" value="<?php echo $cdetails["website"]; ?>">
+				<input type="text" value="<?php echo $cdetails["website"]; ?>" name="url">
 			</div>
 		</div>
 		<div class="span5">
@@ -201,7 +156,7 @@ if (mysqli_connect_errno()) {
 				Twitter name
 			</div>
 			<div class="span3">
-				<input type="text" value="<?php echo $cdetails["twitter"]; ?>">				
+				<input type="text" value="<?php echo $cdetails["twitter"]; ?>" name="twitter">				
 			</div>
 		</div>
 		<div class="span5">
@@ -209,7 +164,7 @@ if (mysqli_connect_errno()) {
 				Campaign thread URL
 			</div>
 			<div class="span3">
-				<input type="text" value="<?php echo $cdetails["thread"]; ?>">
+				<input type="text" value="<?php echo $cdetails["thread"]; ?>" name="thread">
 			</div>
 		</div>
 		<div class="span5">
@@ -217,7 +172,7 @@ if (mysqli_connect_errno()) {
 				Can users evemail you
 			</div>
 			<div class="span3 bold">
-				<label for="evemail" class="checkbox"><input type="checkbox" id="evemail" <?php if($cdetails["bevemail"]) echo 'checked'; ?>>Yes</label>
+				<label for="evemail" class="checkbox"><input type="checkbox" id="evemail" <?php if($cdetails["bevemail"]) echo 'checked'; ?> name="canevemail">Yes</label>
 			</div>
 		</div>
 		<div class="span5">
@@ -225,7 +180,7 @@ if (mysqli_connect_errno()) {
 				Can users convo you
 			</div>
 			<div class="span3 bold">
-				<label for="convo" class="checkbox"><input type="checkbox" id="convo" <?php if($cdetails["bconvo"]) echo 'checked'; ?>>Yes</label>
+				<label for="convo" class="checkbox"><input type="checkbox" id="convo" <?php if($cdetails["bconvo"]) echo 'checked'; ?> name="canconvo">Yes</label>
 			</div>
 		</div>
 		<div class="span5">
@@ -233,31 +188,29 @@ if (mysqli_connect_errno()) {
 				Public email address
 			</div>
 			<div class="span3">
-				<input type="text" value="<?php echo $cdetails["email"]; ?>">				
+				<input type="text" value="<?php echo $cdetails["email"]; ?>" name="email">				
 			</div>
 		</div>
 	</div>
 	<div class="span6 coverview rounded">
 		<h2>Experience in Eve</h2>
-		<textarea style="width: 95%" rows="10">
-		<?php echo $cdetails["eveexp"]; ?>
-		</textarea>
+		<textarea style="width: 95%" rows="10" name="eveexp"><?php echo $cdetails["eveexp"]; ?></textarea>
 	</div>
 	<div class="span5 coverview rounded pull-right">
 		<h2>Real life experience</h2>
-		<textarea style="width: 95%" rows="10">
-		<?php echo $cdetails["realexp"]; ?>
-		</textarea>
+		<textarea style="width: 95%" rows="10" name="rlexp"><?php echo $cdetails["realexp"]; ?></textarea>
 	</div>
 
 	<div class="span11 coverview rounded">
 		<h2>Questions</h2>
 		<?php
+			$questions = $cdetails["questions"];
+			
 			for($i = 0; $i < count($questions); $i++) {
 				$qtuple = $questions[$i];
 				
 				echo '<h3>' . $qtuple["question"] . '</h3>';
-				echo '<textarea style="width: 95%" rows="5">';
+				echo '<textarea style="width: 95%" rows="5" name="question_' . $qtuple["qid"] . '">';
 				echo $qtuple["answer"];
 				echo '</textarea>';
 			}
@@ -265,25 +218,37 @@ if (mysqli_connect_errno()) {
 		
 	</div>
 	<div class="span11 coverview rounded">
-			<input type="submit" style="font-size:30px; line-height: 60px;" class="btn btn-warning pull-right" value="Submit changes">
+		<a href="#" style="font-size:30px; line-height: 60px;" class="btn btn-warning pull-right" onclick="javascript: submitform(); return false;">Submit changes</a>
 	</div>
 	</form>
 </div>
-<?php	
-			include 'footer.php'; 
-		} else {
-			postFail();
-		}
-	} else {
-		postFail();
-	}
+<script type="text/javascript">
+function submitform() {
+	var errorString = "";
+	
+	if(invalidDate(document.candidatedetails.playsince.value))
+		errorString += "'Playing since' input (" + document.candidatedetails.playsince.value + ") is incorrect (required date format is YYYY-MM-DD)\n\n";
+		
+	if(invalidAge(document.candidatedetails.rlage.value))
+		errorString += "'Age' input (" + document.candidatedetails.rlage.value + ") is incorrect\n\n";
+		
+	if(errorString.length == 0)
+		document.candidatedetails.submit();
+	else
+		alert(errorString + "Please provide correct input and submit again.");
 }
 
+function invalidDate(date) {
+	var datepattern = new RegExp("^20\\d\\d-\\d\\d-\\d\\d$", "gi");
+	return !datepattern.test(date)
+}
 
-VotematchDB::close();
-
-function postFail() {
-	include 'header.php'; 
-	echo '<div class="row inverted rounded"><h1>Candidate not found</h1></div><br><div class="row rounded">You can retry logging in <a href="login.php">here</a>.</div>';
+function invalidAge(age) {
+	var datepattern = new RegExp("^\\d+$", "gi");
+	return !datepattern.test(age)
+}
+</script>
+<?php	
 	include 'footer.php'; 
-}?>
+}
+?>
