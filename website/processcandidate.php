@@ -75,7 +75,18 @@ if (mysqli_connect_errno()) {
 		
 		$stmt->close();
 		
-		header("Location: candidate.php?id=$userid");
+		include 'header.php';
+?>
+<div class="row inverted rounded">
+	<h1>Success!</h1>
+</div>
+<br>
+<div class="row rounded">
+	Details entered succesfully!</br><br/>
+	Click <a href="editcandidate.php">here</a> to return to your profile.
+</div>
+<?php
+		include 'footer.php';
 	} 
 }
 
@@ -107,7 +118,6 @@ function validateDate($date) {
 	$timestamp = strtotime($date);
 	
 	if($timestamp != false) {
-		echo "boooooooo!";
 		return date("Y-m-d", $timestamp);
 		}
 		

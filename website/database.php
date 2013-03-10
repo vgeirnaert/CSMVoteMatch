@@ -41,12 +41,14 @@ class VotematchDB {
 	//========================================================
 	public static function close() {
 		// if it's an object
-		if(self::$conn != null) {
+		if(self::$conn != NULL) {
+			self::$numconn--;
 			// and if the connection exists without error AND if we have no other open connections anymore
 			if(!self::$conn->connect_errno && self::$numconn < 1) {
 				// close it
 				self::$conn->close();
-				self::$numconn--;
+				self::$conn = NULL;
+				
 			}
 		}
 	}

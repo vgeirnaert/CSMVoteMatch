@@ -2,7 +2,7 @@
 require_once 'questions.php';
 
 Questions::initClassicQuestions();
-Questions::initOKCQuestions();
+Questions::initOKCQuestions(false);
 Questions::closeDB();
 
 // code to handle the user supplied answers if he came here from survey.php

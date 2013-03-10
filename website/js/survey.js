@@ -148,3 +148,19 @@ function validateForm() {
 	
 	return true;
 }
+
+function onImportanceChanged(name, element) {
+
+	if(element.value == "ni") {
+		$('[name="' + name + '"]').prop('disabled', true);
+	} else {
+		$('[name="' + name + '"]').prop('disabled', false);
+		
+		var selected = $('[name="' + name + '"]:checked');
+		
+		if(selected.length == 0) {
+			alert('Please select an answer before setting it\'s importance');
+			element.selectedIndex = 0;
+		}
+	}
+}

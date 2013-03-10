@@ -7,6 +7,7 @@ class Questions {
 	private static $okc_question_string = NULL;
 	private static $okc_html_string = NULL;
 	private static $question_ids = array();
+	private static $classic_questions = array();
 
 	static function getClassicQuestionsArray() {	
 		return self::$question_string;
@@ -14,7 +15,7 @@ class Questions {
 
 	static function initClassicQuestions() {		
 	
-		if($okc_question_string == NULL) {
+		if(self::$question_string == NULL) {
 			$mysqli = VotematchDB::getConnection();
 
 			if (mysqli_connect_errno()) {
@@ -34,7 +35,9 @@ class Questions {
 				while($stmt->fetch()) {
 					self::$question_string = self::$question_string . "$comma [\"$en\", \"$ger\", \"$rus\", \"$jp\"]";
 					$comma = ",\n";
+					self::$classic_questions[$num_questions] = $id;
 					$num_questions++;
+					
 				}
 				
 				self::$number_of_questions = $num_questions;
@@ -46,11 +49,19 @@ class Questions {
 		}
 	}
 	
+	static function getIdForQuestion($i) {
+		self::initClassicQuestions();
+		
+		return self::$classic_questions[$i];
+	}
+	
 	static function getNumClassicQuestions() {
+		self::initClassicQuestions();
+		
 		return self::$number_of_questions;
 	}
 	
-	static function printClassicQuestionTable() {
+	static function printClassicQuestionTable($showComments) {
 		for($i = 0; $i < Questions::getNumClassicQuestions(); $i++) {
 			$even = $i % 2;
 			
@@ -61,13 +72,16 @@ class Questions {
 			else
 				$tr_class = $tr_class . "uneven";
 			
-			echo '<tr class="' . $tr_class . '"><td class="question"></td>' .
+			echo '<tr class="' . $tr_class . '" data-toggle="collapse" data-target="#r' . $i . '"><td class="question"></td>' .
 			 '<td class="answer"><input type="radio" name="q' . $i . '" value="SD" /></td>' .
 			 '<td class="answer"><input type="radio" name="q' . $i . '" value="D" /></td>' .
 			 '<td class="answer"><input type="radio" name="q' . $i . '" value="NO" checked /></td>' .
 			 '<td class="answer"><input type="radio" name="q' . $i . '" value="A" /></td>' .
 			 '<td class="answer"><input type="radio" name="q' . $i . '" value="SA" /></td>' .
 			 '<td class="answer"><a href="#" onclick="decrementWeight(' . $i . '); return false;" class="btn btnsmall">-</a><input type="text" class="tiny" name="q' . $i . '_weight" value="1" width="2" onchange="changeValue(' . $i . ');" class="noEnterSubmit" /><a href="#" onclick="incrementWeight(' . $i . '); return false;" class="btn btnsmall">+</a></td></tr>';
+			 
+			 if($showComments)
+				echo '<tr><td colspan="7"><div class="collapse" id="r' . $i . '"><input type="text" class="span9" name="c' . $i . '" placeholder="You can explain your answer here"/></div></td></tr>';
 		}
 	}
 	
@@ -75,8 +89,8 @@ class Questions {
 		
 	}
 	
-	static function initOKCQuestions() {
-		if($okc_html_string == NULL) {
+	static function initOKCQuestions($showComments) {
+		if(self::$okc_html_string == NULL) {
 			$mysqli = VotematchDB::getConnection();
 			
 			if (mysqli_connect_errno()) {
@@ -101,13 +115,13 @@ class Questions {
 					}
 						
 					$okc_js_array .= self::addToJsArray($current_id, $qid, $q_en, $q_ger, $q_rus, $q_jp, $o_en, $o_ger, $o_rus, $o_jp);
-					$okc_html .= self::addToHtml($current_id, $qid, $q_en, $q_ger, $q_rus, $q_jp, $o_en, $o_ger, $o_rus, $o_jp, $count, $optionid);
+					$okc_html .= self::addToHtml($current_id, $qid, $q_en, $q_ger, $q_rus, $q_jp, $o_en, $o_ger, $o_rus, $o_jp, $count, $optionid, $showComments);
 					$current_id = $qid;
 				}
 				
 				// we're finished, add closing brackets for last object and final array closing bracket
 				$okc_js_array .= " ]\n\t}\n];";
-				$okc_html .= self::completeHtmlDiv($qid);
+				$okc_html .= self::completeHtmlDiv($qid, $showComments);
 			
 				self::$okc_question_string = $okc_js_array;
 				self::$okc_html_string = $okc_html;
@@ -142,29 +156,44 @@ class Questions {
 		return $okc_js_array;
 	}
 	
-	static function addToHtml($current_id, $qid, $q_en, $q_ger, $q_rus, $q_jp, $o_en, $o_ger, $o_rus, $o_jp, $i, $optionid) {
+	static function addToHtml($current_id, $qid, $q_en, $q_ger, $q_rus, $q_jp, $o_en, $o_ger, $o_rus, $o_jp, $i, $optionid, $showComments) {
 		$html = "";
 		if($current_id != $qid) {
 			// complete previous div unless this is the very first div in the series
 			if($current_id != -1) {
-				$html .= self::completeHtmlDiv($current_id);
+				$html .= self::completeHtmlDiv($current_id, $showComments);
 			}
-			$html .= "<div class=\"okcdiv\"><h3 class=\"okcquestion\">$q_en</h3><span class=\"okc_ans\">Answers I will accept from a candidate:</span><br>";
+			$html .= "<div class=\"okcdiv\"><h3 class=\"okcquestion\">$q_en</h3>";
+			
+			if(!$showComments)
+				$html .= "<span class=\"okc_ans\">Answers I will accept from a candidate:</span><br>";
 		}
-		$html .= '<input type="checkbox" name="ans_' . $qid .'[]" value="' . $optionid . '" /> <span class="option_' . $i . '">' . $o_en . '</span><br>';
+		if($showComments)
+			$html .= '<input type="radio" name="ans_' . $qid .'" value="' . $optionid . '" />' . $o_en . '<br>';
+		else
+			$html .= '<input type="checkbox" name="ans_' . $qid .'[]" value="' . $optionid . '" /> <span class="option_' . $i . '">' . $o_en . '</span><br>';
 		
 		return $html;
 	}
 	
-	static function completeHtmlDiv($question) {
+	static function completeHtmlDiv($question, $showComments) {
+		$name = 'ans_' . $question . '[]';
+		if($showComments)
+			$name = "ans_$question";
+			
 		$html = "<br><span class=\"okc_imp\">How important is this issue to you?</span><br>
-				<select name=\"imp_$question\">
+				<select name=\"imp_$question\" onchange=\"onImportanceChanged('$name', this)\">
 					<option class=\"okc_imp_ni\" value=\"ni\">Irrelevant</option>
 					<option class=\"okc_imp_li\" value=\"li\">A little important</option>
 					<option class=\"okc_imp_si\" value=\"si\">Somewhat important</option>
 					<option class=\"okc_imp_vi\" value=\"vi\">Very important</option>
 					<option class=\"okc_imp_ma\" value=\"ma\">Mandatory</option>
-				</select></div>";
+				</select>";
+				
+		if($showComments)
+			$html .= '<input type="text" name="okc_c' . $question . '" class="span10" placeholder="You can explain your answer here" />';
+			
+		$html .= "</div>";
 				
 		return $html;
 	}

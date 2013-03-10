@@ -4,18 +4,18 @@ session_start();
 if(isset($_SESSION["cdata"])) {
 	$cdetails = $_SESSION["cdata"];
 	
-	$pagetitle = $cdetails["charname"] . " for CSM - Eve Vote Match 2.0";
+	$pagetitle = "Edit candidate details for " . $cdetails["charname"];
 
 	include 'header.php'; 
 ?>
 <div class="row inverted rounded">
-	<h1>Edit candidate: <?php echo $cdetails["charname"]; ?></h1>
+	<h1>Edit candidate answers for: <?php echo $cdetails["charname"]; ?></h1>
 </div>
 <br>
 <div class="row rounded">
 	<form name="candidatedetails" method="post" action="processcandidate.php">
 	<div class="span11 coverview rounded">
-		<a href="editquestions.php" class="btn btn-large btn-primary">&laquo; Click here to set or change your answers to the questionnaire</a>
+		<a href="editanswers.php" class="btn btn-large btn-primary">&laquo; Click here to set or change your answers to the questionnaire</a>
 		<a href="processlogin.php" class="btn btn-large btn-danger pull-right">Log out</a>
 	</div>
 	<div class="span5 coverview rounded pull-right">
@@ -230,7 +230,7 @@ function submitform() {
 		errorString += "'Playing since' input (" + document.candidatedetails.playsince.value + ") is incorrect (required date format is YYYY-MM-DD)\n\n";
 		
 	if(invalidAge(document.candidatedetails.rlage.value))
-		errorString += "'Age' input (" + document.candidatedetails.rlage.value + ") is incorrect\n\n";
+		errorString += "'Age' input (" + document.candidatedetails.rlage.value + ") is incorrect. Please input whole numbers only\n\n";
 		
 	if(errorString.length == 0)
 		document.candidatedetails.submit();
