@@ -9,9 +9,9 @@ if (mysqli_connect_errno()) {
 } else {
 	session_start();
 	if(isset($_SESSION["cdata"])) {
-		
-		Questions::initClassicQuestions();
-		$questions = Questions::getNumClassicQuestions();
+		$theQuestions = new Questions();
+		$theQuestions->initClassicQuestions();
+		$questions = $theQuestions->getNumClassicQuestions();
 		
 		$userid = $_SESSION["cdata"]["id"];
 		
@@ -27,49 +27,60 @@ if (mysqli_connect_errno()) {
 		$comment = "";
 		$q_weight = 1.0;
 		
-		$stmt = $mysqli->prepare("INSERT INTO classic_answers (question_id, candidate_id, answer, weight, comment) VALUES (?, ?, ?, ?, ?)");
-		$stmt->bind_param("iiids", $qid, $userid, $q_answer, $q_weight, $comment);
-		
+		// sanity check for question weights
+		$total = 0;
 		for($i = 0; $i < $questions; $i++) {
-			$qid = Questions::getIdForQuestion($i);
-			
-			$q_answer = parseAnswer($_POST["q" . $i]);
 			$q_weight = floatval($_POST["q" . $i . "_weight"]);
-			$comment = sanitize($_POST["c" . $i]);
-			
-			//echo "classic $qid $q_answer $q_weight $comment </br>";
-			$stmt->execute();
+			$total += $q_weight;
 		}
-		$stmt->close();
 		
-		// remove original okc answers
-		$stmt = $mysqli->prepare("DELETE FROM okc_answers WHERE candidate_id = ?");
-		$stmt->bind_param("i", $userid);
-		$stmt->execute();
-		$stmt->close();
+		// if the total sum of weights isn't what it should be (1.0  per question)
+		if($total == $questions) {
 		
-		// input new okc answers
-		$id_array = unserialize($_POST["ids"]);
-		
-		$answer = 0;
-		$weight = 0;
-		$comment = "";
-		
-		$stmt = $mysqli->prepare("INSERT INTO okc_answers (candidate_id, answer_id, weight, comment) VALUES (?, ?, ?, ?)");
-		$stmt->bind_param("iiis", $userid, $answer, $weight, $comment);
-		
-		for($i = 0; $i < count($id_array); $i++) {
-			$qid = $id_array[$i];
-			$answer = intval($_POST["ans_" . $qid]);
-			$weight = parseOKCWeight($_POST["imp_" . $qid]);
-			$comment = sanitize($_POST["okc_c" . $qid]);
+			$stmt = $mysqli->prepare("INSERT INTO classic_answers (question_id, candidate_id, answer, weight, comment) VALUES (?, ?, ?, ?, ?)");
+			$stmt->bind_param("iiids", $qid, $userid, $q_answer, $q_weight, $comment);
 			
-			//echo "okc $qid $answer $weight $comment </br>";
+			for($i = 0; $i < $questions; $i++) {
+				$qid = $theQuestions->getIdForQuestion($i);
+				
+				$q_answer = parseAnswer($_POST["q" . $i]);
+				$q_weight = floatval($_POST["q" . $i . "_weight"]);
+				$comment = sanitize($_POST["c" . $i]);
+				
+				//echo "classic $qid $q_answer $q_weight $comment </br>";
+				$stmt->execute();
+			}
+			$stmt->close();
+			
+			// remove original okc answers
+			$stmt = $mysqli->prepare("DELETE FROM okc_answers WHERE candidate_id = ?");
+			$stmt->bind_param("i", $userid);
 			$stmt->execute();
-		}
-		$stmt->close();
-	
-		include 'header.php';
+			$stmt->close();
+			
+			// input new okc answers
+			$id_array = unserialize($_POST["ids"]);
+			
+			$answer = 0;
+			$weight = 0;
+			$comment = "";
+			
+			$stmt = $mysqli->prepare("INSERT INTO okc_answers (candidate_id, answer_id, weight, comment) VALUES (?, ?, ?, ?)");
+			$stmt->bind_param("iiis", $userid, $answer, $weight, $comment);
+			
+			for($i = 0; $i < count($id_array); $i++) {
+				$qid = $id_array[$i];
+				$answer = intval($_POST["ans_" . $qid]);
+				$weight = parseOKCWeight($_POST["imp_" . $qid]);
+				$comment = sanitize($_POST["okc_c" . $qid]);
+				$stmt->execute();
+				//echo "okc $userid $answer $weight [$comment] ";
+				//if(!$stmt->execute()) echo mysqli_stmt_error($stmt);
+				//echo "</br>";
+			}
+			$stmt->close();
+		
+			include 'header.php';
 ?>
 <div class="row inverted rounded">
 	<h1>Success!</h1>
@@ -80,7 +91,21 @@ if (mysqli_connect_errno()) {
 	Click <a href="editcandidate.php">here</a> to return to your profile.
 </div>
 <?php
-		include 'footer.php';
+			include 'footer.php';
+		} else {
+			include 'header.php';
+?>
+<div class="row inverted rounded">
+	<h1>Error!</h1>
+</div>
+<br>
+<div class="row rounded">
+	There was an issue with your answers and they were not saved.</br><br/>
+	Click <a href="editcandidate.php">here</a> to return to your profile.
+</div>
+<?php
+			include 'footer.php';
+		}
 	} 
 }
 
@@ -95,6 +120,9 @@ function checkUrl($url) {
 }
 
 function sanitize($string) {
+	if($string == null)
+		return "";
+		
 	return htmlspecialchars($string);
 }
 
@@ -106,7 +134,6 @@ function checkAge($age) {
 	return null;
 		
 }
-
 
 // change text code for answer to numeric answer value
 function parseAnswer($ans) {

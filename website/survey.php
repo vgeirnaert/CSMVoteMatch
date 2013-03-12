@@ -48,8 +48,9 @@ require 'header.php';
 			</th>
 		</tr>
 <?php
-Questions::initClassicQuestions();
-Questions::printClassicQuestionTable(false);
+$theQuestions = new Questions();
+$theQuestions->initClassicQuestions();
+$theQuestions->printClassicQuestionTable(false, null);
 ?>
 	</table>
 	</div>
@@ -59,10 +60,10 @@ Questions::printClassicQuestionTable(false);
 		<h2>Questions</h2>
 		<div id="carousel">
 <?php
-Questions::initOKCQuestions(false);
-Questions::closeDB();
-echo Questions::getOKCHTML(); 
-echo Questions::getOKCIds();
+$theQuestions->initOKCQuestions(false);
+$theQuestions->closeDB();
+echo $theQuestions->printOKCQuestions(null);
+echo $theQuestions->getOKCIds();
 ?>
 		</div>
 		<br>
@@ -86,9 +87,9 @@ echo Questions::getOKCIds();
 <script src="js/survey.js"></script>
 <script type="text/javascript">
 <?php
-echo Questions::getClassicQuestionsArray();
+echo $theQuestions->getClassicQuestionsArray();
 echo "\n\n";
-echo Questions::getOKCQuestionsArray();
+echo $theQuestions->getOKCQuestionsArray();
 ?>
 
 var opinions = [

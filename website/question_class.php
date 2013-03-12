@@ -1,23 +1,20 @@
 <?php 
-error_reporting(E_ALL);
-session_start();
-
-if(isset($_SESSION["cdata"])) {
-	$cdetails = $_SESSION["cdata"];
-	
-	$pagetitle = "Edit candidate details for " . $cdetails["charname"];
-
-	include 'header.php'; 
-	require 'questions.php';
+require 'questions.php';
+require 'header.php'; 
 ?>
+
+<script type="text/javascript" src="js/vendor/jquery.carouFredSel-6.1.0-packed.js"></script>
+
 <div class="row inverted rounded">
-	<h1>Edit candidate: <?php echo $cdetails["charname"]; ?></h1>
+	<h1>Questionnaire</h1>
 </div>
 <br>
 <div class="row rounded">
-	<div class="span11 coverview rounded">
-		<a href="processlogin.php" class="btn btn-large btn-danger">Log out</a>
-		<a href="editcandidate.php" class="btn btn-large btn-primary pull-right">Click here to set or change your profile details &raquo;</a>
+	<div class="span2"><img src="img/gb.png" onclick="changeLanguage(0);"> <img src="img/de.png" onclick="changeLanguage(1);"> <img src="img/ru.png" onclick="changeLanguage(2);"> <img src="img/jp.png" onclick="changeLanguage(3);"></div>
+	<form method="post" action="compare.php" name="survey" onsubmit="return validateForm();">
+	<div class="span11 coverview rounded" id="explanation">
+		<b>Election questionnaire</b><br>
+		After filling in this questionnaire, your answers will be compared to the answers from the CSM candidates and a matching percentage will be calculated. You can adjust the importance of the questions relative to eachother with the plus and minus buttons.
 	</div>
 	<div class="span2 pull-right coverview rounded">
 		<h2>Importance</h2>
@@ -26,94 +23,74 @@ if(isset($_SESSION["cdata"])) {
 		<b>Adjust all questions:</b><br>
 		<a href="#" class="btn" onclick="changeAllValues(-0.1); return false;"><b>-</b></a> <a href="#" class="btn" onclick="changeAllValues(0.1); return false;"><b>+</b></a>
 	</div>
-	<form method="post" action="processanswers.php" name="survey" onsubmit="return checkForm();">
 	<div class="span9 coverview rounded">
-		<h2>Statements</h2>
-		<b>Part 1 of 2: </b> Please indicate your stance on the following issues. In addition to the answers you can set the importance of each issue (higher score is more important, lower score is less important) and you can add a comment explaining your answer.
-		<table>
-			<tr class="header">
-				<th></th>
-				<th class="answer even">
-					Strongly disagree
-				</th>
-				<th class="answer uneven">
-					Disagree
-				</th>
-				<th class="answer even">
-					No opinion
-				</th>
-				<th class="answer uneven">
-					Agree
-				</th>
-				<th class="answer even">
-					Strongly agree
-				</th>
-				<th class="answer uneven">
-					Importance
-				</th>
-			</tr>
+	<h2>Statements</h2>
+	<table>
+		<tr class="header">
+			<th></th>
+			<th class="answer even">
+				Strongly disagree
+			</th>
+			<th class="answer uneven">
+				Disagree
+			</th>
+			<th class="answer even">
+				No opinion
+			</th>
+			<th class="answer uneven">
+				Agree
+			</th>
+			<th class="answer even">
+				Strongly agree
+			</th>
+			<th class="answer uneven">
+				Importance
+			</th>
+		</tr>
 <?php
-require_once 'database.php';
-require_once 'answer_class.php';
-
-$mysqli = VotematchDB::getConnection();
-// get candidate classic answers
-$stmt = $mysqli->prepare("SELECT question_id, candidate_id, answer, weight, comment FROM classic_answers AS a WHERE a.candidate_id = ? ORDER BY a.id ASC");
-$id = $cdetails["id"];
-$stmt->bind_param("i", $id);
-$stmt->execute();
-
-$stmt->bind_result($question_id, $candidate_id, $answer, $weight, $comment);
-$answers = array();
-while($stmt->fetch()) {
-	array_push($answers, new Answer($question_id, $answer, $weight, $comment));
-}
-$stmt->close();
-
-// get okc answers
-$stmt = $mysqli->prepare("SELECT o.question_id, a.answer_id, a.weight, a.comment FROM okc_answers AS a LEFT JOIN okc_options AS o ON a.answer_id = o.id WHERE a.candidate_id = ? ORDER BY o.question_id ASC");
-$stmt->bind_param("i", $id);
-$stmt->execute();
-
-$stmt->bind_result($question_id, $answer, $weight, $comment);
-$answers_okc = array();
-while($stmt->fetch()) {
-	array_push($answers_okc, new Answer($question_id, $answer, $weight, $comment));
-}
-$stmt->close();
-
-VotematchDB::close();
-
-$theQuestions = new Questions();
-$theQuestions->initClassicQuestions();
-$theQuestions->initOKCQuestions(true);
-$theQuestions->printClassicQuestionTable(true, $answers);
+Questions::initClassicQuestions();
+Questions::printClassicQuestionTable(false);
 ?>
-		</table>
+	</table>
 	</div>
-	
-	<div class="span11 coverview rounded">
+	<br>
+	<?php  ?>
+	<div class="span9 coverview rounded">
 		<h2>Questions</h2>
-		<b>Part 2 of 2:</b> Please answer the following questions. In addition to the answers you can set the importance of each issue and you can add a comment explaining your answer.
+		<div id="carousel">
 <?php
-//echo $theQuestions->getOKCHTML(); 
-echo $theQuestions->printOKCQuestions($answers_okc);
-echo $theQuestions->getOKCIds();
+Questions::initOKCQuestions(false);
+Questions::closeDB();
+echo Questions::getOKCHTML(); 
+echo Questions::getOKCIds();
 ?>
-	</div>	
+		</div>
+		<br>
+		<div class="span9">
+			<div class="span4">
+				<a class="btn prev" id="prev" href="#"><span>&laquo; Previous question</span></a>
+			</div>
+			<div class="span4" id="pagination">
+			</div>
+			<div class="span2 pull-right">
+				<a class="btn next pull-right" id="next" href="#"><span>Next question &raquo;</span></a>
+			</div>
+		</div>
+	</div>
 	<div class="span6">
 		<br><br>
-		<input type="submit" value="Submit answers" class="pull-right btn btn-warning" style="font-size:30px; line-height: 60px;" />
+		<input type="submit" value="Calculate match!" class="pull-right btn btn-warning" style="font-size:30px; line-height: 60px;" />
 	</div>
 	</form>
 </div>
 <script src="js/survey.js"></script>
 <script type="text/javascript">
 <?php
-echo $theQuestions->getClassicQuestionsArray();
+echo Questions::getClassicQuestionsArray();
 echo "\n\n";
-echo $theQuestions->getOKCQuestionsArray();
+echo Questions::getOKCQuestionsArray();
 ?>
+
 var opinions = [
 	["Strongly disagree", "Trifft gar nicht zu", "&#1050;&#1072;&#1090;&#1077;&#1075;&#1086;&#1088;&#1080;&#1095;&#1077;&#1089;&#1082;&#1080;&#32;&#1085;&#1077;&#32;&#1089;&#1086;&#1075;&#1083;&#1072;&#1089;&#1077;&#1085;", "&#20840;&#12367;&#21516;&#24847;&#12391;&#12365;&#12394;&#12356;"],
 	["Disagree", "Nicht &uuml;bereinstimmen", "&#1085;&#1077;&#32;&#1089;&#1086;&#1075;&#1083;&#1072;&#1096;&#1072;&#1090;&#1100;&#1089;&#1103;", "&#21516;&#24847;&#12375;&#12394;&#12356;"],
@@ -137,9 +114,28 @@ var okc_imp_si_translations = ["Somewhat important", "Etwas wichtig", "&#1053;&#
 var okc_imp_vi_translations = ["Very important", "Sehr wichtig", "&#1054;&#1095;&#1077;&#1085;&#1100; &#1074;&#1072;&#1078;&#1085;&#1086;", "&#38750;&#24120;&#12395;&#37325;&#35201;&#12394;"];
 var okc_imp_ma_translations = ["Mandatory", "Verpflichtend", "&#1086;&#1073;&#1103;&#1079;&#1072;&#1090;&#1077;&#1083;&#1100;&#1085;&#1099;&#1081;", "&#24517;&#38920;&#12398;"];
 
+<?php
+echo "var language=" . getLang($_GET["lang"]) . ";";
 
+function getLang($lang) {
+	switch($lang) {
+		case "ger":
+			return 1;
+			break;
+		case "rus":
+			return 2;
+			break;
+		case "jp":
+			return 3;
+			break;
+		default:
+			return 0;
+			break;
+	}
+}
+
+?>
 var weights = [];
-var language=0;
 
 // initialise weights
 for(var i = 0; i < questions.length; i++)
@@ -152,16 +148,36 @@ var maxPoints = questions.length;
 // script entry point
 start();
 
-function checkForm() {
-	if(validateForm()) {
-		return true;
-	}
-	
-	return false;
-}
+$(document).ready(function() {
+	/*	CarouFredSel: a circular, responsive jQuery carousel.
+	Configuration created by the "Configuration Robot"
+	at caroufredsel.dev7studios.com
+	*/
+	$("#carousel").carouFredSel({
+		height: "variable",
+		direction: "up",
+		circular: false,
+		infinite: false,
+		items: {
+			visible: 1,
+			height: "variable"
+		},
+		scroll: 400,
+		auto: false,
+		prev: "#prev",
+		next: "#next",
+		pagination: {
+			container: "#pagination",
+			anchorBuilder: function( nr ) {
+				var str  = '<a href="#" class="page">';
+				str += nr;
+				str += '</a>';
+				return str;
+				
+			}
+		}
+	});
+});
 </script>
-<?php	
-	$theQuestions->closeDB();
-	include 'footer.php'; 
-}
-?>
+
+<?php include 'footer.php'; ?>

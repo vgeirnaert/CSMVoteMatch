@@ -1,9 +1,11 @@
 <?php include 'header.php'; 
 require_once 'questions.php';
 
-Questions::initClassicQuestions();
-Questions::initOKCQuestions(false);
-Questions::closeDB();
+$questions = new Questions();
+
+$questions->initClassicQuestions();
+$questions->initOKCQuestions(false);
+$questions->closeDB();
 
 // code to handle the user supplied answers if he came here from survey.php
 function makeUserAnswers() {
@@ -22,7 +24,9 @@ function makeCandidateAnswers() {
 }
 
 function makeClassicAnswers() {
-	$num_questions = Questions::getNumClassicQuestions();
+	global $questions;
+	
+	$num_questions = $questions->getNumClassicQuestions();
 	
 	$line = '"classic_answers":{';
 	
@@ -120,9 +124,9 @@ function parseOKCWeight($weight) {
 
 <script type="text/javascript">
 <?php 
-echo Questions::getClassicQuestionsArray(); 
+echo $questions->getClassicQuestionsArray(); 
 echo "\n\n";
-echo Questions::getOKCQuestionsArray();
+echo $questions->getOKCQuestionsArray();
 ?>	
 
 var matchQuestions = [];
