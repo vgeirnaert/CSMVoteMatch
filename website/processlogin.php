@@ -62,10 +62,10 @@ if (mysqli_connect_errno()) {
 		if($recordfound) {
 		
 			// get open questions and answers
-			$stmt = $mysqli->prepare("SELECT q.question, a.answer, q.id FROM open_questions AS q LEFT JOIN open_answers AS a ON q.id = a.question_id WHERE q.election_id = ? AND a.candidate_id = ? ORDER BY q.id");
+			$stmt = $mysqli->prepare("SELECT q.question, a.answer, q.id FROM open_questions AS q LEFT JOIN open_answers AS a ON q.id = a.question_id AND a.candidate_id = ? WHERE q.election_id = ? ORDER BY q.id");
 			
 			$election = Config::active_election;
-			$stmt->bind_param("ii", $election, $cdetails["id"]);
+			$stmt->bind_param("ii", $cdetails["id"], $election);
 			
 			$stmt->execute();
 			
