@@ -35,7 +35,7 @@ if (mysqli_connect_errno()) {
 		}
 		
 		// if the total sum of weights isn't what it should be (1.0  per question)
-		if($total == $questions) {
+		if(round($total * 10) == ($questions * 10)) {
 		
 			$stmt = $mysqli->prepare("INSERT INTO classic_answers (question_id, candidate_id, answer, weight, comment) VALUES (?, ?, ?, ?, ?)");
 			$stmt->bind_param("iiids", $qid, $userid, $q_answer, $q_weight, $comment);
@@ -100,8 +100,9 @@ if (mysqli_connect_errno()) {
 </div>
 <br>
 <div class="row rounded">
-	There was an issue with your answers and they were not saved.</br><br/>
-	Click <a href="editcandidate.php">here</a> to return to your profile.
+	There was an issue with your answers and they were not saved, sorry :(.</br><br/>
+	Click <a href="editcandidate.php">here</a> to return to your profile.<br/><br/>
+	If this happens again, please contact <a href="https://gate.eveonline.com/Profile/Dierdra%20Vaal" target="_blank">Dierdra Vaal</a>.
 </div>
 <?php
 			include 'footer.php';

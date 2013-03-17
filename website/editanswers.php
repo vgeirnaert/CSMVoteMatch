@@ -53,41 +53,41 @@ if(isset($_SESSION["cdata"])) {
 				</th>
 			</tr>
 <?php
-require_once 'database.php';
-require_once 'answer_class.php';
+	require_once 'database.php';
+	require_once 'answer_class.php';
 
-$mysqli = VotematchDB::getConnection();
-// get candidate classic answers
-$stmt = $mysqli->prepare("SELECT question_id, candidate_id, answer, weight, comment FROM classic_answers AS a WHERE a.candidate_id = ? ORDER BY a.id ASC");
-$id = $cdetails["id"];
-$stmt->bind_param("i", $id);
-$stmt->execute();
+	$mysqli = VotematchDB::getConnection();
+	// get candidate classic answers
+	$stmt = $mysqli->prepare("SELECT question_id, candidate_id, answer, weight, comment FROM classic_answers AS a WHERE a.candidate_id = ? ORDER BY a.id ASC");
+	$id = $cdetails["id"];
+	$stmt->bind_param("i", $id);
+	$stmt->execute();
 
-$stmt->bind_result($question_id, $candidate_id, $answer, $weight, $comment);
-$answers = array();
-while($stmt->fetch()) {
-	array_push($answers, new Answer($question_id, $answer, $weight, $comment));
-}
-$stmt->close();
+	$stmt->bind_result($question_id, $candidate_id, $answer, $weight, $comment);
+	$answers = array();
+	while($stmt->fetch()) {
+		array_push($answers, new Answer($question_id, $answer, $weight, $comment));
+	}
+	$stmt->close();
 
-// get okc answers
-$stmt = $mysqli->prepare("SELECT o.question_id, a.answer_id, a.weight, a.comment FROM okc_answers AS a LEFT JOIN okc_options AS o ON a.answer_id = o.id WHERE a.candidate_id = ? ORDER BY o.question_id ASC");
-$stmt->bind_param("i", $id);
-$stmt->execute();
+	// get okc answers
+	$stmt = $mysqli->prepare("SELECT o.question_id, a.answer_id, a.weight, a.comment FROM okc_answers AS a LEFT JOIN okc_options AS o ON a.answer_id = o.id WHERE a.candidate_id = ? ORDER BY o.question_id ASC");
+	$stmt->bind_param("i", $id);
+	$stmt->execute();
 
-$stmt->bind_result($question_id, $answer, $weight, $comment);
-$answers_okc = array();
-while($stmt->fetch()) {
-	array_push($answers_okc, new Answer($question_id, $answer, $weight, $comment));
-}
-$stmt->close();
+	$stmt->bind_result($question_id, $answer, $weight, $comment);
+	$answers_okc = array();
+	while($stmt->fetch()) {
+		array_push($answers_okc, new Answer($question_id, $answer, $weight, $comment));
+	}
+	$stmt->close();
 
-VotematchDB::close();
+	VotematchDB::close();
 
-$theQuestions = new Questions();
-$theQuestions->initClassicQuestions();
-$theQuestions->initOKCQuestions(true);
-$theQuestions->printClassicQuestionTable(true, $answers);
+	$theQuestions = new Questions();
+	$theQuestions->initClassicQuestions();
+	$theQuestions->initOKCQuestions(true);
+	$theQuestions->printClassicQuestionTable(true, $answers);
 ?>
 		</table>
 	</div>
@@ -96,9 +96,8 @@ $theQuestions->printClassicQuestionTable(true, $answers);
 		<h2>Questions</h2>
 		<b>Part 2 of 2:</b> Please answer the following questions. In addition to the answers you can set the importance of each issue and you can add a comment explaining your answer.
 <?php
-//echo $theQuestions->getOKCHTML(); 
-echo $theQuestions->printOKCQuestions($answers_okc);
-echo $theQuestions->getOKCIds();
+	echo $theQuestions->printOKCQuestions($answers_okc);
+	echo $theQuestions->getOKCIds();
 ?>
 	</div>	
 	<div class="span6">
@@ -110,9 +109,9 @@ echo $theQuestions->getOKCIds();
 <script src="js/survey.js"></script>
 <script type="text/javascript">
 <?php
-echo $theQuestions->getClassicQuestionsArray();
-echo "\n\n";
-echo $theQuestions->getOKCQuestionsArray();
+	echo $theQuestions->getClassicQuestionsArray();
+	echo "\n\n";
+	echo $theQuestions->getOKCQuestionsArray();
 ?>
 var opinions = [
 	["Strongly disagree", "Trifft gar nicht zu", "&#1050;&#1072;&#1090;&#1077;&#1075;&#1086;&#1088;&#1080;&#1095;&#1077;&#1089;&#1082;&#1080;&#32;&#1085;&#1077;&#32;&#1089;&#1086;&#1075;&#1083;&#1072;&#1089;&#1077;&#1085;", "&#20840;&#12367;&#21516;&#24847;&#12391;&#12365;&#12394;&#12356;"],
@@ -138,13 +137,8 @@ var okc_imp_vi_translations = ["Very important", "Sehr wichtig", "&#1054;&#1095;
 var okc_imp_ma_translations = ["Mandatory", "Verpflichtend", "&#1086;&#1073;&#1103;&#1079;&#1072;&#1090;&#1077;&#1083;&#1100;&#1085;&#1099;&#1081;", "&#24517;&#38920;&#12398;"];
 
 
-var weights = [];
+var weights = <?php printWeightsArray($answers, $theQuestions); ?>
 var language=0;
-
-// initialise weights
-for(var i = 0; i < questions.length; i++)
-	weights.push(1);
-	
 
 var freePoints = 0.0;
 var maxPoints = questions.length;
@@ -163,5 +157,22 @@ function checkForm() {
 <?php	
 	$theQuestions->closeDB();
 	include 'footer.php'; 
+}
+
+function printWeightsArray($answers, $theQuestions) {
+	$js = "[";
+	for($i = 0; $i < $theQuestions->getNumClassicQuestions(); $i++) {
+		if($i > 0)
+			$js .= ", ";
+			
+		if(isset($answers[$i]))
+			$js .= $answers[$i]->getWeight();
+		else 
+			$js .= '1.0';
+	}
+	
+	$js .= "];";
+	
+	echo $js;
 }
 ?>

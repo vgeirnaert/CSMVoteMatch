@@ -29,7 +29,7 @@ function changeDisplayLanguage() {
 	
 	for(var i = 0; i < okc_questions.length; i++) {
 		$('.option_' + i).each(function(index, element){
-			element.innerHTML = (((okc_questions[i])["options"])[index])[language];
+			element.innerHTML = (((okc_questions[i])["options"])[index]).strings[language];
 		});
 	}
 	

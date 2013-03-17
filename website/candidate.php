@@ -96,7 +96,7 @@ include 'header.php';
 		<a class="btn" href="<?php echo $cdetails["website"]; ?>" target="_blank"><img src="img/website.png" /> Website</a>&nbsp;&nbsp;
 		<a class="btn" href="https://twitter.com/<?php echo $cdetails["twitter"]; ?>" target="_blank"><img src="img/twitter.png" /> Twitter</a>&nbsp;&nbsp;
 		<a class="btn" href="<?php echo $cdetails["thread"]; ?>" target="_blank"><img src="img/forumlogo.png" /> Forum thread</a>&nbsp;&nbsp;
-		<a class="btn" href="compare.php?cid=<?php echo $cdetails["charid"]; ?>"><img src="img/votematch.png" /> Vote Match</a>
+		<!--<a class="btn" href="compare.php?cid=<?php echo $cdetails["charid"]; ?>"><img src="img/votematch.png" /> Vote Match</a>-->
 	</div>
 	<div class="span5 pull-right">
 		<div class="span5 coverview rounded pull-right">

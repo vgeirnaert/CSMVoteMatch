@@ -1,5 +1,6 @@
 <?php 
 require_once 'database.php';
+require_once 'answer_class.php';
 
 class Questions {
 	private $number_of_questions = NULL;
@@ -14,8 +15,12 @@ class Questions {
 	function getClassicQuestionsArray() {	
 		return $this->question_string;
 	}
+	
+	function getOkcQuestionIds() {	
+		return $this->question_ids;
+	}
 
-	 function initClassicQuestions() {		
+	function initClassicQuestions() {		
 	
 		if($this->question_string == NULL) {
 			$mysqli = VotematchDB::getConnection();
@@ -65,7 +70,10 @@ class Questions {
 	
 	 function printClassicQuestionTable($showComments, $answers) {
 		for($i = 0; $i < Questions::getNumClassicQuestions(); $i++) {
-			$answer = $answers[$i];
+		
+			$answer = new Answer($i, 0, 1, "");
+			if(isset($answers[$i]))
+				$answer = $answers[$i];
 			
 			$even = $i % 2;
 			
@@ -164,7 +172,7 @@ class Questions {
 						$count++;
 					}
 						
-					$okc_js_array .= $this->addToJsArray($current_id, $qid, $q_en, $q_ger, $q_rus, $q_jp, $o_en, $o_ger, $o_rus, $o_jp);
+					$okc_js_array .= $this->addToJsArray($current_id, $qid, $q_en, $q_ger, $q_rus, $q_jp, $o_en, $o_ger, $o_rus, $o_jp, $optionid);
 					$this->addOkcData($current_id, $qid, $q_en, $q_ger, $q_rus, $q_jp, $o_en, $o_ger, $o_rus, $o_jp, $count, $optionid, $showComments);
 					$current_id = $qid;
 				}
@@ -202,7 +210,7 @@ class Questions {
 		$this->okc_data[$i]["showComments"] = $showComments;
 	}
 	
-	function addToJsArray($current_id, $qid, $q_en, $q_ger, $q_rus, $q_jp, $o_en, $o_ger, $o_rus, $o_jp) {
+	function addToJsArray($current_id, $qid, $q_en, $q_ger, $q_rus, $q_jp, $o_en, $o_ger, $o_rus, $o_jp, $optionid) {
 		$okc_js_array = "";
 		
 		// check if we're looking at options belonging to the same question that we worked on previous iteration
@@ -218,7 +226,7 @@ class Questions {
 			$okc_js_array .= ", "; // it's not a new question, just append a comma to seperate option arrays
 		
 		// append this iteration's option values
-		$okc_js_array .= "\n\t\t" . '["' . $o_en . '", "' . $o_ger . '", "' . $o_rus . '", "' . $o_jp . '"]' ;
+		$okc_js_array .= "\n\t\t" . '{"id":' . $optionid . ',"strings":["' . $o_en . '", "' . $o_ger . '", "' . $o_rus . '", "' . $o_jp . '"]}' ;
 		
 		return $okc_js_array;
 	}

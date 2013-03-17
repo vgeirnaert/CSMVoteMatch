@@ -127,10 +127,17 @@ function matchCandidate(user, comparer, candidateIndex) {
 	var okcScoreC = 0;
 	var maxCandidateScore = 0;
 	for(var i = 0; i < matchOKCQuestions.length; i++) {
-		var userAnswer = user.okc_answers[getQuestionKey(matchOKCQuestions[i])]["answer"];
-		var userWeight = user.okc_answers[getQuestionKey(matchOKCQuestions[i])]["weight"];
-		var candidateAnswer = candidate.okc_answers[getQuestionKey(matchOKCQuestions[i])]["answer"];
-		var candidateWeight = candidate.okc_answers[getQuestionKey(matchOKCQuestions[i])]["weight"];
+		var key = getQuestionKey(okcQuestionIds[matchOKCQuestions[i]]);
+		var userAnswer = user.okc_answers[key]["answer"];
+		var userWeight = user.okc_answers[key]["weight"];
+		
+		var candidateAnswer = [];
+		if(typeof candidate.okc_answers[key] != 'undefined')
+			candidateAnswer = candidate.okc_answers[key]["answer"];
+			
+		var candidateWeight = 0;
+		if(typeof candidate.okc_answers[key] != 'undefined')
+			candidateWeight = candidate.okc_answers[key]["weight"];
 		
 		// calculate okc score and add
 		var questionScoreU = comparer.scoreQuestionOKC(userAnswer, userWeight, candidateAnswer);
@@ -142,20 +149,29 @@ function matchCandidate(user, comparer, candidateIndex) {
 		
 				
 		var result = {userScore:questionScoreU, maxUserScore:userWeight, candidateScore:questionScoreC, maxCandidateScore:candidateWeight};
-		candidateScore.okc_score[getQuestionKey(matchOKCQuestions[i])] = result;
+		candidateScore.okc_score[key] = result;
 	}
 	
 	candidateScore["maxOkcScore"] = maxUserScore;
 	
+	var scoreOKC = 0;
 	// make OKC match percentage
-	var scoreOKC = Math.sqrt( (okcScoreU / maxUserScore) * (okcScoreC / maxCandidateScore) );
+	if(maxUserScore != 0 && maxCandidateScore != 0)
+		scoreOKC = Math.sqrt( (okcScoreU / maxUserScore) * (okcScoreC / maxCandidateScore) );
+	
+	scoreOKC = scoreOKC * 100;
 	
 	// turn classic question score into match percentage
 	score = getPercentage(score, getComparer().getMinFidelityScore(matchQuestions.length), getComparer().getMaxFidelityScore(matchQuestions.length));
 	
 	candidateScore["score"] = score;
 	candidateScore["scoreOKC"] = scoreOKC;
-	candidateScore["combinedScore"] = score + scoreOKC;
+	
+	var perc_classic_q = (matchQuestions.length / (matchQuestions.length + matchOKCQuestions.length));
+	var perc_okc_q = (matchOKCQuestions.length / (matchQuestions.length + matchOKCQuestions.length));
+	candidateScore["combinedScore"] = (score * perc_classic_q) + (scoreOKC * perc_okc_q);
+	
+	//alert(candidate.name + " classic: " + score + ", okc: " + scoreOKC + ", combined: " + candidateScore["combinedScore"]);
 	
 	return candidateScore;
 }
@@ -179,12 +195,6 @@ function makeMatches() {
 	for(var i = 0; i < matchCandidates.length; i++) {
 		// match this candidate to the user
 		var match = matchCandidate(matchUser, mycomparer, matchCandidates[i]);
-		
-		/*var okcscore = matchOKCcandidate(matchUser, mycomparer, matchCandidates[i]);
-		// convert classic answer score to percentage
-		match["score"] = getPercentage(match["score"], getComparer().getMinFidelityScore(matchQuestions.length), getComparer().getMaxFidelityScore(matchQuestions.length));
-		// combine classic and okc style scores
-		match["score"] = Math.sqrt(match["score"] * okcscore);*/
 
 		allMatches.push(match);
 	}
@@ -192,35 +202,6 @@ function makeMatches() {
 	allMatches.sort(sortCandidateArray);
 	
 	return allMatches;
-}
-
-function matchOKCcandidate(user, comparer, matchIndex) {
-	var candidate = candidates[matchIndex];
-	var maxUserScore = 0.0;
-	var userScore = 0.0;
-	var maxCandidateScore = 0.0;
-	var candidateScore = 0.0;
-	// for each OKC style question included in the matching process...
-	for(var i = 0; i < matchQuestions.length; i++) {
-		var questionIndex = "q" + matchOKCQuestions[i];
-		
-		// for this question, get the maximum score a user could have, and the actual score based on how he compares with the candidate
-		maxUserScore += user.okc_answers[questionIndex].weight;
-		userScore += comparer.scoreQuestionOKC(user.okc_answers[questionIndex].answer, user.okc_answers[questionIndex].weight, candidate.okc_answers[questionIndex].answer[0]);
-		
-		// do the same for the candidate->user. This essentially calculates how good an advocate this candidate would be to the user
-		// this could be different from the user->candidate score since we're using the candidate's assigned weight instead of the user's
-		maxCandidateScore += candidate.okc_answers[questionIndex].weight;
-		candidateScore += comparer.scoreQuestionOKC(user.okc_answers[questionIndex].answer, candidate.okc_answers[questionIndex].weight, candidate.okc_answers[questionIndex].answer[0]);
-	}
-	// make percentages
-	userScore = (userScore / maxUserScore) * 100;
-	candidateScore = (candidateScore / maxCandidateScore) * 100;
-	
-	// calculate one match from both relationship scores
-	var score = Math.sqrt(userScore * candidateScore);
-	
-	return score;
 }
 
 // we store matches that we've made here, for cases where we need to redraw the table, 
@@ -287,16 +268,24 @@ function makeRow(matches, row) {
 function makeOKCRow(matches, row, offset) {
 	var html = "<tr class=\"" + getEvenRow(row + offset) + "\">";
 	var tclass = "";
-	var question = matchOKCQuestions[row];
+	var question = okcQuestionIds[matchOKCQuestions[row]];
 	
 	html = html + makeQuestion(row, language, true);
 	
 	for(var i = 0; i < matches.length; i++) {
 		tclass = getClass(i);
 		
-		background = getBackgroundOKC( (matches[i]).okc_score[getQuestionKey(question)].userScore, (matches[i]).okc_score[getQuestionKey(question)].maxUserScore , (matches[i]).okc_score[getQuestionKey(question)].candidateScore , (matches[i]).okc_score[getQuestionKey(question)].maxCandidateScore );
+		var thecomment = "";
+		if(typeof (candidates[(matches[i])["candidate"]]).okc_answers[getQuestionKey(question)] != 'undefined')
+			thecomment = (candidates[(matches[i])["candidate"]]).okc_answers[getQuestionKey(question)]["comment"];
 		
-		html = html + "<td class=\"answer " + tclass + " " + background + "\">" + getOKCCellContents( question, (candidates[(matches[i])["candidate"]]).okc_answers[getQuestionKey(question)]["answer"][0], (matches[i])["candidate"]) + "</td>";
+		background = getBackgroundOKC( (matches[i]).okc_score[getQuestionKey(question)].userScore, (matches[i]).okc_score[getQuestionKey(question)].maxUserScore , (matches[i]).okc_score[getQuestionKey(question)].candidateScore , (matches[i]).okc_score[getQuestionKey(question)].maxCandidateScore, thecomment );
+		var theanswer = [];
+		
+		if(typeof (candidates[(matches[i])["candidate"]]).okc_answers[getQuestionKey(question)] != 'undefined')
+			theanswer = (candidates[(matches[i])["candidate"]]).okc_answers[getQuestionKey(question)]["answer"][0];
+			
+		html = html + "<td class=\"answer " + tclass + " " + background + "\">" + getOKCCellContents( question, theanswer, (matches[i]), (matches[i])["candidate"]) + "</td>";
 	}
 	
 	html = html + "</tr>";
@@ -329,7 +318,7 @@ function makeTableHeader(matches) {
 		tclass = getClass(i);
 		html = html + "<th class=\"answer " + tclass + "\">";
 		html = html + "<div class=\"check\"><input type=\"checkbox\" value=\"" + (matches[i])["candidate"] + "\" name=\"c\" /></div>";
-		html = html + "<img src=\"https://image.eveonline.com/Character/" + (candidates[(matches[i])["candidate"]])["cid"] + "_64.jpg\" class=\"rounded\" /><br><a href=\"candidate.php?cid=" + (candidates[(matches[i])["candidate"]])["cid"] +"\">" + (candidates[(matches[i])["candidate"]])["name"] + " (" + Math.round((matches[i])["score"]) + "% match)</a>";
+		html = html + "<img src=\"https://image.eveonline.com/Character/" + (candidates[(matches[i])["candidate"]])["cid"] + "_64.jpg\" class=\"rounded\" /><br><a href=\"candidate.php?cid=" + (candidates[(matches[i])["candidate"]])["cid"] +"\">" + (candidates[(matches[i])["candidate"]])["name"] + " (" + Math.round((matches[i])["combinedScore"]) + "% match)</a>";
 		html = html + "</th>";
 	}
 	
@@ -380,28 +369,30 @@ function getBackground(fidelity, comment) {
 	return html;
 }
 
-function getBackgroundOKC(userScore, maxUserScore, candidateScore, maxCandidateScore) {
+function getBackgroundOKC(userScore, maxUserScore, candidateScore, maxCandidateScore, comment) {
+
 	var html = "";
 	
+	if(comment != "")
+		html = "comment ";
 	
+	if(maxUserScore == 0)
+		return html + "neutral";
+	
+	var score = Math.sqrt(maxUserScore * maxCandidateScore);
+	
+	// negative match
 	if(userScore == 0) {
-		if(maxUserScore != 0) { // if its a bad match
-			if(maxCandidateScore != 0)
-				html = "verybad";
-			else
-				html = "bad";
-		} else {
-			// if its a neutral match
-			if(maxCandidateScore == 0)
-				html = "neutral";
-			else
-				html = "bad";
-		}
-	} else {
-		html = "verygood";
+		if(score > 8.0)
+			return html + "verybad";
+		else
+			return html + "bad";
+	} else { // positive match	
+		if(score > 8.0)
+			return html + "verygood";
+		else
+			return html + "good";
 	}
-	
-	return html;
 }
 
 function getCellContents(vote, weight, comment, name) {
@@ -436,8 +427,75 @@ function getCellContents(vote, weight, comment, name) {
 	return html;
 }
 
-function getOKCCellContents(questionId, optionId, candidateId) {
-	return okc_questions[questionId].question[language];
+function getOKCCellContents(questionId, optionId, match, c_index) {
+	//return optionId + " " + match.okc_score[getQuestionKey(questionId)].maxUserScore + " " + match.okc_score[getQuestionKey(questionId)].userScore+ " " + match.okc_score[getQuestionKey(questionId)].maxCandidateScore + " " + match.okc_score[getQuestionKey(questionId)].candidateScore;
+	
+	var html = "";
+	var comment = "";
+	
+	if(typeof candidates[c_index].okc_answers[getQuestionKey(questionId)] != 'undefined')
+		comment = candidates[c_index].okc_answers[getQuestionKey(questionId)]["comment"];
+		
+	var name = candidates[c_index].name;
+	var answer = "Not answered";
+	if(typeof candidates[c_index].okc_answers[getQuestionKey(questionId)] != 'undefined') {
+		//var answerid = candidates[c_index].okc_answers[getQuestionKey(questionId)]["answer"];
+		
+		answer = getOptionString(questionId, optionId);
+	}
+		
+	var importance = "Irrelevant";
+	if(typeof candidates[c_index].okc_answers[getQuestionKey(questionId)] != 'undefined')
+		importance = importanceString(candidates[c_index].okc_answers[getQuestionKey(questionId)]["weight"]);
+		
+	var fullcomment = '<b>Answer: </b>' + answer + '</br></br><b>Importance: </b>' + importance;
+	
+	if(comment != "")
+		fullcomment += '</br></br><b>Comment: </b>' + comment;
+	
+
+	html += '<div data-ot="' + fullcomment + '" data-ot-title="' + name + '" data-ot-containInViewport="true" data-ot-tip-joint="bottom left" data-ot-fixed="true" data-ot-target="true" data-ot-close-button-radius="11" data-ot-close-button-cross-size="10" data-ot-close-button-cross-line-width="3" >';
+	html += '<img src="img/speech.png" title="details" />';	
+	html += '</div>';
+		
+	return html;
+}
+
+function getOptionString(questionId, optionId) {
+
+	for(var i = 0; i < okc_questions.length; i++) {
+		if(okc_questions[i].id == questionId) {
+			var options = okc_questions[i].options;
+			for(var j = 0; j < options.length; j++) {
+				if(options[j].id == optionId)
+					return options[j].strings[0];
+			}
+		}
+	}
+	
+	return "";
+}
+
+function importanceString(value) {
+	switch(value) {
+		case 0:
+			return "Irrelevant";
+			break;
+		case 1: 
+			return "A little important";
+			break;
+		case 5: 
+			return "Somewhat important";
+			break;
+		case 10: 
+			return "Very important";
+			break;
+		case 50:
+			return "Mandatory";
+			break;
+	}
+	
+	return "Irrelevant";
 }
 
 function getEvenRow(row) {
@@ -504,8 +562,14 @@ function resetMatchQuestions() {
 		matchQuestions[i] = i;
 }
 
+function resetOkcQuestions() {
+	for(var i = 0; i < okc_questions.length; i++)
+		matchOKCQuestions[i] = i;
+}
+
 function resetQuestions() {
 	resetMatchQuestions();
+	resetOkcQuestions();
 		
 	printNewGrid();
 }
@@ -595,6 +659,14 @@ function includeQuestions() {
 		}
 	});
 	
+	matchOKCQuestions = [];
+	
+	$('input').each(function(index, element){
+		if(element.checked && element.name == "okc") {
+			matchOKCQuestions.push(parseInt(element.value));
+		}
+	});
+	
 	// recalculate and draw
 	printNewGrid();
 }
@@ -602,11 +674,17 @@ function includeQuestions() {
 function excludeQuestions() {
 	var excluding = [];
 	var newQuestions = [];
+	var excluding_okc = [];
+	var newQuestions_okc = [];
 	
 	// add all checked questions to exclude list
 	$('input').each(function(index, element){
 		if(element.checked && element.name == "q") {
 			excluding.push(parseInt(element.value));
+		}
+		
+		if(element.checked && element.name == "okc") {
+			excluding_okc.push(parseInt(element.value));
 		}
 	});
 	
@@ -617,6 +695,14 @@ function excludeQuestions() {
 	}
 	
 	matchQuestions = newQuestions;
+		
+	// build match list of all okc questions not in the exclude list
+	for(var i = 0; i < matchOKCQuestions.length; i++) {
+		if(jQuery.inArray(matchOKCQuestions[i], excluding_okc) == -1)
+			newQuestions_okc.push(matchOKCQuestions[i]);
+	}
+	
+	matchOKCQuestions = newQuestions_okc;
 	
 	// recalculate and draw
 	printNewGrid();
@@ -646,6 +732,7 @@ function toggleUser() {
 
 // Entry point of our script!
 resetMatchQuestions();
+resetOkcQuestions();
 resetMatchCandidates();
 printNewGrid();
 

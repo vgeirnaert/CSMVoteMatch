@@ -5,7 +5,7 @@ class Answer {
 	private $weight;
 	private $comment;
 	
-	public function __construct($id, $answer, $weight, $comment) {
+	public function __construct($id, $answer = 0, $weight = 0, $comment = "") {
 		$this->id = $id;
 		$this->answer = $answer;
 		$this->weight = $weight;

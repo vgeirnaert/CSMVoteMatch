@@ -1,5 +1,10 @@
-<?php include 'header.php'; 
+<?php 
+include 'header.php'; 
+
 require_once 'questions.php';
+require_once 'database.php';
+require_once 'candidate_class.php';
+require_once 'answer_class.php';
 
 $questions = new Questions();
 
@@ -20,7 +25,103 @@ function makeUserAnswers() {
 }
 
 function makeCandidateAnswers() {
+
+	$mysqli = VotematchDB::getConnection();
+	if (mysqli_connect_errno()) {
+		echo '<p><h2>Error connecting to database:</h2>' . mysqli_connect_error() . '</p>';
+	} else {
+		$all_candidates = array();
+		
+		$stmt = $mysqli->prepare("SELECT c.char_name, c.char_id, a.id, a.answer, a.weight, a.comment FROM candidates AS c RIGHT JOIN classic_answers AS a ON a.candidate_id = c.id WHERE election_id = ? ORDER BY c.char_name ASC, a.id ASC;");
+		$election = Config::active_election;
+		$stmt->bind_param("i", $election);
+		$stmt->execute();
+		
+		$stmt->bind_result($c_name, $c_id, $a_id, $answer, $weight, $comment);
+		$current_character = new Candidate(-1, "");
+		while($stmt->fetch()) {
+			if($current_character->getName() != $c_name) {
+				// if we come across a new character, add the previous one to the 
+				// candidates list (assuming it's not our placeholder character object
+				if($current_character->getId() != -1)
+					array_push($all_candidates, $current_character);
+				
+				// make a new character object
+				$current_character = new Candidate($c_id, $c_name);
+			}
+			
+			// add answer details to new character
+			$current_character->addClassicAnswer(new Answer($a_id, $answer, $weight, $comment));
+			
+		}
+		
+		// add last character to list
+		array_push($all_candidates, $current_character);
+		
+		$stmt->close();
+		
+		$stmt = $mysqli->prepare("SELECT c.char_name, c.char_id, a.answer_id, a.weight, a.comment, q.id FROM candidates AS c RIGHT JOIN okc_answers AS a ON a.candidate_id = c.id LEFT JOIN okc_options AS o ON o.id = a.answer_id RIGHT JOIN  okc_questions AS q ON o.question_id = q.id WHERE q.election_id = ? ORDER BY c.char_name ASC, q.id ASC;");
+		$stmt->bind_param("i", $election);
+		$stmt->execute();
+		
+		$stmt->bind_result($c_name, $c_id, $answer, $weight, $comment, $q_id);
+		$current_character = new Candidate(-1, "");
+		while($stmt->fetch()) {
+			if($current_character->getName() != $c_name && $c_name != null) {
+				// if we come across a new character, add the previous one to the 
+				// candidates list (assuming it's not our placeholder character object
+				$current_character = getCandidateFromList($all_candidates, $c_name);
+			}
+			
+			// add answer details to new character
+			$current_character->addOkcAnswer(new Answer($q_id, $answer, $weight, $comment));
+		}
+		
+		$stmt->close();
+		$ccount = 0;
+		foreach($all_candidates as $candidate) {
+			$js = "";
+			if($ccount > 0)
+				$js .= ",\n";
+				
+			$js .= '{"name":"' . $candidate->getName() . '", "cid":"' . $candidate->getId() . '", "classic_answers":{';
+			
+			$i = 0;
+			foreach($candidate->getClassicAnswers() as $answer) {
+				if($i > 0)
+					$js .= ",\n";
+					
+				$js .= '"q' . $i . '":{"answer":' . $answer->getAnswer() . ', "weight":' . $answer->getWeight() . ', "comment":"' . addslashes(htmlspecialchars($answer->getComment())) . '"}';
+				$i++;
+			}
+			
+			$js .= '}, "okc_answers":{';
+			$i = 0;
+			foreach($candidate->getOkcAnswers() as $answer) {
+				if($i > 0)
+					$js .= ",\n";
+					
+				$js .= '"q' . $answer->getId() . '":{"answer":[' . $answer->getAnswer() . '], "weight":' . $answer->getWeight() . ', "comment":"' . addslashes(htmlspecialchars($answer->getComment())) . '"}';
+				$i++;
+			}
+			
+			$js .= '}}';
+			
+			$ccount++;
+			
+			echo $js;
+		}
+	}
+	VotematchDB::close();
+}
+
+function getCandidateFromList($all_candidates, $c_name) {
+	foreach($all_candidates as $c) {
+		if($c->getName() == $c_name)
+			return $c;
+	}
 	
+	return null;
 }
 
 function makeClassicAnswers() {
@@ -47,8 +148,14 @@ function makeClassicAnswers() {
 }
 
 function makeOKCAnswers() {
-	$id_array = unserialize($_POST["ids"]);
+	global $questions;
+	$id_array;
 	
+	if(isset($_POST["ids"]))
+		$id_array = unserialize($_POST["ids"]); 
+	else
+		$id_array = $questions->getOkcQuestionIds();
+		
 	$line = '"okc_answers":{';
 	for($i = 0; $i < count($id_array); $i++) {
 		$id = $id_array[$i];
@@ -120,6 +227,24 @@ function parseOKCWeight($weight) {
 		break;
 	}
 }
+
+function printOkcQuestionIds() {
+	global $questions;
+	$js = "[";
+	$i = 0;
+	foreach($questions->getOkcQuestionIds() as $id) {
+		if($i > 0)
+			$js .= ", ";
+			
+		$js .= $id;
+			
+		$i++;
+	}
+	
+	$js .= "]";
+	
+	echo $js;
+}
 ?>
 
 <script type="text/javascript">
@@ -132,56 +257,13 @@ echo $questions->getOKCQuestionsArray();
 var matchQuestions = [];
 
 var candidates = [
-	<?php echo makeUserAnswers(); ?>
-	{"name":"All Strongly Disagree", "cid":"109000795", 
-		"classic_answers":{"q0":{"answer":-2, "weight":1, "comment":"Test comment <br>newline"},"q1":{"answer":-2, "weight":1, "comment":""},"q2":{"answer":-2, "weight":1, "comment":""},"q3":{"answer":-2, "weight":1, "comment":""},"q4":{"answer":-2, "weight":1, "comment":""},"q5":{"answer":-2, "weight":1, "comment":""},"q6":{"answer":-2, "weight":1, "comment":""},"q7":{"answer":-2, "weight":1, "comment":""},"q8":{"answer":-2, "weight":1, "comment":""}},
-		"okc_answers":{"q0":{"answer":[2], "weight": 10}, "q1":{"answer":[2], "weight": 1}, "q2":{"answer":[3], "weight": 10}, "q3":{"answer":[1], "weight": 50}, "q4":{"answer":[2], "weight": 1}, "q5":{"answer":[2], "weight": 1}, "q6":{"answer":[3], "weight": 0}, "q7":{"answer":[1], "weight": 5}, "q8":{"answer":[3], "weight": 5}, "q9":{"answer":[3], "weight": 10}}},
-	{"name":"All Strongly Agree", "cid":"109000795", 
-		"classic_answers": {"q0":{"answer":2, "weight":1, "comment":""},"q1":{"answer":2, "weight":1, "comment":""},"q2":{"answer":2, "weight":1, "comment":""},"q3":{"answer":2, "weight":1, "comment":""},"q4":{"answer":2, "weight":1, "comment":""},"q5":{"answer":2, "weight":1, "comment":""},"q6":{"answer":2, "weight":1, "comment":""},"q7":{"answer":2, "weight":1, "comment":""},"q8":{"answer":2, "weight":1, "comment":""}},
-		"okc_answers":{"q0":{"answer":[3], "weight": 50}, "q1":{"answer":[3], "weight": 1}, "q2":{"answer":[2], "weight": 10}, "q3":{"answer":[4], "weight": 50}, "q4":{"answer":[2], "weight": 1}, "q5":{"answer":[1], "weight": 1}, "q6":{"answer":[3], "weight": 0}, "q7":{"answer":[1], "weight": 5}, "q8":{"answer":[4], "weight": 5}, "q9":{"answer":[3], "weight": 5}}
-		},
-	{"name":"Agree", "cid":"109000795", 
-		"classic_answers": {"q0":{"answer":1, "weight":1, "comment":""},"q1":{"answer":1, "weight":1, "comment":""},"q2":{"answer":1, "weight":1, "comment":""},"q3":{"answer":1, "weight":1, "comment":""},"q4":{"answer":1, "weight":1, "comment":""},"q5":{"answer":1, "weight":1, "comment":""},"q6":{"answer":1, "weight":1, "comment":""},"q7":{"answer":1, "weight":1, "comment":""},"q8":{"answer":1, "weight":1, "comment":""}},
-		"okc_answers":{"q0":{"answer":[1], "weight": 50}, "q1":{"answer":[3], "weight": 1}, "q2":{"answer":[3], "weight": 10}, "q3":{"answer":[3], "weight": 50}, "q4":{"answer":[2], "weight": 1}, "q5":{"answer":[3], "weight": 1}, "q6":{"answer":[3], "weight": 0}, "q7":{"answer":[4], "weight": 5}, "q8":{"answer":[1], "weight": 10}, "q9":{"answer":[2], "weight": 50}}
-	},
-	{"name":"Disagree", "cid":"109000795", 
-		"classic_answers": {"q0":{"answer":-1, "weight":1, "comment":""},"q1":{"answer":-1, "weight":1, "comment":""},"q2":{"answer":-1, "weight":1, "comment":""},"q3":{"answer":-1, "weight":1, "comment":""},"q4":{"answer":-1, "weight":1, "comment":""},"q5":{"answer":-1, "weight":1, "comment":""},"q6":{"answer":-1, "weight":1, "comment":""},"q7":{"answer":-1, "weight":1, "comment":""},"q8":{"answer":-1, "weight":1, "comment":""}},
-		"okc_answers":{"q0":{"answer":[3], "weight": 50}, "q1":{"answer":[3], "weight": 1}, "q2":{"answer":[2], "weight": 10}, "q3":{"answer":[4], "weight": 50}, "q4":{"answer":[2], "weight": 1}, "q5":{"answer":[1], "weight": 1}, "q6":{"answer":[3], "weight": 0}, "q7":{"answer":[1], "weight": 5}, "q8":{"answer":[4], "weight": 5}, "q9":{"answer":[3], "weight": 5}}
-	},
-	{"name":"Strongly Disagree important", "cid":"109000795", 
-		"classic_answers": {"q0":{"answer":-2, "weight":0.5, "comment":""},"q1":{"answer":-2, "weight":1.5, "comment":""},"q2":{"answer":-2, "weight":0.5, "comment":""},"q3":{"answer":-2, "weight":1.5, "comment":""},"q4":{"answer":-2, "weight":0.5, "comment":""},"q5":{"answer":-2, "weight":0.5, "comment":""},"q6":{"answer":-2, "weight":2, "comment":""},"q7":{"answer":-2, "weight":1, "comment":""},"q8":{"answer":-2, "weight":1, "comment":""}},
-		"okc_answers":{"q0":{"answer":[2], "weight": 10}, "q1":{"answer":[2], "weight": 1}, "q2":{"answer":[3], "weight": 10}, "q3":{"answer":[1], "weight": 50}, "q4":{"answer":[2], "weight": 1}, "q5":{"answer":[2], "weight": 1}, "q6":{"answer":[3], "weight": 0}, "q7":{"answer":[1], "weight": 5}, "q8":{"answer":[3], "weight": 5}, "q9":{"answer":[3], "weight": 10}}
-	},
-	{"name":"Mister Mix", "cid":"109000795", 
-		"classic_answers": {"q0":{"answer":-2, "weight":0.5, "comment":""},"q1":{"answer":2, "weight":1.5, "comment":""},"q2":{"answer":0, "weight":0.5, "comment":""},"q3":{"answer":-1, "weight":1.5, "comment":""},"q4":{"answer":-1, "weight":0.5, "comment":""},"q5":{"answer":1, "weight":0.8, "comment":""},"q6":{"answer":2, "weight":1.7, "comment":""},"q7":{"answer":1, "weight":1.3, "comment":""},"q8":{"answer":-1, "weight":0.7, "comment":""}},
-		"okc_answers":{"q0":{"answer":[1], "weight": 50}, "q1":{"answer":[3], "weight": 1}, "q2":{"answer":[3], "weight": 10}, "q3":{"answer":[3], "weight": 50}, "q4":{"answer":[2], "weight": 1}, "q5":{"answer":[3], "weight": 1}, "q6":{"answer":[3], "weight": 0}, "q7":{"answer":[4], "weight": 5}, "q8":{"answer":[1], "weight": 10}, "q9":{"answer":[2], "weight": 50}}
-	},	
-	{"name":"All Strongly Disagree", "cid":"109000795", 
-		"classic_answers":{"q0":{"answer":-2, "weight":1, "comment":"Test comment <br>newline"},"q1":{"answer":-2, "weight":1, "comment":""},"q2":{"answer":-2, "weight":1, "comment":""},"q3":{"answer":-2, "weight":1, "comment":""},"q4":{"answer":-2, "weight":1, "comment":""},"q5":{"answer":-2, "weight":1, "comment":""},"q6":{"answer":-2, "weight":1, "comment":""},"q7":{"answer":-2, "weight":1, "comment":""},"q8":{"answer":-2, "weight":1, "comment":""}},
-		"okc_answers":{"q0":{"answer":[2], "weight": 10}, "q1":{"answer":[2], "weight": 1}, "q2":{"answer":[3], "weight": 10}, "q3":{"answer":[1], "weight": 50}, "q4":{"answer":[2], "weight": 1}, "q5":{"answer":[2], "weight": 1}, "q6":{"answer":[3], "weight": 0}, "q7":{"answer":[1], "weight": 5}, "q8":{"answer":[3], "weight": 5}, "q9":{"answer":[3], "weight": 10}}},
-	{"name":"All Strongly Agree", "cid":"109000795", 
-		"classic_answers": {"q0":{"answer":2, "weight":1, "comment":""},"q1":{"answer":2, "weight":1, "comment":""},"q2":{"answer":2, "weight":1, "comment":""},"q3":{"answer":2, "weight":1, "comment":""},"q4":{"answer":2, "weight":1, "comment":""},"q5":{"answer":2, "weight":1, "comment":""},"q6":{"answer":2, "weight":1, "comment":""},"q7":{"answer":2, "weight":1, "comment":""},"q8":{"answer":2, "weight":1, "comment":""}},
-		"okc_answers":{"q0":{"answer":[3], "weight": 50}, "q1":{"answer":[3], "weight": 1}, "q2":{"answer":[2], "weight": 10}, "q3":{"answer":[4], "weight": 50}, "q4":{"answer":[2], "weight": 1}, "q5":{"answer":[1], "weight": 1}, "q6":{"answer":[3], "weight": 0}, "q7":{"answer":[1], "weight": 5}, "q8":{"answer":[4], "weight": 5}, "q9":{"answer":[3], "weight": 5}}
-		},
-	{"name":"Agree", "cid":"109000795", 
-		"classic_answers": {"q0":{"answer":1, "weight":1, "comment":""},"q1":{"answer":1, "weight":1, "comment":""},"q2":{"answer":1, "weight":1, "comment":""},"q3":{"answer":1, "weight":1, "comment":""},"q4":{"answer":1, "weight":1, "comment":""},"q5":{"answer":1, "weight":1, "comment":""},"q6":{"answer":1, "weight":1, "comment":""},"q7":{"answer":1, "weight":1, "comment":""},"q8":{"answer":1, "weight":1, "comment":""}},
-		"okc_answers":{"q0":{"answer":[1], "weight": 50}, "q1":{"answer":[3], "weight": 1}, "q2":{"answer":[3], "weight": 10}, "q3":{"answer":[3], "weight": 50}, "q4":{"answer":[2], "weight": 1}, "q5":{"answer":[3], "weight": 1}, "q6":{"answer":[3], "weight": 0}, "q7":{"answer":[4], "weight": 5}, "q8":{"answer":[1], "weight": 10}, "q9":{"answer":[2], "weight": 50}}
-	},
-	{"name":"Disagree", "cid":"109000795", 
-		"classic_answers": {"q0":{"answer":-1, "weight":1, "comment":""},"q1":{"answer":-1, "weight":1, "comment":""},"q2":{"answer":-1, "weight":1, "comment":""},"q3":{"answer":-1, "weight":1, "comment":""},"q4":{"answer":-1, "weight":1, "comment":""},"q5":{"answer":-1, "weight":1, "comment":""},"q6":{"answer":-1, "weight":1, "comment":""},"q7":{"answer":-1, "weight":1, "comment":""},"q8":{"answer":-1, "weight":1, "comment":""}},
-		"okc_answers":{"q0":{"answer":[3], "weight": 50}, "q1":{"answer":[3], "weight": 1}, "q2":{"answer":[2], "weight": 10}, "q3":{"answer":[4], "weight": 50}, "q4":{"answer":[2], "weight": 1}, "q5":{"answer":[1], "weight": 1}, "q6":{"answer":[3], "weight": 0}, "q7":{"answer":[1], "weight": 5}, "q8":{"answer":[4], "weight": 5}, "q9":{"answer":[3], "weight": 5}}
-	},
-	{"name":"Strongly Disagree important", "cid":"109000795", 
-		"classic_answers": {"q0":{"answer":-2, "weight":0.5, "comment":""},"q1":{"answer":-2, "weight":1.5, "comment":""},"q2":{"answer":-2, "weight":0.5, "comment":""},"q3":{"answer":-2, "weight":1.5, "comment":""},"q4":{"answer":-2, "weight":0.5, "comment":""},"q5":{"answer":-2, "weight":0.5, "comment":""},"q6":{"answer":-2, "weight":2, "comment":""},"q7":{"answer":-2, "weight":1, "comment":""},"q8":{"answer":-2, "weight":1, "comment":""}},
-		"okc_answers":{"q0":{"answer":[2], "weight": 10}, "q1":{"answer":[2], "weight": 1}, "q2":{"answer":[3], "weight": 10}, "q3":{"answer":[1], "weight": 50}, "q4":{"answer":[2], "weight": 1}, "q5":{"answer":[2], "weight": 1}, "q6":{"answer":[3], "weight": 0}, "q7":{"answer":[1], "weight": 5}, "q8":{"answer":[3], "weight": 5}, "q9":{"answer":[3], "weight": 10}}
-	},
-	{"name":"Mister Mix", "cid":"109000795", 
-		"classic_answers": {"q0":{"answer":-2, "weight":0.5, "comment":""},"q1":{"answer":2, "weight":1.5, "comment":""},"q2":{"answer":0, "weight":0.5, "comment":""},"q3":{"answer":-1, "weight":1.5, "comment":""},"q4":{"answer":-1, "weight":0.5, "comment":""},"q5":{"answer":1, "weight":0.8, "comment":""},"q6":{"answer":2, "weight":1.7, "comment":""},"q7":{"answer":1, "weight":1.3, "comment":""},"q8":{"answer":-1, "weight":0.7, "comment":""}},
-		"okc_answers":{"q0":{"answer":[1], "weight": 50}, "q1":{"answer":[3], "weight": 1}, "q2":{"answer":[3], "weight": 10}, "q3":{"answer":[3], "weight": 50}, "q4":{"answer":[2], "weight": 1}, "q5":{"answer":[3], "weight": 1}, "q6":{"answer":[3], "weight": 0}, "q7":{"answer":[4], "weight": 5}, "q8":{"answer":[1], "weight": 10}, "q9":{"answer":[2], "weight": 50}}
-	}	
+	<?php 
+	echo makeUserAnswers(); 
+	makeCandidateAnswers(); ?>
 ];
 
-var matchOKCQuestions = [1,2,3,5,6,7,8,9];
+var matchOKCQuestions = [];
+var okcQuestionIds = <?php printOkcQuestionIds(); ?>;
 
 var matchCandidates = [];
 
@@ -225,7 +307,7 @@ var language = 0;
 				<a href="#" class="btn" onclick="excludeQuestions();toggleButtonPanel('questionbuttons');">Exclude checked questions</a><br><a href="#" class="btn" onclick="includeQuestions();toggleButtonPanel('questionbuttons');">Include only checked questions</a><br><a href="#" class="btn" onclick="resetQuestions();toggleButtonPanel('questionbuttons');">Reset all questions</a>
 			</div>
 			<div class="candidatebuttons buttonpanel rounded">
-				<a href="#" class="btn" onclick="excludeCandidates();toggleButtonPanel('candidatebuttons');">Exclude checked candidates</a><br><a href="#" class="btn" onclick="includeCandidates();toggleButtonPanel('candidatebuttons');">Include only checked candidates</a><br><a href="#" class="btn" onclick="compareCandidatesWith();toggleButtonPanel('candidatebuttons');">Compare candidates with...</a><br><a href="#" class="btn" onclick="resetCandidates();toggleButtonPanel('candidatebuttons');">Reset all candidates</a>
+				<a href="#" class="btn" onclick="excludeCandidates();toggleButtonPanel('candidatebuttons');">Exclude checked candidates</a><br><a href="#" class="btn" onclick="includeCandidates();toggleButtonPanel('candidatebuttons');">Include only checked candidates</a><br><!--<a href="#" class="btn" onclick="compareCandidatesWith();toggleButtonPanel('candidatebuttons');">Compare candidates with...</a><br>--><a href="#" class="btn" onclick="resetCandidates();toggleButtonPanel('candidatebuttons');">Reset all candidates</a>
 			</div>
 		</div>
 	</div>

@@ -2,9 +2,6 @@
 require 'questions.php';
 require 'header.php'; 
 ?>
-
-<script type="text/javascript" src="js/vendor/jquery.carouFredSel-6.1.0-packed.js"></script>
-
 <div class="row inverted rounded">
 	<h1>Questionnaire</h1>
 </div>
@@ -58,25 +55,13 @@ $theQuestions->printClassicQuestionTable(false, null);
 	<?php  ?>
 	<div class="span9 coverview rounded">
 		<h2>Questions</h2>
-		<div id="carousel">
 <?php
 $theQuestions->initOKCQuestions(false);
 $theQuestions->closeDB();
 echo $theQuestions->printOKCQuestions(null);
 echo $theQuestions->getOKCIds();
 ?>
-		</div>
 		<br>
-		<div class="span9">
-			<div class="span4">
-				<a class="btn prev" id="prev" href="#"><span>&laquo; Previous question</span></a>
-			</div>
-			<div class="span4" id="pagination">
-			</div>
-			<div class="span2 pull-right">
-				<a class="btn next pull-right" id="next" href="#"><span>Next question &raquo;</span></a>
-			</div>
-		</div>
 	</div>
 	<div class="span6">
 		<br><br>
@@ -149,36 +134,7 @@ var maxPoints = questions.length;
 // script entry point
 start();
 
-$(document).ready(function() {
-	/*	CarouFredSel: a circular, responsive jQuery carousel.
-	Configuration created by the "Configuration Robot"
-	at caroufredsel.dev7studios.com
-	*/
-	$("#carousel").carouFredSel({
-		height: "variable",
-		direction: "up",
-		circular: false,
-		infinite: false,
-		items: {
-			visible: 1,
-			height: "variable"
-		},
-		scroll: 400,
-		auto: false,
-		prev: "#prev",
-		next: "#next",
-		pagination: {
-			container: "#pagination",
-			anchorBuilder: function( nr ) {
-				var str  = '<a href="#" class="page">';
-				str += nr;
-				str += '</a>';
-				return str;
-				
-			}
-		}
-	});
-});
+
 </script>
 
 <?php include 'footer.php'; ?>
