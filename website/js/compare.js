@@ -388,12 +388,12 @@ function getBackgroundOKC(userScore, maxUserScore, candidateScore, maxCandidateS
 	
 	// negative match
 	if(userScore == 0) {
-		if(score > 8.0)
+		if(score > 7.0)
 			return html + "verybad";
 		else
 			return html + "bad";
 	} else { // positive match	
-		if(score > 8.0)
+		if(score > 7.0)
 			return html + "verygood";
 		else
 			return html + "good";
