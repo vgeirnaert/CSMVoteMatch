@@ -149,14 +149,20 @@ function validateForm() {
 	return true;
 }
 
-function onImportanceChanged(name, element) {
-
-	if(element.value == "ni") {
-		$('[name="' + name + '"]').prop('disabled', true);
-	} else {
-		$('[name="' + name + '"]').prop('disabled', false);
+function onImportanceChanged(name, element, bNoBrackets) {
+	var radioname = "ans_" + name + "[]";
+	
+	if(bNoBrackets)
+		radioname = "ans_" + name;
 		
-		var selected = $('[name="' + name + '"]:checked');
+	if(element.value == "ni") {
+		$('[name="' + radioname + '"]').prop('disabled', true);
+		$('[name="okc_c' + name + '"]').prop('disabled', true);
+	} else {
+		$('[name="' + radioname + '"]').prop('disabled', false);
+		$('[name="okc_c' + name + '"]').prop('disabled', false);
+		
+		var selected = $('[name="' + radioname + '"]:checked');
 		
 		if(selected.length == 0) {
 			alert('Please select an answer before setting it\'s importance');

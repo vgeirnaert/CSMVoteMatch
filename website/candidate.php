@@ -1,15 +1,20 @@
 <?php 
 require_once 'database.php';
 
+function sanitize($string) {
+	return htmlspecialchars(stripslashes($string));
+}
+
 $mysqli = VotematchDB::getConnection();
 	
 if (mysqli_connect_errno()) {
 	echo '<p><h2>Error connecting to database:</h2>' . mysqli_connect_error() . '</p>';
 } else {
 	// get candidate details
-	$stmt = $mysqli->prepare("SELECT c.id, c.website, c.thread, c.twitter, c.char_id, c.char_name, c.corp_name, c.alliance_name, c.real_name, c.real_location, c.real_age, c.real_occupation, c.played_since, c.flies_in, c.playstyle, c.can_evemail, c.can_convo, c.email, c.campaign_statement, c.experience_eve, c.experience_real, h.csm FROM candidates AS c LEFT JOIN csm_history AS h ON c.char_id = h.character_id WHERE c.id = ?");
+	$stmt = $mysqli->prepare("SELECT c.id, c.website, c.thread, c.twitter, c.char_id, c.char_name, c.corp_name, c.alliance_name, c.real_name, c.real_location, c.real_age, c.real_occupation, c.played_since, c.flies_in, c.playstyle, c.can_evemail, c.can_convo, c.email, c.campaign_statement, c.experience_eve, c.experience_real, h.csm FROM candidates AS c LEFT JOIN csm_history AS h ON c.char_id = h.character_id WHERE c.id = ? OR c.char_id = ?");
 	$dbid = $_GET["id"];
-	$stmt->bind_param("i", $dbid);
+	$cid = $_GET["cid"];
+	$stmt->bind_param("ii", $dbid, $cid);
 	$stmt->execute();
 
 	$stmt->bind_result($id, $website, $thread, $twitter, $charid, $charname, $corpname, $alliancename, $realname, $realloc, $realage, $realocc, $played, $flies, $playstyle, $bevemail, $bconvo, $email, $campaignstmt, $eveexp, $realexp, $csm);
@@ -21,24 +26,24 @@ if (mysqli_connect_errno()) {
 			$cdetails["id"] = $id;
 			$cdetails["website"] = $website;
 			$cdetails["thread"] = $thread;
-			$cdetails["twitter"] = htmlspecialchars($twitter);
-			$cdetails["charid"] = htmlspecialchars($charid);
-			$cdetails["charname"] = htmlspecialchars($charname);
-			$cdetails["corpname"] = htmlspecialchars($corpname);
-			$cdetails["alliancename"] = htmlspecialchars($alliancename);
-			$cdetails["realname"] = htmlspecialchars($realname);
-			$cdetails["realloc"] = htmlspecialchars($realloc);
-			$cdetails["realage"] = htmlspecialchars($realage);
-			$cdetails["realocc"] = htmlspecialchars($realocc);
-			$cdetails["played"] = htmlspecialchars($played);
-			$cdetails["flies"] = htmlspecialchars($flies);
-			$cdetails["playstyle"] = htmlspecialchars($playstyle);
-			$cdetails["bevemail"] = htmlspecialchars($bevemail);
-			$cdetails["bconvo"] = htmlspecialchars($bconvo);
-			$cdetails["email"] = htmlspecialchars($email);
-			$cdetails["statement"] = htmlspecialchars($campaignstmt);
-			$cdetails["eveexp"] = htmlspecialchars($eveexp);
-			$cdetails["realexp"] = htmlspecialchars($realexp);
+			$cdetails["twitter"] = sanitize($twitter);
+			$cdetails["charid"] = sanitize($charid);
+			$cdetails["charname"] = sanitize($charname);
+			$cdetails["corpname"] = sanitize($corpname);
+			$cdetails["alliancename"] = sanitize($alliancename);
+			$cdetails["realname"] = sanitize($realname);
+			$cdetails["realloc"] = sanitize($realloc);
+			$cdetails["realage"] = sanitize($realage);
+			$cdetails["realocc"] = sanitize($realocc);
+			$cdetails["played"] = sanitize($played);
+			$cdetails["flies"] = sanitize($flies);
+			$cdetails["playstyle"] = sanitize($playstyle);
+			$cdetails["bevemail"] = sanitize($bevemail);
+			$cdetails["bconvo"] = sanitize($bconvo);
+			$cdetails["email"] = sanitize($email);
+			$cdetails["statement"] = sanitize($campaignstmt);
+			$cdetails["eveexp"] = sanitize($eveexp);
+			$cdetails["realexp"] = sanitize($realexp);
 			
 			if($csm != 0)
 				array_push($csmarray, $csm);
@@ -53,10 +58,10 @@ if (mysqli_connect_errno()) {
 	$stmt->close();
 	
 	// get open questions and answers
-	$stmt = $mysqli->prepare("SELECT q.question, a.answer FROM open_questions AS q LEFT JOIN open_answers AS a ON q.id = a.question_id WHERE q.election_id = ? AND a.candidate_id = ? ORDER BY q.id");
+	$stmt = $mysqli->prepare("SELECT q.question, a.answer FROM open_questions AS q LEFT JOIN open_answers AS a ON q.id = a.question_id AND a.candidate_id = ? WHERE q.election_id = ? ORDER BY q.id");
 	
 	$election = Config::active_election;
-	$stmt->bind_param("ii", $election, $cdetails["id"]);
+	$stmt->bind_param("ii", $cdetails["id"], $election);
 	
 	$stmt->execute();
 	
@@ -64,7 +69,7 @@ if (mysqli_connect_errno()) {
 	
 	$questions = array();
 	while($stmt->fetch()) {
-		array_push($questions, array("question"=>$question, "answer"=>htmlspecialchars($answer)));
+		array_push($questions, array("question"=>$question, "answer"=>sanitize($answer)));
 	}
 	
 	$stmt->close();

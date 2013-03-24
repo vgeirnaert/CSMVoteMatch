@@ -31,9 +31,9 @@ function makeCandidateAnswers() {
 		echo '<p><h2>Error connecting to database:</h2>' . mysqli_connect_error() . '</p>';
 	} else {
 		$all_candidates = array();
-		
-		$stmt = $mysqli->prepare("SELECT c.char_name, c.char_id, a.id, a.answer, a.weight, a.comment FROM candidates AS c RIGHT JOIN classic_answers AS a ON a.candidate_id = c.id WHERE election_id = ? ORDER BY c.char_name ASC, a.id ASC;");
 		$election = Config::active_election;
+		
+		/*$stmt = $mysqli->prepare("SELECT c.char_name, c.char_id, a.id, a.answer, a.weight, a.comment FROM candidates AS c RIGHT JOIN classic_answers AS a ON a.candidate_id = c.id WHERE election_id = ? ORDER BY c.char_name ASC, a.id ASC;");
 		$stmt->bind_param("i", $election);
 		$stmt->execute();
 		
@@ -55,10 +55,9 @@ function makeCandidateAnswers() {
 			
 		}
 		
-		// add last character to list
-		array_push($all_candidates, $current_character);
 		
-		$stmt->close();
+		
+		$stmt->close();*/
 		
 		$stmt = $mysqli->prepare("SELECT c.char_name, c.char_id, a.answer_id, a.weight, a.comment, q.id FROM candidates AS c RIGHT JOIN okc_answers AS a ON a.candidate_id = c.id LEFT JOIN okc_options AS o ON o.id = a.answer_id RIGHT JOIN  okc_questions AS q ON o.question_id = q.id WHERE q.election_id = ? ORDER BY c.char_name ASC, q.id ASC;");
 		$stmt->bind_param("i", $election);
@@ -70,12 +69,18 @@ function makeCandidateAnswers() {
 			if($current_character->getName() != $c_name && $c_name != null) {
 				// if we come across a new character, add the previous one to the 
 				// candidates list (assuming it's not our placeholder character object
-				$current_character = getCandidateFromList($all_candidates, $c_name);
+				if($current_character->getId() != -1)
+					array_push($all_candidates, $current_character);
+					
+				$current_character = new Candidate($c_id, $c_name);
 			}
 			
 			// add answer details to new character
 			$current_character->addOkcAnswer(new Answer($q_id, $answer, $weight, $comment));
 		}
+		
+		// add last character to list
+		array_push($all_candidates, $current_character);
 		
 		$stmt->close();
 		$ccount = 0;
@@ -279,29 +284,27 @@ var language = 0;
 <br>
 
 <div class="row rounded" >
-	<div class="span12">
-		<div class="span6 coverview rounded">
-			<b>Their opinion:</b><br>
-			<img src="img/doublethumbsdown.png" title="Strongly disagree" /> Strongly disagree, 
-			<img src="img/thumbsdown.png" title="Disagree" /> Disagree, 
-			<img src="img/noopinion.png" title="No opinion" /> No opinion, 
-			<img src="img/thumbsup.png" title="Agree" /> Agree, 
-			<img src="img/doublethumbsup.png"  title="Strongly agree"/> Strongly agree
-			<br><br>
-			<img src="img/balloon.png" title="Comment" /> Mouse over to see this candidate's explanation of their answer
+	<div class="span11 coverview rounded">
+		<div class="span6">
+			<b>How important is a question to the candidate?</b><br>
+			<img src="img/irrelevant.png"/> Irrelevant, <img src="img/littleimp.png"/> A little important, <img src="img/somewhatimp.png"/> Somewhat important, <img src="img/veryimp.png"/> Very important, <img src="img/mandatory.png"/> Mandatory - <span class="neutral"><img src="img/balloon.png"/></span> Candidate supplied a comment or explanation
 		</div>
-		<div class="span5 coverview rounded">
+		<div class="span5 pull-right">
 			<b>Match with you:</b><br>
+		<?php if(isset($_POST["ids"])) {?>
 			<span class="verybad">Terrible match</span>
 			<span class="bad">Bad match</span>
 			<span class="neutral">Neutral match</span>
 			<span class="good">Good match</span>
-			<span class="verygood">Perfect match</span>
+			<span class="verygood">Great match</span>			
+		<?php } else { ?>
+			Find out <a href="survey.php">here!</a>
+		<?php } ?>
 		</div>
 	</div>
-	<a href="#" class="btn pull-right" onclick="toggleCandidates();return false;" id="showexcess">Show all candidates &raquo;</a>
+	<a href="#" class="btn pull-right" onclick="toggleCandidates();return false;" id="showexcess">Show more candidates &raquo;</a>
 	<div>
-		<a href="#" class="btn" onclick="toggleButtonPanel('questionbuttons');">Question options</a> <a href="#" class="btn" onclick="toggleButtonPanel('candidatebuttons');">Candidate options</a> <?php if(isset($_POST["q0"])) echo '<a href="#" class="btn" onclick="toggleUser();" id="showuser">Show my answers</a>'; ?>
+		<a href="#" class="btn" onclick="toggleButtonPanel('questionbuttons');">Question options</a> <a href="#" class="btn" onclick="toggleButtonPanel('candidatebuttons');">Candidate options</a> <?php if(isset($_POST["ids"])) echo '<a href="#" class="btn" onclick="toggleUser();" id="showuser">Show my answers</a>'; ?>
 		<div class="buttonholder">
 			<div class="questionbuttons buttonpanel rounded">
 				<a href="#" class="btn" onclick="excludeQuestions();toggleButtonPanel('questionbuttons');">Exclude checked questions</a><br><a href="#" class="btn" onclick="includeQuestions();toggleButtonPanel('questionbuttons');">Include only checked questions</a><br><a href="#" class="btn" onclick="resetQuestions();toggleButtonPanel('questionbuttons');">Reset all questions</a>

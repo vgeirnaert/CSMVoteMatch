@@ -107,7 +107,7 @@ function matchCandidate(user, comparer, candidateIndex) {
 	var candidateScore = {classic_score:[], okc_score:[]};
 	candidateScore["candidate"] = candidateIndex;
 	
-	for(var i = 0; i < matchQuestions.length; i++) {
+	/*for(var i = 0; i < matchQuestions.length; i++) {
 		// first, get the answers and weights from our user and candidate
 		var answerA = user.classic_answers[getQuestionKey(matchQuestions[i])]["answer"];
 		var weightA = user.classic_answers[getQuestionKey(matchQuestions[i])]["weight"];
@@ -120,7 +120,7 @@ function matchCandidate(user, comparer, candidateIndex) {
 		
 		var questionScore = {fidelity:questionFidelity, weight:comparer.getWeight(weightA, weightB, answerA, answerB)};
 		candidateScore.classic_score[getQuestionKey(matchQuestions[i])] = questionScore;
-	}
+	}*/
 	
 	var okcScoreU = 0;
 	var maxUserScore = 0;
@@ -140,13 +140,16 @@ function matchCandidate(user, comparer, candidateIndex) {
 			candidateWeight = candidate.okc_answers[key]["weight"];
 		
 		// calculate okc score and add
-		var questionScoreU = comparer.scoreQuestionOKC(userAnswer, userWeight, candidateAnswer);
-		var questionScoreC = comparer.scoreQuestionOKC(userAnswer, candidateWeight, candidateAnswer);
-		okcScoreU += questionScoreU;
-		maxUserScore += userWeight;
-		okcScoreC += questionScoreC;
-		maxCandidateScore += candidateWeight;
 		
+			var questionScoreU = comparer.scoreQuestionOKC(userAnswer, userWeight, candidateAnswer);
+			var questionScoreC = comparer.scoreQuestionOKC(userAnswer, candidateWeight, candidateAnswer);
+			okcScoreU += questionScoreU;
+			maxUserScore += userWeight;
+			
+		if(userWeight != 0) {
+			okcScoreC += questionScoreC;
+			maxCandidateScore += candidateWeight;
+		}
 				
 		var result = {userScore:questionScoreU, maxUserScore:userWeight, candidateScore:questionScoreC, maxCandidateScore:candidateWeight};
 		candidateScore.okc_score[key] = result;
@@ -162,14 +165,16 @@ function matchCandidate(user, comparer, candidateIndex) {
 	scoreOKC = scoreOKC * 100;
 	
 	// turn classic question score into match percentage
-	score = getPercentage(score, getComparer().getMinFidelityScore(matchQuestions.length), getComparer().getMaxFidelityScore(matchQuestions.length));
+	//score = getPercentage(score, getComparer().getMinFidelityScore(matchQuestions.length), getComparer().getMaxFidelityScore(matchQuestions.length));
+	score = scoreOKC
 	
 	candidateScore["score"] = score;
 	candidateScore["scoreOKC"] = scoreOKC;
 	
-	var perc_classic_q = (matchQuestions.length / (matchQuestions.length + matchOKCQuestions.length));
-	var perc_okc_q = (matchOKCQuestions.length / (matchQuestions.length + matchOKCQuestions.length));
-	candidateScore["combinedScore"] = (score * perc_classic_q) + (scoreOKC * perc_okc_q);
+	//var perc_classic_q = (matchQuestions.length / (matchQuestions.length + matchOKCQuestions.length));
+	//var perc_okc_q = (matchOKCQuestions.length / (matchQuestions.length + matchOKCQuestions.length));
+	//candidateScore["combinedScore"] = (score * perc_classic_q) + (scoreOKC * perc_okc_q);
+	candidateScore["combinedScore"] = scoreOKC;
 	
 	//alert(candidate.name + " classic: " + score + ", okc: " + scoreOKC + ", combined: " + candidateScore["combinedScore"]);
 	
@@ -311,7 +316,7 @@ function makeTableHeader(matches) {
 	var tclass = "";
 	
 	html = "<table><tr class=\"header\"><th>";
-	html = html + "<div class=\"flags span2\"><img src=\"img/gb.png\" onclick=\"changeLanguage(0);\"/> <img src=\"img/de.png\" onclick=\"changeLanguage(1);\"/> <img src=\"img/ru.png\" onclick=\"changeLanguage(2);\"/> <img src=\"img/jp.png\" onclick=\"changeLanguage(3);\"/></div>";
+	html = html + "<div class=\"flags span2\"><img src=\"img/gb.png\" onclick=\"changeLanguage(0);\"/> <img src=\"img/de.png\" onclick=\"changeLanguage(1);\"/> <img src=\"img/ru.png\" onclick=\"changeLanguage(2);\"/> <img src=\"img/it.png\" onclick=\"changeLanguage(3);\"/></div>";
 	html = html + "</th>";
 	
 	for(var i = 0; i < matches.length; i++) {
@@ -455,10 +460,25 @@ function getOKCCellContents(questionId, optionId, match, c_index) {
 	
 
 	html += '<div data-ot="' + fullcomment + '" data-ot-title="' + name + '" data-ot-containInViewport="true" data-ot-tip-joint="bottom left" data-ot-fixed="true" data-ot-target="true" data-ot-close-button-radius="11" data-ot-close-button-cross-size="10" data-ot-close-button-cross-line-width="3" >';
-	html += '<img src="img/speech.png" title="details" />';	
+	html += getImageForWeight(importance);	
 	html += '</div>';
 		
 	return html;
+}
+
+function getImageForWeight(weight) {
+	switch(weight) {
+		case "A little important":
+			return '<img src="img/littleimp.png" title="A little important" />';
+		case "Somewhat important":
+			return '<img src="img/somewhatimp.png" title="Somewhat important" />';
+		case "Very important":
+			return '<img src="img/veryimp.png" title="Very important" />';
+		case "Mandatory":
+			return '<img src="img/mandatory.png" title="Mandatory" />';
+	}
+	
+	return '<img src="img/irrelevant.png" title="Irrelevant" />'; 
 }
 
 function getOptionString(questionId, optionId) {
@@ -522,7 +542,7 @@ function toggleCandidates() {
 		$("#showexcess").html("&laquo; Hide candidates");
 	} else {
 		$(".excess").hide(1000);
-		$("#showexcess").html("Show all candidates &raquo;");
+		$("#showexcess").html("Show more candidates &raquo;");
 	}
 }
 

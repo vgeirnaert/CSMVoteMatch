@@ -19,14 +19,15 @@ if(isset($_SESSION["cdata"])) {
 		<a href="processlogin.php" class="btn btn-large btn-danger">Log out</a>
 		<a href="editcandidate.php" class="btn btn-large btn-primary pull-right">Click here to set or change your profile details &raquo;</a>
 	</div>
-	<div class="span2 pull-right coverview rounded">
+	<form method="post" action="processanswers.php" name="survey" onsubmit="return checkForm();">
+	<!--<div class="span2 pull-right coverview rounded">
 		<h2>Importance</h2>
 		<b>Points to distribute:</b>
 		<h2 id="counter"></h2>
 		<b>Adjust all questions:</b><br>
 		<a href="#" class="btn" onclick="changeAllValues(-0.1); return false;"><b>-</b></a> <a href="#" class="btn" onclick="changeAllValues(0.1); return false;"><b>+</b></a>
 	</div>
-	<form method="post" action="processanswers.php" name="survey" onsubmit="return checkForm();">
+	
 	<div class="span9 coverview rounded">
 		<h2>Statements</h2>
 		<b>Part 1 of 2: </b> Please indicate your stance on the following issues. In addition to the answers you can set the importance of each issue (higher score is more important, lower score is less important) and you can add a comment explaining your answer.
@@ -56,10 +57,10 @@ if(isset($_SESSION["cdata"])) {
 	require_once 'database.php';
 	require_once 'answer_class.php';
 
+	$id = $cdetails["id"];
 	$mysqli = VotematchDB::getConnection();
 	// get candidate classic answers
-	$stmt = $mysqli->prepare("SELECT question_id, candidate_id, answer, weight, comment FROM classic_answers AS a WHERE a.candidate_id = ? ORDER BY a.id ASC");
-	$id = $cdetails["id"];
+	/*$stmt = $mysqli->prepare("SELECT question_id, candidate_id, answer, weight, comment FROM classic_answers AS a WHERE a.candidate_id = ? ORDER BY a.id ASC");
 	$stmt->bind_param("i", $id);
 	$stmt->execute();
 
@@ -68,7 +69,7 @@ if(isset($_SESSION["cdata"])) {
 	while($stmt->fetch()) {
 		array_push($answers, new Answer($question_id, $answer, $weight, $comment));
 	}
-	$stmt->close();
+	$stmt->close();*/
 
 	// get okc answers
 	$stmt = $mysqli->prepare("SELECT o.question_id, a.answer_id, a.weight, a.comment FROM okc_answers AS a LEFT JOIN okc_options AS o ON a.answer_id = o.id WHERE a.candidate_id = ? ORDER BY o.question_id ASC");
@@ -87,14 +88,15 @@ if(isset($_SESSION["cdata"])) {
 	$theQuestions = new Questions();
 	$theQuestions->initClassicQuestions();
 	$theQuestions->initOKCQuestions(true);
-	$theQuestions->printClassicQuestionTable(true, $answers);
+	//$theQuestions->printClassicQuestionTable(true, $answers);
 ?>
 		</table>
-	</div>
+	</div> -->
 	
 	<div class="span11 coverview rounded">
 		<h2>Questions</h2>
-		<b>Part 2 of 2:</b> Please answer the following questions. In addition to the answers you can set the importance of each issue and you can add a comment explaining your answer.
+		Please answer the following 60 questions. In addition to the answers you can set the importance of each issue and you can add a comment explaining your answer.<br><br>
+		It is possible to answer only some of the questions and answer the rest later, as long as you make sure to submit your partial answers using the 'Submit answers' button at the bottom of the page.
 <?php
 	echo $theQuestions->printOKCQuestions($answers_okc);
 	echo $theQuestions->getOKCIds();
@@ -137,7 +139,9 @@ var okc_imp_vi_translations = ["Very important", "Sehr wichtig", "&#1054;&#1095;
 var okc_imp_ma_translations = ["Mandatory", "Verpflichtend", "&#1086;&#1073;&#1103;&#1079;&#1072;&#1090;&#1077;&#1083;&#1100;&#1085;&#1099;&#1081;", "&#24517;&#38920;&#12398;"];
 
 
-var weights = <?php printWeightsArray($answers, $theQuestions); ?>
+//var weights = <?php //printWeightsArray($answers, $theQuestions); ?>
+
+var weights = [];
 var language=0;
 
 var freePoints = 0.0;

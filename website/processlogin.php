@@ -1,6 +1,6 @@
 <?php 
 require_once 'database.php';
-
+ini_set('session.gc_maxlifetime', 20800);
 $mysqli = VotematchDB::getConnection();
 	
 if (mysqli_connect_errno()) {
@@ -12,8 +12,9 @@ if (mysqli_connect_errno()) {
 		$username = $_POST["username"];
 		$password = $_POST["password"];
 		// get candidate details
-		$stmt = $mysqli->prepare("SELECT c.id, c.website, c.thread, c.twitter, c.char_id, c.char_name, c.corp_name, c.alliance_name, c.real_name, c.real_location, c.real_age, c.real_occupation, c.played_since, c.flies_in, c.playstyle, c.can_evemail, c.can_convo, c.email, c.campaign_statement, c.experience_eve, c.experience_real, h.csm FROM candidates AS c LEFT JOIN csm_history AS h ON c.char_id = h.character_id WHERE c.username = ? AND c.password = ?");
-		$stmt->bind_param("ss", $username, $password);
+		$stmt = $mysqli->prepare("SELECT c.id, c.website, c.thread, c.twitter, c.char_id, c.char_name, c.corp_name, c.alliance_name, c.real_name, c.real_location, c.real_age, c.real_occupation, c.played_since, c.flies_in, c.playstyle, c.can_evemail, c.can_convo, c.email, c.campaign_statement, c.experience_eve, c.experience_real, h.csm FROM candidates AS c LEFT JOIN csm_history AS h ON c.char_id = h.character_id WHERE c.username = ? AND c.password = ? AND c.election_id = ?");
+		$election = Config::active_election;
+		$stmt->bind_param("ssi", $username, $password, $election);
 		$stmt->execute();
 
 		$stmt->bind_result($id, $website, $thread, $twitter, $charid, $charname, $corpname, $alliancename, $realname, $realloc, $realage, $realocc, $played, $flies, $playstyle, $bevemail, $bconvo, $email, $campaignstmt, $eveexp, $realexp, $csm);

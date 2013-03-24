@@ -21,7 +21,8 @@ require_once 'database.php';
 			<input type="checkbox" onclick="toggleCandidateVisibility();" checked value="pve" /> PvE (missions, exploration, etc)<br>
 			<input type="checkbox" onclick="toggleCandidateVisibility();" checked value="ind" /> Industry (mining, manufacturing, trading, etc)<br>
 			<input type="checkbox" onclick="toggleCandidateVisibility();" checked value="ldr" /> Leadership (corp/alliance managment, etc)<br>
-			<input type="checkbox" onclick="toggleCandidateVisibility();" checked value="meta" /> Metagaming (scamming, espionage, etc)
+			<input type="checkbox" onclick="toggleCandidateVisibility();" checked value="meta" /> Metagaming (scamming, espionage, etc)<br>
+			<input type="checkbox" onclick="toggleCandidateVisibility();" checked value="oth" /> Other
 		</div>
 		<div class="span3">
 			<h4>CSM Experience</h4>
@@ -48,7 +49,7 @@ require_once 'database.php';
 	if (mysqli_connect_errno()) {
 		echo '<p><h2>Error connecting to database:</h2>' . mysqli_connect_error() . '</p>';
 	} else {
-		$stmt = $mysqli->prepare("SELECT c.id, c.char_id, c.char_name, c.corp_name, c.alliance_name, c.flies_in, c.playstyle, h.csm, c.played_since FROM candidates AS c LEFT JOIN csm_history AS h ON c.char_id = h.character_id WHERE c.election_id = ? ORDER BY RAND()");
+		$stmt = $mysqli->prepare("SELECT c.id, c.char_id, c.char_name, c.corp_name, c.alliance_name, c.flies_in, c.playstyle, h.csm, c.played_since FROM candidates AS c LEFT JOIN csm_history AS h ON c.char_id = h.character_id WHERE c.election_id = ? AND c.can_convo IS NOT NULL ORDER BY RAND()");
 		$election = Config::active_election;
 		$stmt->bind_param("i", $election);
 		$stmt->execute();
@@ -117,19 +118,8 @@ require_once 'database.php';
 			return 'mt5';
 	}
 	
-	function getActivityClass($play) {
-		switch($play) {
-			case "pvp":
-				return "pvp";
-			case "pve":
-				return "pve";
-			case "industry":
-				return "ind";
-			case "leadership":
-				return "ldr";
-			case "metagaming":
-				return "meta";
-		}
+	function getActivityClass($play) {			
+		return $play;
 	}
 ?>
 </div>

@@ -7,13 +7,13 @@ require 'header.php';
 </div>
 <br>
 <div class="row rounded">
-	<div class="span2"><img src="img/gb.png" onclick="changeLanguage(0);"> <img src="img/de.png" onclick="changeLanguage(1);"> <img src="img/ru.png" onclick="changeLanguage(2);"> <img src="img/jp.png" onclick="changeLanguage(3);"></div>
+	<div class="span2"><img src="img/gb.png" onclick="changeLanguage(0);"> <img src="img/de.png" onclick="changeLanguage(1);"> <img src="img/ru.png" onclick="changeLanguage(2);"> <img src="img/it.png" onclick="changeLanguage(3);"></div>
 	<form method="post" action="compare.php" name="survey" onsubmit="return validateForm();">
 	<div class="span11 coverview rounded" id="explanation">
 		<b>Election questionnaire</b><br>
-		After filling in this questionnaire, your answers will be compared to the answers from the CSM candidates and a matching percentage will be calculated. You can adjust the importance of the questions relative to eachother with the plus and minus buttons.
+		After filling in this questionnaire, your answers will be compared to the answers from the CSM candidates and a match percentage will be calculated. Any questions marked as 'Irrelevant' will not count towards your match percentage.
 	</div>
-	<div class="span2 pull-right coverview rounded">
+	<!--<div class="span2 pull-right coverview rounded">
 		<h2>Importance</h2>
 		<b>Points to distribute:</b>
 		<h2 id="counter"></h2>
@@ -47,13 +47,13 @@ require 'header.php';
 <?php
 $theQuestions = new Questions();
 $theQuestions->initClassicQuestions();
-$theQuestions->printClassicQuestionTable(false, null);
+//$theQuestions->printClassicQuestionTable(false, null);
 ?>
 	</table>
 	</div>
-	<br>
+	<br>-->
 	<?php  ?>
-	<div class="span9 coverview rounded">
+	<div class="span11 coverview rounded">
 		<h2>Questions</h2>
 <?php
 $theQuestions->initOKCQuestions(false);
@@ -87,18 +87,18 @@ var opinions = [
 ];
 
 var explanations = ["<b>Election questionnaire</b><br>After filling in this questionnaire, your answers will be compared to the answers from the CSM candidates and a matching percentage will be calculated. You can adjust the importance of the questions relative to eachother with the plus and minus buttons. Note that you need to assign all importance points in order to submit the questionnaire.",
-"<b>Wahl Fragebogen</b><br>Nach dem Ausf&#252;llen dieses Fragebogens werden Ihre Antworten auf die Antworten von den CSM Kandidaten verglichen werden und eine passende Prozentsatz berechnet werden. Sie k&#246;nnen die Bedeutung der Fragen relativ zueinander mit den Plus-und Minus-Tasten.",
-"<b>&#1042;&#1099;&#1073;&#1086;&#1088;&#1099;&#32;&#1072;&#1085;&#1082;&#1077;&#1090;&#1099;</b><br>&#1055;&#1086;&#1089;&#1083;&#1077;&#32;&#1079;&#1072;&#1087;&#1086;&#1083;&#1085;&#1077;&#1085;&#1080;&#1103;&#32;&#1101;&#1090;&#1086;&#1081;&#32;&#1072;&#1085;&#1082;&#1077;&#1090;&#1099;&#44;&#32;&#1042;&#1072;&#1096;&#1080;&#32;&#1086;&#1090;&#1074;&#1077;&#1090;&#1099;&#32;&#1073;&#1091;&#1076;&#1091;&#1090;&#32;&#1089;&#1088;&#1072;&#1074;&#1085;&#1080;&#1074;&#1072;&#1090;&#1100;&#1089;&#1103;&#32;&#1089;&#32;&#1086;&#1090;&#1074;&#1077;&#1090;&#1072;&#1084;&#1080;&#32;&#1086;&#1090;&#32;&#67;&#83;&#77;&#32;&#1082;&#1072;&#1085;&#1076;&#1080;&#1076;&#1072;&#1090;&#1086;&#1074;&#32;&#1080;&#32;&#1089;&#1086;&#1086;&#1090;&#1074;&#1077;&#1090;&#1089;&#1090;&#1074;&#1091;&#1102;&#1097;&#1080;&#1077;&#32;&#1087;&#1088;&#1086;&#1094;&#1077;&#1085;&#1090;&#32;&#1073;&#1091;&#1076;&#1077;&#1090;&#32;&#1088;&#1072;&#1089;&#1089;&#1095;&#1080;&#1090;&#1072;&#1085;&#46;&#32;&#1042;&#1099;&#32;&#1084;&#1086;&#1078;&#1077;&#1090;&#1077;&#32;&#1085;&#1072;&#1089;&#1090;&#1088;&#1086;&#1080;&#1090;&#1100;&#32;&#1074;&#1072;&#1078;&#1085;&#1086;&#1089;&#1090;&#1100;&#32;&#1074;&#1086;&#1087;&#1088;&#1086;&#1089;&#1086;&#1074;&#32;&#1086;&#1090;&#1085;&#1086;&#1089;&#1080;&#1090;&#1077;&#1083;&#1100;&#1085;&#1086;&#32;&#1076;&#1088;&#1091;&#1075;&#32;&#1076;&#1088;&#1091;&#1075;&#1072;&#32;&#1089;&#32;&#1087;&#1083;&#1102;&#1089;&#1086;&#1084;&#32;&#1080;&#32;&#1084;&#1080;&#1085;&#1091;&#1089;&#1086;&#1084;&#32;&#1082;&#1085;&#1086;&#1087;&#1082;&#1072;&#1084;&#1080;&#46;",
-"<b>&#36984;&#25369;&#12450;&#12531;&#12465;&#12540;&#12488;</b><br>&#12371;&#12398;&#12450;&#12531;&#12465;&#12540;&#12488;&#12395;&#35352;&#20837;&#12375;&#12383;&#24460;&#12289;&#12354;&#12394;&#12383;&#12398;&#31572;&#12360;&#12399;&#67;&#83;&#77;&#20505;&#35036;&#32773;&#12363;&#12425;&#12398;&#22238;&#31572;&#12392;&#27604;&#36611;&#12377;&#12427;&#12392;&#12289;&#19968;&#33268;&#29575;&#12364;&#35336;&#31639;&#12373;&#12428;&#12414;&#12377;&#12290;&#12354;&#12394;&#12383;&#12399;&#12289;&#12503;&#12521;&#12473;&#12392;&#12510;&#12452;&#12490;&#12473;&#12398;&#12508;&#12479;&#12531;&#12434;&#20351;&#12387;&#12390;&#12362;&#20114;&#12356;&#12395;&#30456;&#23550;&#30340;&#12394;&#36074;&#21839;&#12398;&#37325;&#35201;&#24230;&#12434;&#35519;&#25972;&#12377;&#12427;&#12371;&#12392;&#12364;&#12391;&#12365;&#12414;&#12377;&#12290;"
+"<b>Wahlbogen</b><br>Nachdem du diesen Fragebogen ausgef&#252;llt hast werden deine Antworten mit den Antworten der CSM Kandidaten verglichen und es wird ein Wert errechnet anhand dessen du sehen kannst wie gut eure Ansichten zusammenpassen. Fragen die du als irrelevant markiert hast werden dabei nicht ber&#252;cksichtigt,",
+"<b>&#1054;&#1087;&#1088;&#1086;&#1089;&#1085;&#1080;&#1082; &#1042;&#1099;&#1073;&#1086;&#1088;&#1086;&#1074;</b><br>&#1055;&#1086;&#1089;&#1083;&#1077; &#1079;&#1072;&#1087;&#1086;&#1083;&#1085;&#1077;&#1085;&#1080;&#1103; &#1086;&#1087;&#1088;&#1086;&#1089;&#1085;&#1080;&#1082;&#1072;, &#1074;&#1072;&#1096;&#1080; &#1086;&#1090;&#1074;&#1077;&#1090;&#1099; &#1073;&#1091;&#1076;&#1091;&#1090; &#1089;&#1088;&#1072;&#1074;&#1085;&#1077;&#1085;&#1099; &#1089; &#1086;&#1090;&#1074;&#1077;&#1090;&#1072;&#1084;&#1080; &#1082;&#1072;&#1085;&#1076;&#1080;&#1076;&#1072;&#1090;&#1086;&#1074; CSM &#1080; &#1073;&#1091;&#1076;&#1077;&#1090; &#1088;&#1072;&#1089;&#1095;&#1080;&#1090;&#1072;&#1085; &#1087;&#1088;&#1086;&#1094;&#1077;&#1085;&#1090; &#1089;&#1086;&#1074;&#1087;&#1072;&#1076;&#1077;&#1085;&#1080;&#1081;. &#1051;&#1102;&#1073;&#1099;&#1077; &#1074;&#1086;&#1087;&#1088;&#1086;&#1089;&#1099; &#1086;&#1090;&#1084;&#1077;&#1095;&#1077;&#1085;&#1085;&#1099;&#1077; &#1082;&#1072;&#1082; '&#1053;&#1077;&#1074;&#1072;&#1078;&#1085;&#1086;' &#1085;&#1077; &#1073;&#1091;&#1076;&#1091;&#1090; &#1079;&#1072;&#1089;&#1095;&#1080;&#1090;&#1072;&#1085;&#1099; &#1087;&#1088;&#1080; &#1088;&#1072;&#1089;&#1095;&#1077;&#1090;&#1077; &#1089;&#1086;&#1074;&#1087;&#1072;&#1076;&#1077;&#1085;&#1080;&#1081;.",
+"<b>Questonario sulle elezioni</b><br>Dopo aver compilato il questionario, le risposte saranno confrontate con le risposte date dai candidati del CSM e sar&#224; calcolata una percentuale di corrispondenza. Qualsiasi domanda indicata come 'irrilevante' non conter&#224; per la percentuale."
 ];
 
-var okc_ans_translations = ["Answers I will accept from a candidate:", "Antworten werde ich von einem Kandidaten akzeptieren:", "&#1054;&#1090;&#1074;&#1077;&#1090;&#1099; &#1103; &#1073;&#1091;&#1076;&#1091; &#1087;&#1088;&#1080;&#1085;&#1080;&#1084;&#1072;&#1090;&#1100; &#1086;&#1090; &#1082;&#1072;&#1085;&#1076;&#1080;&#1076;&#1072;&#1090;&#1086;&#1074;:", "&#31572;&#12360;&#12399;&#31169;&#12364;&#20505;&#35036;&#12363;&#12425;&#21463;&#12369;&#20184;&#12369;&#12414;&#12377;&#12290;"];
-var okc_imp_translations = ["How important is this issue to you?", "Wie wichtig ist dieses Thema f&#252;r Sie?", "&#1053;&#1072;&#1089;&#1082;&#1086;&#1083;&#1100;&#1082;&#1086; &#1074;&#1072;&#1078;&#1085;&#1072; &#1101;&#1090;&#1072; &#1087;&#1088;&#1086;&#1073;&#1083;&#1077;&#1084;&#1072; &#1076;&#1083;&#1103; &#1074;&#1072;&#1089;?", "&#12354;&#12394;&#12383;&#12395;&#12371;&#12398;&#21839;&#38988;&#12364;&#12393;&#12428;&#12367;&#12425;&#12356;&#37325;&#35201;&#12391;&#12377;&#12363;&#65311;"];
-var okc_imp_ni_translations = ["Irrelevant", "&#220;berhaupt nicht wichtig", "&#1053;&#1077; &#1074;&#1072;&#1078;&#1085;&#1086; &#1085;&#1072; &#1074;&#1089;&#1077;&#1093;", "&#12414;&#12387;&#12383;&#12367;&#37325;&#35201;&#12391;&#12399;&#12354;&#12426;&#12414;&#12379;&#12435;"];
-var okc_imp_li_translations = ["A little important", "Ein wenig wichtig", "&#1053;&#1077;&#1084;&#1085;&#1086;&#1075;&#1086; &#1074;&#1072;&#1078;&#1085;&#1099;&#1093;", "&#23569;&#12375;&#37325;&#35201;"];
-var okc_imp_si_translations = ["Somewhat important", "Etwas wichtig", "&#1053;&#1077;&#1089;&#1082;&#1086;&#1083;&#1100;&#1082;&#1086; &#1074;&#1072;&#1078;&#1085;&#1099;&#1093;", "&#12420;&#12420;&#37325;&#35201;"];
-var okc_imp_vi_translations = ["Very important", "Sehr wichtig", "&#1054;&#1095;&#1077;&#1085;&#1100; &#1074;&#1072;&#1078;&#1085;&#1086;", "&#38750;&#24120;&#12395;&#37325;&#35201;&#12394;"];
-var okc_imp_ma_translations = ["Mandatory", "Verpflichtend", "&#1086;&#1073;&#1103;&#1079;&#1072;&#1090;&#1077;&#1083;&#1100;&#1085;&#1099;&#1081;", "&#24517;&#38920;&#12398;"];
+var okc_ans_translations = ["Answers I will accept from a candidate:", "Antworten die ich bei einem Kanditaten akzeptiere:", "&#1052;&#1085;&#1077; &#1087;&#1086;&#1076;&#1086;&#1081;&#1076;&#1091;&#1090; &#1083;&#1102;&#1073;&#1099;&#1077; &#1080;&#1079; &#1089;&#1083;&#1077;&#1076;&#1091;&#1102;&#1097;&#1080;&#1093; &#1086;&#1090;&#1074;&#1077;&#1090;&#1086;&#1074; &#1082;&#1072;&#1085;&#1076;&#1080;&#1076;&#1072;&#1090;&#1086;&#1074;:", "Risposte che io accetter&#242; da un candidato:"];
+var okc_imp_translations = ["How important is this issue to you?", "Wie wichtig ist dir diese Sache?", "&#1053;&#1072;&#1089;&#1082;&#1086;&#1083;&#1100;&#1082;&#1086; &#1074;&#1072;&#1078;&#1077;&#1085; &#1101;&#1090;&#1086;&#1090; &#1074;&#1086;&#1087;&#1088;&#1086;&#1089; &#1076;&#1083;&#1103; &#1074;&#1072;&#1089;?", "Quanto ritieni importante questo argomento?"];
+var okc_imp_ni_translations = ["Irrelevant", "Irrelevant", "&#1053;&#1077;&#1074;&#1072;&#1078;&#1085;&#1086;", "Irrilevante"];
+var okc_imp_li_translations = ["A little important", "Ein bisschen wichtig", "&#1052;&#1072;&#1083;&#1086;&#1079;&#1085;&#1072;&#1095;&#1080;&#1084;&#1086;", "Poco importante"];
+var okc_imp_si_translations = ["Somewhat important", "Irgendwie schon wichtig", "&#1057;&#1088;&#1077;&#1076;&#1085;&#1077;&#1081; &#1074;&#1072;&#1078;&#1085;&#1086;&#1089;&#1090;&#1080;", "Abbastanza importante"];
+var okc_imp_vi_translations = ["Very important", "Sehr wichtig", "&#1054;&#1095;&#1077;&#1085;&#1100; &#1074;&#1072;&#1078;&#1085;&#1086;", "Molto importante"];
+var okc_imp_ma_translations = ["Mandatory", "Zwingend", "&#1054;&#1073;&#1103;&#1079;&#1072;&#1090;&#1077;&#1083;&#1100;&#1085;&#1086;", "Obbligatorio"];
 
 <?php
 echo "var language=" . getLang($_GET["lang"]) . ";";
@@ -111,7 +111,7 @@ function getLang($lang) {
 		case "rus":
 			return 2;
 			break;
-		case "jp":
+		case "it":
 			return 3;
 			break;
 		default:

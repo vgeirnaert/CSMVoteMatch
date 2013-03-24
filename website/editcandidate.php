@@ -143,12 +143,13 @@ if(isset($_SESSION["cdata"])) {
 	</div>
 	<div class="span5 coverview rounded pull-right">
 		<h2>Contact information</h2>
+		<i>Note: URLs must start with http:// or https://</i></br>
 		<div class="span5">
 			<div class="span2">
 				Website URL
 			</div>
 			<div class="span3">
-				<input type="text" value="<?php echo $cdetails["website"]; ?>" name="url">
+				<input type="text" value="<?php echo $cdetails["website"]; ?>" placeholder="http://" name="url">
 			</div>
 		</div>
 		<div class="span5">
@@ -156,7 +157,7 @@ if(isset($_SESSION["cdata"])) {
 				Twitter name
 			</div>
 			<div class="span3">
-				<input type="text" value="<?php echo $cdetails["twitter"]; ?>" name="twitter">				
+				@<input type="text" value="<?php echo $cdetails["twitter"]; ?>" name="twitter">				
 			</div>
 		</div>
 		<div class="span5">
@@ -164,7 +165,7 @@ if(isset($_SESSION["cdata"])) {
 				Campaign thread URL
 			</div>
 			<div class="span3">
-				<input type="text" value="<?php echo $cdetails["thread"]; ?>" name="thread">
+				<input type="text" value="<?php echo $cdetails["thread"]; ?>" name="thread" placeholder="http://">
 			</div>
 		</div>
 		<div class="span5">

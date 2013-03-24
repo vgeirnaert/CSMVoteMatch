@@ -16,7 +16,7 @@ class VotematchDB {
 	
 	public static function getConnection() {
 		// if the connection isn't set yet
-		if(self::$conn == NULL) {
+		if(self::$conn == NULL || self::$conn->connect_errno) {
 			self::$conn = self::connectDB(); // connect
 		}
 		
@@ -44,7 +44,7 @@ class VotematchDB {
 		if(self::$conn != NULL) {
 			self::$numconn--;
 			// and if the connection exists without error AND if we have no other open connections anymore
-			if(!self::$conn->connect_errno && self::$numconn < 1) {
+			if(!self::$conn->connect_errno && self::$numconn < 0) {
 				// close it
 				self::$conn->close();
 				self::$conn = NULL;

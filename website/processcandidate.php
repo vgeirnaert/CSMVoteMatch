@@ -53,29 +53,41 @@ if (mysqli_connect_errno()) {
 		$stmt = $mysqli->prepare("UPDATE candidates SET website=?, thread=?, twitter=?, real_name=?, real_location=?, real_age=?, real_occupation=?, played_since=?, flies_in=?, playstyle=?, can_evemail=?, can_convo=?, email=?, campaign_statement=?, experience_eve=?, experience_real=? WHERE id=?");
 		$stmt->bind_param("sssssissssiissssi", $url, $thread, $twitter, $rlname, $rlloc, $rlage, $rljob, $playsince, $playspace, $playstyle, $canevemail, $canconvo, $email, $campaign, $eveexp, $rlexp, $userid);
 		$stmt->execute();
+		$error_msg = $stmt->error;
 		$stmt->close();
-		
-		$stmt = $mysqli->prepare("DELETE FROM open_answers WHERE candidate_id = ?");
-		$stmt->bind_param("i", $userid);
-		$stmt->execute();
-		$stmt->close();
-		
-		
-		$stmt = $mysqli->prepare("INSERT INTO open_answers (question_id, candidate_id, answer) VALUES(?, ?, ?)");
-		$questionid = 0;
-		$answer = "";
-		$stmt->bind_param("iis", $questionid, $userid, $answer);
-		
-		for($i = 0; $i < count($questions); $i++) {
-			$qtuple = $questions[$i];
-			$questionid = $qtuple["qid"];
-			$answer = $qtuple["answer"];
+		$isProblem = false;
+		if($error_msg == "") {
+			$stmt = $mysqli->prepare("DELETE FROM open_answers WHERE candidate_id = ?");
+			$stmt->bind_param("i", $userid);
 			$stmt->execute();
+			$error_msg = $stmt->error;
+			$stmt->close();
+			
+			if($error_msg == "") {
+				$stmt = $mysqli->prepare("INSERT INTO open_answers (question_id, candidate_id, answer) VALUES(?, ?, ?)");
+				$questionid = 0;
+				$answer = "";
+				$stmt->bind_param("iis", $questionid, $userid, $answer);
+				
+				for($i = 0; $i < count($questions); $i++) {
+					$qtuple = $questions[$i];
+					$questionid = $qtuple["qid"];
+					$answer = $qtuple["answer"];
+					$stmt->execute();
+				}
+				
+				$stmt->close();
+			} else {
+				printError($error_msg);
+				$isProblem = true;
+			}
+		} else {
+			printError($error_msg);
+			$isProblem = true;
 		}
 		
-		$stmt->close();
-		
-		include 'header.php';
+		if(!$isProblem) {
+			include 'header.php';
 ?>
 <div class="row inverted rounded">
 	<h1>Success!</h1>
@@ -83,11 +95,16 @@ if (mysqli_connect_errno()) {
 <br>
 <div class="row rounded">
 	Details entered succesfully!</br><br/>
-	Click <a href="editcandidate.php">here</a> to return to your profile.
+	Click <a href="login.php">here</a> to return to your profile.
 </div>
 <?php
-		include 'footer.php';
+			include 'footer.php';
+		}
 	} 
+}
+
+function printError($string) {
+	echo '<p><h2>Error executing query:</h2>' . $string . '</p>Please contact Dierdra Vaal';
 }
 
 VotematchDB::close();
@@ -101,7 +118,7 @@ function checkUrl($url) {
 }
 
 function sanitize($string) {
-	return htmlspecialchars($string);
+	return stripslashes($string);
 }
 
 function checkAge($age) {

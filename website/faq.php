@@ -13,9 +13,9 @@
 		<p>The Council of Stellar Management (CSM) is a group of players elected to be player representatives towards the developer of Eve Online: CCP Games. This group of players is in direct contact with the people developing Eve Online and are able to make suggestions to the developers, give feedback on game features being produced or considered by CCP and highlight problems that the playerbase finds important. They are the advocates that can bring <i>your</i> concerns or ideas to the attention of the developers.</p>
 		<a name="matching"><h2>How does matching work?</h2></a>
 		<p>One of the things we provide is a matching service, which aims to provide you with a list of candidates who have the same ideas about Eve Online as you do!<br><br>
-		The matching is done based on a questionnaire of 40 statements about Eve Online, which can be answered from <i>Strongly disagree</i> through <i>No opinion</i> to <i>Strongly agree</i>. We have collected the answers from the candidates in the CSM election. After you fill in the questionnaire on <a href="survey.php">this page</a>, your answers will be compared to the answers of the candidates.<br><br>
+		The matching is done based on a questionnaire of a number of statements about Eve Online. We have collected the answers from the candidates in the CSM election. After you fill in the questionnaire on <a href="survey.php">this page</a>, your answers will be compared to the answers of the candidates.<br><br>
 		Based on how each of your answers matches up with each of the answers of each of the candidates, we calculate a score from zero (no match) to a hundred percent (perfect match) for each candidate. You will then be presented with an overview of all the candidates and their answers, ranked from highest match to lowest match.<br><br>
-		For a detailed explanation of the matching algorithm, <a href="https://github.com/vgeirnaert/CSMVoteMatch#how-matching-is-done" target="_blank">go here</a>.</p>		
+		We use a matching algoritm similar to the one used on the dating website OKCupid - though we use the values 0 (irrelevant), 1 (a little important), 5 (somewhat important), 10 (very important) and 50 (mandatory) instead of OKCupid's 0, 1, 10, 50, 250. For a detailed explanation of the matching algorithm, <a href="http://www.okcupid.com/help/match-percentages" target="_blank">go here</a>.</p>		
 		<a name="trust"><h2>How do I know I can trust this website?</h2></a>
 		<p>Vote Match aims to be as transparent as possible. Candidates can verify that their answers are stored correctly at any time, as well as adjust their stored information at their discretion. All the matching calculations are performed client-side through <a href="js/compare.js" target="_blank">Javascript</a>, meaning the code for it can be verified by anyone. Additionally, the entire source for this website can be found at our <a href="https://github.com/vgeirnaert/CSMVoteMatch" target="_blank">Github repository</a>.</p>
 		<a name="who"><h2>Who runs this website?</h2></a>
@@ -34,6 +34,19 @@
 		<p>If you are not sure which candidate would be a good choice for you, you can use our <a href="survey.php">matching service</a> to see which candidates share a similar view on Eve with you. See <a href="#most">How to get the most out of Vote Match</a> for more details on how to best get information on the candidates.</p>
 		<a name="contact"><h2>How do I contact the Vote Match admin?</h2></a>
 		<p>You can contact <a href="https://gate.eveonline.com/Profile/Dierdra%20Vaal" target="_blank">Dierdra Vaal</a> through evemail.</p>
+		<h1>Acknowledgments</h1>
+		The following players were of great help in getting Vote Match 2.0 up and running:
+		<ul>
+			<li><a href="https://gate.eveonline.com/Profile/Mike Devoid" target="_blank">Mike deVoid</a> - for encouraging a more flexible question format and help with gathering high quality questions</li>
+			<li><a href="https://gate.eveonline.com/Profile/Gilbaron" target="_blank">Gilbaron</a> - for translating the questions into German</li>
+			<li><a href="https://gate.eveonline.com/Profile/Greene Lee" target="_blank">Greene Lee</a> - for translating the questions into Russian</li>
+			<li><a href="https://gate.eveonline.com/Profile/Dark Eirlys" target="_blank">Dark Eirlys</a> - for translating the questions into Italian</li>
+			<li><a href="https://gate.eveonline.com/Profile/Two Step" target="_blank">Two Step</a> - For giving feedback on the questionnaire</li>
+			<li><a href="https://gate.eveonline.com/Profile/Trebor Daehdoow" target="_blank">Trebor Daehdoow</a> - For giving feedback on the questionnaire</li>
+			<li><a href="https://gate.eveonline.com/Profile/Meissa Anunthiel" target="_blank">Meissa Anunthiel</a> - For giving feedback on the questionnaire</li>
+			<li><a href="https://gate.eveonline.com/Profile/Alekseyev Karrde" target="_blank">Alekseyev Karrde</a> - For giving feedback on the questionnaire</li>
+			<li>All the players that submitted question suggestions in the various threads</li>
+		</ul>
 	</div>
 </div>
 

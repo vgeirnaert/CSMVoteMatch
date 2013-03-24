@@ -101,7 +101,7 @@ class Questions {
 			 '<td class="answer"><a href="#" onclick="decrementWeight(' . $i . '); return false;" class="btn btnsmall">-</a><input type="text" class="tiny" name="q' . $i . '_weight" value="' . $weight_value . '" width="2" onchange="changeValue(' . $i . ');" class="noEnterSubmit" /><a href="#" onclick="incrementWeight(' . $i . '); return false;" class="btn btnsmall">+</a></td></tr>';
 			 
 			if($showComments)
-				echo '<tr><td colspan="7"><div class="collapse" id="r' . $i . '"><input type="text" class="span9" name="c' . $i . '" placeholder="You can explain your answer here" value="' . $answer->getComment() . '" /></div></td></tr>';
+				echo '<tr><td colspan="7"><div class="collapse" id="r' . $i . '"><input type="text" class="span9" name="c' . $i . '" placeholder="You can explain your answer here" value="' . addslashes($answer->getComment()) . '" /></div></td></tr>';
 		}
 	}
 	
@@ -167,14 +167,14 @@ class Questions {
 				$current_id = "-1";
 				$count = -1;
 				while($stmt->fetch()) {
-					if($current_id != $qid) {
-						array_push($this->question_ids, $qid);
+					if($current_id != $id) {
+						array_push($this->question_ids, $id);
 						$count++;
 					}
 						
-					$okc_js_array .= $this->addToJsArray($current_id, $qid, $q_en, $q_ger, $q_rus, $q_jp, $o_en, $o_ger, $o_rus, $o_jp, $optionid);
-					$this->addOkcData($current_id, $qid, $q_en, $q_ger, $q_rus, $q_jp, $o_en, $o_ger, $o_rus, $o_jp, $count, $optionid, $showComments);
-					$current_id = $qid;
+					$okc_js_array .= $this->addToJsArray($current_id, $id, $q_en, $q_ger, $q_rus, $q_jp, $o_en, $o_ger, $o_rus, $o_jp, $optionid);
+					$this->addOkcData($current_id, $id, $q_en, $q_ger, $q_rus, $q_jp, $o_en, $o_ger, $o_rus, $o_jp, $count, $optionid, $showComments);
+					$current_id = $id;
 				}
 				
 				// we're finished, add closing brackets for last object and final array closing bracket
@@ -272,8 +272,12 @@ class Questions {
 		if($answer != null)
 			$answer_value = $answer->getWeight();
 			
+		$nobrackets = "false";
+		if($showComments)
+			$nobrackets = "true";
+			
 		$html = "<br><span class=\"okc_imp\">How important is this issue to you?</span><br>
-				<select name=\"imp_$question\" onchange=\"onImportanceChanged('$name', this)\">
+				<select name=\"imp_$question\" onchange=\"onImportanceChanged('$question', this, $nobrackets)\">
 					<option class=\"okc_imp_ni\" value=\"ni\" " . $this->getSelected($answer_value, 0) . " >Irrelevant</option>
 					<option class=\"okc_imp_li\" value=\"li\" " . $this->getSelected($answer_value, 1) . " >A little important</option>
 					<option class=\"okc_imp_si\" value=\"si\" " . $this->getSelected($answer_value, 5) . " >Somewhat important</option>
@@ -287,7 +291,7 @@ class Questions {
 			if($answer != null)
 				$comment = $answer->getComment();
 				
-			$html .= '<input type="text" name="okc_c' . $question . '" class="span10" placeholder="You can explain your answer here" value="' . $comment . '" />';
+			$html .= '<input type="text" name="okc_c' . $question . '" class="span10" placeholder="You can explain your answer here" value="' . htmlspecialchars($comment, ENT_QUOTES) . '" />';
 		}
 			
 		$html .= "</div>";

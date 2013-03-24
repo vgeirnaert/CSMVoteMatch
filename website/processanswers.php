@@ -73,10 +73,14 @@ if (mysqli_connect_errno()) {
 				$answer = intval($_POST["ans_" . $qid]);
 				$weight = parseOKCWeight($_POST["imp_" . $qid]);
 				$comment = sanitize($_POST["okc_c" . $qid]);
-				$stmt->execute();
+				//$stmt->execute();
 				//echo "okc $userid $answer $weight [$comment] ";
-				//if(!$stmt->execute()) echo mysqli_stmt_error($stmt);
-				//echo "</br>";
+				
+				if($answer != 0) {
+					if(!$stmt->execute())
+						doError(mysqli_stmt_error($stmt));
+				}
+				
 			}
 			$stmt->close();
 		
@@ -88,7 +92,7 @@ if (mysqli_connect_errno()) {
 <br>
 <div class="row rounded">
 	Answers entered succesfully!</br><br/>
-	Click <a href="editcandidate.php">here</a> to return to your profile.
+	Click <a href="login.php">here</a> to return to your profile.
 </div>
 <?php
 			include 'footer.php';
@@ -101,13 +105,31 @@ if (mysqli_connect_errno()) {
 <br>
 <div class="row rounded">
 	There was an issue with your answers and they were not saved, sorry :(.</br><br/>
-	Click <a href="editcandidate.php">here</a> to return to your profile.<br/><br/>
+	Click <a href="login.php">here</a> to return to your profile.<br/><br/>
 	If this happens again, please contact <a href="https://gate.eveonline.com/Profile/Dierdra%20Vaal" target="_blank">Dierdra Vaal</a>.
 </div>
 <?php
 			include 'footer.php';
 		}
 	} 
+}
+
+function doError($string) {
+	include 'header.php';
+?>
+<div class="row inverted rounded">
+	<h1>Error!</h1>
+</div>
+<br>
+<div class="row rounded">
+	<?php echo $string; ?></br><br/>
+	Click <a href="login.php">here</a> to return to your profile.<br><br>
+	If this happens again, please contact <a href="https://gate.eveonline.com/Profile/Dierdra%20Vaal" target="_blank">Dierdra Vaal</a>.
+</div>
+<?php
+	include 'footer.php';
+	
+	exit();
 }
 
 VotematchDB::close();
@@ -124,7 +146,7 @@ function sanitize($string) {
 	if($string == null)
 		return "";
 		
-	return htmlspecialchars($string);
+	return stripslashes($string);
 }
 
 function checkAge($age) {
