@@ -52,9 +52,9 @@ if(!isset($pagetitle))
                     <div class="nav-collapse collapse">
                         <ul class="nav">
                             <li><a href="index.php" class="brand">Vote Match 2.0</a></li>
-                            <!--<li><a href="survey.php">Which candidate represents you?</a></li>-->
+                            <li><a href="survey.php">Which candidate represents you?</a></li>
                             <li><a href="candidates.php">Candidates overview</a></li>
-							<!--<li><a href="compare.php">Candidate comparison</a></li>-->
+							<li><a href="compare.php">Candidate comparison</a></li>
                             <li class="dropdown">
                                 <a href="#" class="dropdown-toggle" data-toggle="dropdown">Help & FAQ<b class="caret"></b></a>
                                 <ul class="dropdown-menu">

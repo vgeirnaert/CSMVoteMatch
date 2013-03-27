@@ -215,6 +215,18 @@ var madeMatches;
 
 // sort function, people with a higher score will be sorted ahead of those with a lower score
 function sortCandidateArray(a,b) {
+
+	// sort 0 score candidates randomly
+	// this makes simply loading compare.php fairer since candidates are shuffled randomly
+	if(b["combinedScore"] == 0 && a["combinedScore"] == 0) {
+		var rand = Math.random();
+
+		rand = rand * 2;
+		rand = rand - 1;
+
+		return Math.round(rand);
+	}
+	
 	return (b["combinedScore"] - a["combinedScore"]);
 }
 
@@ -240,7 +252,7 @@ function printResults(matches) {
 	html = html + makeTableFooter(matches);
 		
 	$("#contentholder").html(html);
-	$("#showexcess").html("Show all candidates &raquo;");
+	$("#showexcess").html("Show more candidates &raquo;");
 	
 	window.setTimeout(refreshComments,50);
 }

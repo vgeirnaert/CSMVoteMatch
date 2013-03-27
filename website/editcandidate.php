@@ -1,4 +1,5 @@
 <?php 
+ini_set('session.gc_maxlifetime', 20800);
 session_start();
 
 if(isset($_SESSION["cdata"])) {
@@ -17,6 +18,7 @@ if(isset($_SESSION["cdata"])) {
 	<div class="span11 coverview rounded">
 		<a href="editanswers.php" class="btn btn-large btn-primary">&laquo; Click here to set or change your answers to the questionnaire</a>
 		<a href="processlogin.php" class="btn btn-large btn-danger pull-right">Log out</a>
+		<br><b>Notice:</b> We recommend <i>saving your progress every 30 minutes or so</i> to avoid session timeout. You'll be able to continue where you left off afterwards. We apologise for the inconvenience.
 	</div>
 	<div class="span5 coverview rounded pull-right">
 		<img src="https://image.eveonline.com/Character/<?php echo $cdetails["charid"]; ?>_512.jpg" />

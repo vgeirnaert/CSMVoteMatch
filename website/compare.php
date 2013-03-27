@@ -325,4 +325,10 @@ var language = 0;
 <script src="js/compare.js"></script>
 <script src="js/vendor/opentip-jquery.js"></script>
 
+<?php if(!isset($_POST["ids"])) { ?>
+<script type="text/javascript">
+toggleCandidates();
+</script>
+<?php } ?>
+
 <?php include 'footer.php'; ?>

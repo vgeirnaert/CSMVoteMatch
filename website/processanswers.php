@@ -7,6 +7,7 @@ $mysqli = VotematchDB::getConnection();
 if (mysqli_connect_errno()) {
 	echo '<p><h2>Error connecting to database:</h2>' . mysqli_connect_error() . '</p>';
 } else {
+	ini_set('session.gc_maxlifetime', 20800);
 	session_start();
 	if(isset($_SESSION["cdata"])) {
 		$theQuestions = new Questions();
@@ -77,8 +78,11 @@ if (mysqli_connect_errno()) {
 				//echo "okc $userid $answer $weight [$comment] ";
 				
 				if($answer != 0) {
-					if(!$stmt->execute())
+					if(!$stmt->execute()) {
 						doError(mysqli_stmt_error($stmt));
+						exit();
+					}
+						
 				}
 				
 			}
@@ -97,21 +101,11 @@ if (mysqli_connect_errno()) {
 <?php
 			include 'footer.php';
 		} else {
-			include 'header.php';
-?>
-<div class="row inverted rounded">
-	<h1>Error!</h1>
-</div>
-<br>
-<div class="row rounded">
-	There was an issue with your answers and they were not saved, sorry :(.</br><br/>
-	Click <a href="login.php">here</a> to return to your profile.<br/><br/>
-	If this happens again, please contact <a href="https://gate.eveonline.com/Profile/Dierdra%20Vaal" target="_blank">Dierdra Vaal</a>.
-</div>
-<?php
-			include 'footer.php';
+			doError("There was an issue with your answers and they were not saved, sorry :(.");
 		}
-	} 
+	} else {
+		doError("Session timeout"); 
+	}
 }
 
 function doError($string) {
@@ -123,13 +117,16 @@ function doError($string) {
 <br>
 <div class="row rounded">
 	<?php echo $string; ?></br><br/>
-	Click <a href="login.php">here</a> to return to your profile.<br><br>
-	If this happens again, please contact <a href="https://gate.eveonline.com/Profile/Dierdra%20Vaal" target="_blank">Dierdra Vaal</a>.
+	This can <i>possibly</i> be fixed by doing the following (in this order):
+	<ul><li>Open <a href="login.php">the login page</a> <b>in a new tab in your browser</b></li>
+	<li>Log in again through the login page you opened in the other tab</li>
+	<li>Use the <b>back button of your browser</b> to go back from this page to your questionnaire page</li>
+	<li>Re-submit your answers on the questionnaire page</li>
+	</ul>
+	We apologise for the inconvenience. If this happens again, please contact <a href="https://gate.eveonline.com/Profile/Dierdra%20Vaal" target="_blank">Dierdra Vaal</a>.
 </div>
 <?php
 	include 'footer.php';
-	
-	exit();
 }
 
 VotematchDB::close();

@@ -6,6 +6,7 @@ $mysqli = VotematchDB::getConnection();
 if (mysqli_connect_errno()) {
 	echo '<p><h2>Error connecting to database:</h2>' . mysqli_connect_error() . '</p>';
 } else {
+	ini_set('session.gc_maxlifetime', 20800);
 	session_start();
 	if(isset($_SESSION["cdata"])) {
 	
@@ -100,7 +101,9 @@ if (mysqli_connect_errno()) {
 <?php
 			include 'footer.php';
 		}
-	} 
+	} else {
+		printError("Session timeout! This can possibly be fixed by opening the login page <b>in a new tab of your browser</b>, log in again, then using <b>the back button</b> on your browser go back to your profile page and then re-submit your answers. We apologise for the inconvenience.");
+	}
 }
 
 function printError($string) {

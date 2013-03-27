@@ -6,6 +6,7 @@
 <br>
 <div class="row rounded">
 	<h1>Login</h1>
+	Are you a candidate in the CSM elections but do not have login information? Please contact <a href="https://gate.eveonline.com/Profile/Dierdra%20Vaal">Dierdra Vaal</a> to request it!<br/><br/>
 	<form method="post" action="processlogin.php" name="loginform">
 	<div class="span12">
 		<div class="span2">

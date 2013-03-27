@@ -1,5 +1,7 @@
 <?php 
 error_reporting(E_ALL);
+
+ini_set('session.gc_maxlifetime', 20800);
 session_start();
 
 if(isset($_SESSION["cdata"])) {
@@ -18,6 +20,7 @@ if(isset($_SESSION["cdata"])) {
 	<div class="span11 coverview rounded">
 		<a href="processlogin.php" class="btn btn-large btn-danger">Log out</a>
 		<a href="editcandidate.php" class="btn btn-large btn-primary pull-right">Click here to set or change your profile details &raquo;</a>
+		<br><b>Notice:</b> We recommend <i>saving your progress every 30 minutes or so</i> to avoid session timeout. You'll be able to continue where you left off afterwards. We apologise for the inconvenience.
 	</div>
 	<form method="post" action="processanswers.php" name="survey" onsubmit="return checkForm();">
 	<!--<div class="span2 pull-right coverview rounded">
