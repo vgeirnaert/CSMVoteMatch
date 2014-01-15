@@ -249,9 +249,9 @@ class Questions {
 			if($answer != null)
 				$answervalue = $answer->getAnswer();
 				
-			$html .= '<input type="radio" name="ans_' . $qid .'" value="' . $optionid . '" ' . $this->getChecked($optionid, $answervalue) . ' />' . $o_en . '<br>';
+			$html .= '<label><input type="radio" name="ans_' . $qid .'" value="' . $optionid . '" ' . $this->getChecked($optionid, $answervalue) . ' />' . $o_en . '</label><br>';
 		} else
-			$html .= '<input type="checkbox" name="ans_' . $qid .'[]" value="' . $optionid . '" /> <span class="option_' . $i . '">' . $o_en . '</span><br>';
+			$html .= '<label><input type="checkbox" name="ans_' . $qid .'[]" value="' . $optionid . '" /> <span class="option_' . $i . '">' . $o_en . '</span></label><br>';
 		
 		return $html;
 	}

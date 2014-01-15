@@ -126,25 +126,30 @@ function matchCandidate(user, comparer, candidateIndex) {
 	var maxUserScore = 0;
 	var okcScoreC = 0;
 	var maxCandidateScore = 0;
+	
 	for(var i = 0; i < matchOKCQuestions.length; i++) {
 		var key = getQuestionKey(okcQuestionIds[matchOKCQuestions[i]]);
-		var userAnswer = user.okc_answers[key]["answer"];
-		var userWeight = user.okc_answers[key]["weight"];
 		
-		var candidateAnswer = [];
-		if(typeof candidate.okc_answers[key] != 'undefined')
-			candidateAnswer = candidate.okc_answers[key]["answer"];
+		var userAnswer = [];
+		var userWeight = 0;
+		if(typeof user.okc_answers[key] != 'undefined') {
+			userAnswer = user.okc_answers[key]["answer"];
+			userWeight = user.okc_answers[key]["weight"];
+		}
 			
+		var candidateAnswer = [];
 		var candidateWeight = 0;
-		if(typeof candidate.okc_answers[key] != 'undefined')
+		if(typeof candidate.okc_answers[key] != 'undefined') {
+			candidateAnswer = candidate.okc_answers[key]["answer"];
 			candidateWeight = candidate.okc_answers[key]["weight"];
+		}	
 		
 		// calculate okc score and add
 		
-			var questionScoreU = comparer.scoreQuestionOKC(userAnswer, userWeight, candidateAnswer);
-			var questionScoreC = comparer.scoreQuestionOKC(userAnswer, candidateWeight, candidateAnswer);
-			okcScoreU += questionScoreU;
-			maxUserScore += userWeight;
+		var questionScoreU = comparer.scoreQuestionOKC(userAnswer, userWeight, candidateAnswer);
+		var questionScoreC = comparer.scoreQuestionOKC(userAnswer, candidateWeight, candidateAnswer);
+		okcScoreU += questionScoreU;
+		maxUserScore += userWeight;
 			
 		if(userWeight != 0) {
 			okcScoreC += questionScoreC;
@@ -215,7 +220,6 @@ var madeMatches;
 
 // sort function, people with a higher score will be sorted ahead of those with a lower score
 function sortCandidateArray(a,b) {
-
 	// sort 0 score candidates randomly
 	// this makes simply loading compare.php fairer since candidates are shuffled randomly
 	if(b["combinedScore"] == 0 && a["combinedScore"] == 0) {
@@ -252,7 +256,7 @@ function printResults(matches) {
 	html = html + makeTableFooter(matches);
 		
 	$("#contentholder").html(html);
-	$("#showexcess").html("Show more candidates &raquo;");
+	$("#showexcess").html("Show all candidates &raquo;");
 	
 	window.setTimeout(refreshComments,50);
 }
@@ -314,8 +318,8 @@ function makeQuestion(qIndex, lIndex, isOKC) {
 	var html = "<td class=\"question\">";
 	
 	if(isOKC) {
-		html = html + "<input type=\"checkbox\" value=\"" + matchOKCQuestions[qIndex] + "\" name=\"okc\" /> ";
-		html = html + okc_questions[matchOKCQuestions[qIndex]].question[lIndex] + "</td>";
+		html = html + "<label><input type=\"checkbox\" value=\"" + matchOKCQuestions[qIndex] + "\" name=\"okc\" /> ";
+		html = html + okc_questions[matchOKCQuestions[qIndex]].question[lIndex] + "</label></td>";
 	} else {
 		html = html + "<input type=\"checkbox\" value=\"" + matchQuestions[qIndex] + "\" name=\"q\" /> ";
 		html = html + questions[matchQuestions[qIndex]][lIndex] + "</td>";
@@ -400,12 +404,12 @@ function getBackgroundOKC(userScore, maxUserScore, candidateScore, maxCandidateS
 	
 	// negative match
 	if(userScore == 0) {
-		if(score > 7.0)
+		if(score > 8.0)
 			return html + "verybad";
 		else
 			return html + "bad";
 	} else { // positive match	
-		if(score > 7.0)
+		if(score > 8.0)
 			return html + "verygood";
 		else
 			return html + "good";
@@ -489,7 +493,7 @@ function getImageForWeight(weight) {
 		case "Mandatory":
 			return '<img src="img/mandatory.png" title="Mandatory" />';
 	}
-	
+
 	return '<img src="img/irrelevant.png" title="Irrelevant" />'; 
 }
 
@@ -554,7 +558,7 @@ function toggleCandidates() {
 		$("#showexcess").html("&laquo; Hide candidates");
 	} else {
 		$(".excess").hide(1000);
-		$("#showexcess").html("Show more candidates &raquo;");
+		$("#showexcess").html("Show all candidates &raquo;");
 	}
 }
 

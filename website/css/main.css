@@ -276,3 +276,9 @@ a.selected {
 .excess {
 	display: none;
 }
+
+label {
+	font-size:inherit;
+	margin-bottom: 0px;
+	display: inline;
+}
