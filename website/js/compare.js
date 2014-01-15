@@ -31,7 +31,7 @@ function getQuestionKey(intQuestion) {
 //
 // 	Object{ 
 // 		"candidate": int, // refers to index in candidates array
-// 		"q1" ... "qN": {"fidelity": int, "weight": int}, // one for each question in matchQuestions[]
+// 		"q1" ... "qN": {"fidelity": int, "weight": int}, // one for each question in matchOKCQuestions[]
 //		"score": int
 // 	}
 function matchCandidate(user, comparer, candidateIndex) {
@@ -512,14 +512,6 @@ function compareCandidatesWith() {
 }
 
 function includeQuestions() {
-	matchQuestions = [];
-	
-	$('input').each(function(index, element){
-		if(element.checked && element.name == "q") {
-			matchQuestions.push(parseInt(element.value));
-		}
-	});
-	
 	matchOKCQuestions = [];
 	
 	$('input').each(function(index, element){
@@ -533,29 +525,15 @@ function includeQuestions() {
 }
 
 function excludeQuestions() {
-	var excluding = [];
-	var newQuestions = [];
 	var excluding_okc = [];
 	var newQuestions_okc = [];
 	
 	// add all checked questions to exclude list
-	$('input').each(function(index, element){
-		if(element.checked && element.name == "q") {
-			excluding.push(parseInt(element.value));
-		}
-		
+	$('input').each(function(index, element){		
 		if(element.checked && element.name == "okc") {
 			excluding_okc.push(parseInt(element.value));
 		}
 	});
-	
-	// build match list of all questions not in the exclude list
-	for(var i = 0; i < matchQuestions.length; i++) {
-		if(jQuery.inArray(matchQuestions[i], excluding) == -1)
-			newQuestions.push(matchQuestions[i]);
-	}
-	
-	matchQuestions = newQuestions;
 		
 	// build match list of all okc questions not in the exclude list
 	for(var i = 0; i < matchOKCQuestions.length; i++) {
