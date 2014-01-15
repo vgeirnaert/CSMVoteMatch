@@ -3,72 +3,19 @@ require_once 'database.php';
 require_once 'answer_class.php';
 
 class Questions {
-	private $number_of_questions = NULL;
 	private $number_of_okc_questions = NULL;
-	private $question_string = NULL;
 	private $okc_question_string = NULL;
 	private $okc_html_string = NULL;
 	private $question_ids = array();
-	private $classic_questions = array();
 	private $okc_data = array();
 
-	function getClassicQuestionsArray() {	
-		return $this->question_string;
-	}
 	
 	function getOkcQuestionIds() {	
 		return $this->question_ids;
 	}
-
-	function initClassicQuestions() {		
 	
-		if($this->question_string == NULL) {
-			$mysqli = VotematchDB::getConnection();
-
-			if (mysqli_connect_errno()) {
-				echo '<p><h2>Error connecting to database:</h2>' . mysqli_connect_error() . '</p>';
-			} else {
-				$stmt = $mysqli->prepare("SELECT id, question_en, question_rus, question_ger, question_jp FROM classic_questions AS q WHERE q.election_id = ? ORDER BY q.id ASC");
-				$election = Config::active_election;
-				$stmt->bind_param("i", $election);
-				$stmt->execute();
-
-				$stmt->bind_result($id, $en, $rus, $ger, $jp);
-
-				$this->question_string = 'var questions = [';
-
-				$comma = "";
-				$num_questions = 0;
-				while($stmt->fetch()) {
-					$this->question_string = $this->question_string . "$comma [\"$en\", \"$ger\", \"$rus\", \"$jp\"]";
-					$comma = ",\n";
-					$this->classic_questions[$num_questions] = $id;
-					$num_questions++;
-					
-				}
-				
-				$this->number_of_questions = $num_questions;
-
-				$this->question_string = $this->question_string . '];';
-
-				$stmt->close();
-			}
-		}
-	}
 	
-	 function getIdForQuestion($i) {
-		$this->initClassicQuestions();
-		
-		return $this->classic_questions[$i];
-	}
-	
-	 function getNumClassicQuestions() {
-		$this->initClassicQuestions();
-		
-		return $this->number_of_questions;
-	}
-	
-	 function printClassicQuestionTable($showComments, $answers) {
+	function printClassicQuestionTable($showComments, $answers) {
 		for($i = 0; $i < Questions::getNumClassicQuestions(); $i++) {
 		
 			$answer = new Answer($i, 0, 1, "");

@@ -8,16 +8,12 @@ require_once 'answer_class.php';
 
 $questions = new Questions();
 
-$questions->initClassicQuestions();
 $questions->initOKCQuestions(false);
 $questions->closeDB();
 
 // code to handle the user supplied answers if he came here from survey.php
 function makeUserAnswers() {
 	$line = '{"name":"You", "cid":"0", ';
-	$line .= makeClassicAnswers();
-	
-	$line .=', ';
 	
 	$line .= makeOKCAnswers(); 
 	
@@ -32,32 +28,6 @@ function makeCandidateAnswers() {
 	} else {
 		$all_candidates = array();
 		$election = Config::active_election;
-		
-		/*$stmt = $mysqli->prepare("SELECT c.char_name, c.char_id, a.id, a.answer, a.weight, a.comment FROM candidates AS c RIGHT JOIN classic_answers AS a ON a.candidate_id = c.id WHERE election_id = ? ORDER BY c.char_name ASC, a.id ASC;");
-		$stmt->bind_param("i", $election);
-		$stmt->execute();
-		
-		$stmt->bind_result($c_name, $c_id, $a_id, $answer, $weight, $comment);
-		$current_character = new Candidate(-1, "");
-		while($stmt->fetch()) {
-			if($current_character->getName() != $c_name) {
-				// if we come across a new character, add the previous one to the 
-				// candidates list (assuming it's not our placeholder character object
-				if($current_character->getId() != -1)
-					array_push($all_candidates, $current_character);
-				
-				// make a new character object
-				$current_character = new Candidate($c_id, $c_name);
-			}
-			
-			// add answer details to new character
-			$current_character->addClassicAnswer(new Answer($a_id, $answer, $weight, $comment));
-			
-		}
-		
-		
-		
-		$stmt->close();*/
 		
 		$stmt = $mysqli->prepare("SELECT c.char_name, c.char_id, a.answer_id, a.weight, a.comment, q.id FROM candidates AS c RIGHT JOIN okc_answers AS a ON a.candidate_id = c.id LEFT JOIN okc_options AS o ON o.id = a.answer_id RIGHT JOIN  okc_questions AS q ON o.question_id = q.id WHERE q.election_id = ? ORDER BY c.char_name ASC, q.id ASC;");
 		$stmt->bind_param("i", $election);
@@ -89,18 +59,7 @@ function makeCandidateAnswers() {
 			if($ccount > 0)
 				$js .= ",\n";
 				
-			$js .= '{"name":"' . $candidate->getName() . '", "cid":"' . $candidate->getId() . '", "classic_answers":{';
-			
-			$i = 0;
-			foreach($candidate->getClassicAnswers() as $answer) {
-				if($i > 0)
-					$js .= ",\n";
-					
-				$js .= '"q' . $i . '":{"answer":' . $answer->getAnswer() . ', "weight":' . $answer->getWeight() . ', "comment":"' . addslashes(htmlspecialchars($answer->getComment())) . '"}';
-				$i++;
-			}
-			
-			$js .= '}, "okc_answers":{';
+			$js .= '{"name":"' . $candidate->getName() . '", "cid":"' . $candidate->getId() . '", "okc_answers":{';
 			$i = 0;
 			foreach($candidate->getOkcAnswers() as $answer) {
 				if($i > 0)
@@ -127,29 +86,6 @@ function getCandidateFromList($all_candidates, $c_name) {
 	}
 	
 	return null;
-}
-
-function makeClassicAnswers() {
-	global $questions;
-	
-	$num_questions = $questions->getNumClassicQuestions();
-	
-	$line = '"classic_answers":{';
-	
-	for($i = 0; $i < $num_questions; $i++) {
-		$answer = parseAnswer($_POST["q" . $i]);
-		$weight = parseWeight($_POST["q" . $i . "_weight"]);
-		
-		if($i > 0)
-			$line .= ",";
-			
-		$line = $line . ' "q' . $i . '":{"answer":' . $answer . ', "weight":' . $weight . ' , "comment":""}';
-
-	}
-	
-	$line .= "}";
-	
-	return $line;
 }
 
 function makeOKCAnswers() {
@@ -182,35 +118,6 @@ function makeOKCAnswers() {
 	$line .= '} },';
 	return $line;
 	
-}
-
-// change text code for answer to numeric answer value
-function parseAnswer($ans) {
-	switch($ans) {
-		case "SD":
-			return -2;
-		break;
-		case "D":
-			return -1;
-		break;
-		case "A":
-			return 1;
-		break;
-		case "SA":
-			return 2;
-		break;
-		default: // No opinion or weird input
-			return 0;
-		break;
-	}
-}
-
-// turn unsupplied weights into value 1
-function parseWeight($weight) {
-	if($weight == "")
-		return 1;
-		
-	return $weight;
 }
 
 function parseOKCWeight($weight) {	
@@ -254,12 +161,8 @@ function printOkcQuestionIds() {
 
 <script type="text/javascript">
 <?php 
-echo $questions->getClassicQuestionsArray(); 
-echo "\n\n";
 echo $questions->getOKCQuestionsArray();
 ?>	
-
-var matchQuestions = [];
 
 var candidates = [
 	<?php 
