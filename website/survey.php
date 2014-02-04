@@ -13,46 +13,11 @@ require 'header.php';
 		<b>Election questionnaire</b><br>
 		After filling in this questionnaire, your answers will be compared to the answers from the CSM candidates and a match percentage will be calculated. Any questions marked as 'Irrelevant' will not count towards your match percentage.
 	</div>
-	<!--<div class="span2 pull-right coverview rounded">
-		<h2>Importance</h2>
-		<b>Points to distribute:</b>
-		<h2 id="counter"></h2>
-		<b>Adjust all questions:</b><br>
-		<a href="#" class="btn" onclick="changeAllValues(-0.1); return false;"><b>-</b></a> <a href="#" class="btn" onclick="changeAllValues(0.1); return false;"><b>+</b></a>
-	</div>
-	<div class="span9 coverview rounded">
-	<h2>Statements</h2>
-	<table>
-		<tr class="header">
-			<th></th>
-			<th class="answer even">
-				Strongly disagree
-			</th>
-			<th class="answer uneven">
-				Disagree
-			</th>
-			<th class="answer even">
-				No opinion
-			</th>
-			<th class="answer uneven">
-				Agree
-			</th>
-			<th class="answer even">
-				Strongly agree
-			</th>
-			<th class="answer uneven">
-				Importance
-			</th>
-		</tr>
+	
 <?php
 $theQuestions = new Questions();
-$theQuestions->initClassicQuestions();
-//$theQuestions->printClassicQuestionTable(false, null);
+
 ?>
-	</table>
-	</div>
-	<br>-->
-	<?php  ?>
 	<div class="span11 coverview rounded">
 		<h2>Questions</h2>
 <?php
