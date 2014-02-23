@@ -1,5 +1,5 @@
 window.onload=function(){  
-	randomBackground();
+	//randomBackground();
 }  
 
 function randomBackground() {

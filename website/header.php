@@ -1,6 +1,6 @@
 <?php
 if(!isset($pagetitle))
-	$pagetitle = "CSM Vote Match 2.0";
+	$pagetitle = "CSM Vote Match 2.1";
 ?>
 
 <!DOCTYPE html>
@@ -51,7 +51,7 @@ if(!isset($pagetitle))
                     </a>
                     <div class="nav-collapse collapse">
                         <ul class="nav">
-                            <li><a href="index.php" class="brand">Vote Match 2.0</a></li>
+                            <li><a href="index.php" class="brand"><?php echo $pagetitle; ?></a></li>
                             <li><a href="survey.php">Which candidate represents you?</a></li>
                             <li><a href="candidates.php">Candidates overview</a></li>
 							<li><a href="compare.php">Candidate comparison</a></li>
