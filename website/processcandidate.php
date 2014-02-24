@@ -1,11 +1,9 @@
 <?php 
 require_once 'database.php';
 
-$mysqli = VotematchDB::getConnection();
+try {
+	$pdo = VotematchDB::getConnection();
 	
-if (mysqli_connect_errno()) {
-	echo '<p><h2>Error connecting to database:</h2>' . mysqli_connect_error() . '</p>';
-} else {
 	ini_set('session.gc_maxlifetime', 20800);
 	session_start();
 	if(isset($_SESSION["cdata"])) {
@@ -51,42 +49,50 @@ if (mysqli_connect_errno()) {
 		
 		// db stuff
 		$userid = $_SESSION["cdata"]["id"];
-		$stmt = $mysqli->prepare("UPDATE candidates SET website=?, thread=?, twitter=?, real_name=?, real_location=?, real_age=?, real_occupation=?, played_since=?, flies_in=?, playstyle=?, can_evemail=?, can_convo=?, email=?, campaign_statement=?, experience_eve=?, experience_real=? WHERE id=?");
-		$stmt->bind_param("sssssissssiissssi", $url, $thread, $twitter, $rlname, $rlloc, $rlage, $rljob, $playsince, $playspace, $playstyle, $canevemail, $canconvo, $email, $campaign, $eveexp, $rlexp, $userid);
+		$stmt = $pdo->prepare("UPDATE candidates SET website=:website, thread=:thread, twitter=:twitter, real_name=:real_name, real_location=:real_location, real_age=:real_age, real_occupation=:real_occupation, played_since=:played_since, flies_in=:flies_in, playstyle=:playstyle, can_evemail=:can_evemail, can_convo=:can_convo, email=:email, campaign_statement=:campaign_statement, experience_eve=:experience_eve, experience_real=:experience_real WHERE id=:id");
+		
+		$stmt->bindParam('website', $url);
+		$stmt->bindParam('thread', $thread);
+		$stmt->bindParam('twitter', $twitter);
+		$stmt->bindParam('real_name', $rlname);
+		$stmt->bindParam('real_location', $rlloc);
+		$stmt->bindParam('real_age', $rlage);
+		$stmt->bindParam('real_occupation', $rljob);
+		$stmt->bindParam('played_since', $playsince);
+		$stmt->bindParam('flies_in', $playspace);
+		$stmt->bindParam('playstyle', $playstyle);
+		$stmt->bindParam('can_evemail', $canevemail);
+		$stmt->bindParam('can_convo', $canconvo);
+		$stmt->bindParam('email', $email);
+		$stmt->bindParam('campaign_statement', $campaign);
+		$stmt->bindParam('experience_eve', $eveexp);
+		$stmt->bindParam('experience_real', $rlexp);
+		$stmt->bindParam('id', $userid);
 		$stmt->execute();
-		$error_msg = $stmt->error;
-		$stmt->close();
+
+		$stmt->closeCursor();
 		$isProblem = false;
-		if($error_msg == "") {
-			$stmt = $mysqli->prepare("DELETE FROM open_answers WHERE candidate_id = ?");
-			$stmt->bind_param("i", $userid);
+		
+		$stmt = $pdo->prepare("DELETE FROM open_answers WHERE candidate_id = :cid");
+		$stmt->execute(array('cid'=>$userid));
+		$stmt->closeCursor();
+
+		$stmt = $pdo->prepare("INSERT INTO open_answers (question_id, candidate_id, answer) VALUES(:qid, :cid, :ans)");
+		$stmt->bindParam('qid', $questionid);
+		$stmt->bindParam('cid', $userid);
+		$stmt->bindParam('ans', $answer);
+		$questionid = 0;
+		$answer = "";
+		
+		for($i = 0; $i < count($questions); $i++) {
+			$qtuple = $questions[$i];
+			$questionid = $qtuple["qid"];
+			$answer = $qtuple["answer"];
 			$stmt->execute();
-			$error_msg = $stmt->error;
-			$stmt->close();
-			
-			if($error_msg == "") {
-				$stmt = $mysqli->prepare("INSERT INTO open_answers (question_id, candidate_id, answer) VALUES(?, ?, ?)");
-				$questionid = 0;
-				$answer = "";
-				$stmt->bind_param("iis", $questionid, $userid, $answer);
-				
-				for($i = 0; $i < count($questions); $i++) {
-					$qtuple = $questions[$i];
-					$questionid = $qtuple["qid"];
-					$answer = $qtuple["answer"];
-					$stmt->execute();
-				}
-				
-				$stmt->close();
-			} else {
-				printError($error_msg);
-				$isProblem = true;
-			}
-		} else {
-			printError($error_msg);
-			$isProblem = true;
 		}
 		
+		$stmt->closeCursor();
+		VotematchDB::close();
 		if(!$isProblem) {
 			include 'header.php';
 ?>
@@ -104,13 +110,15 @@ if (mysqli_connect_errno()) {
 	} else {
 		printError("Session timeout! This can possibly be fixed by opening the login page <b>in a new tab of your browser</b>, log in again, then using <b>the back button</b> on your browser go back to your profile page and then re-submit your answers. We apologise for the inconvenience.");
 	}
+} catch (Exception $e) {
+	echo '<p><h2>Error connecting to database:</h2>' . $e->getMessage() . '</p>';
 }
 
 function printError($string) {
 	echo '<p><h2>Error executing query:</h2>' . $string . '</p>Please contact Dierdra Vaal';
 }
 
-VotematchDB::close();
+
 
 function checkUrl($url) {
 	$url = trim($url);

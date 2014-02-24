@@ -23,75 +23,33 @@ if(isset($_SESSION["cdata"])) {
 		<br><b>Notice:</b> We recommend <i>saving your progress every 30 minutes or so</i> to avoid session timeout. You'll be able to continue where you left off afterwards. We apologise for the inconvenience.
 	</div>
 	<form method="post" action="processanswers.php" name="survey" onsubmit="return checkForm();">
-	<!--<div class="span2 pull-right coverview rounded">
-		<h2>Importance</h2>
-		<b>Points to distribute:</b>
-		<h2 id="counter"></h2>
-		<b>Adjust all questions:</b><br>
-		<a href="#" class="btn" onclick="changeAllValues(-0.1); return false;"><b>-</b></a> <a href="#" class="btn" onclick="changeAllValues(0.1); return false;"><b>+</b></a>
-	</div>
-	
-	<div class="span9 coverview rounded">
-		<h2>Statements</h2>
-		<b>Part 1 of 2: </b> Please indicate your stance on the following issues. In addition to the answers you can set the importance of each issue (higher score is more important, lower score is less important) and you can add a comment explaining your answer.
-		<table>
-			<tr class="header">
-				<th></th>
-				<th class="answer even">
-					Strongly disagree
-				</th>
-				<th class="answer uneven">
-					Disagree
-				</th>
-				<th class="answer even">
-					No opinion
-				</th>
-				<th class="answer uneven">
-					Agree
-				</th>
-				<th class="answer even">
-					Strongly agree
-				</th>
-				<th class="answer uneven">
-					Importance
-				</th>
-			</tr>
 <?php
 	require_once 'database.php';
 	require_once 'answer_class.php';
 
 	$id = $cdetails["id"];
-	$mysqli = VotematchDB::getConnection();
-	// get candidate classic answers
-	/*$stmt = $mysqli->prepare("SELECT question_id, candidate_id, answer, weight, comment FROM classic_answers AS a WHERE a.candidate_id = ? ORDER BY a.id ASC");
-	$stmt->bind_param("i", $id);
-	$stmt->execute();
+	try {
+		$pdo = VotematchDB::getConnection();
 
-	$stmt->bind_result($question_id, $candidate_id, $answer, $weight, $comment);
-	$answers = array();
-	while($stmt->fetch()) {
-		array_push($answers, new Answer($question_id, $answer, $weight, $comment));
+		// get okc answers
+		$stmt = $pdo->prepare("SELECT o.question_id, a.answer_id, a.weight, a.comment FROM okc_answers AS a LEFT JOIN okc_options AS o ON a.answer_id = o.id WHERE a.candidate_id = :cid ORDER BY o.question_id ASC");
+		$stmt->execute(array('cid', $id));
+
+		VotematchDB::bindAll($stmt, array($question_id, $answer, $weight, $comment));
+		$answers_okc = array();
+		while($stmt->fetch(PDO::FETCH_BOUND)) {
+			array_push($answers_okc, new Answer($question_id, $answer, $weight, $comment));
+		}
+		$stmt->closeCursor();
+
+		VotematchDB::close();
+	} catch (Exception $e) {
+		echo '<p><h2>Error connecting to database:</h2>' . $e->getMessage() . '</p>';
 	}
-	$stmt->close();*/
-
-	// get okc answers
-	$stmt = $mysqli->prepare("SELECT o.question_id, a.answer_id, a.weight, a.comment FROM okc_answers AS a LEFT JOIN okc_options AS o ON a.answer_id = o.id WHERE a.candidate_id = ? ORDER BY o.question_id ASC");
-	$stmt->bind_param("i", $id);
-	$stmt->execute();
-
-	$stmt->bind_result($question_id, $answer, $weight, $comment);
-	$answers_okc = array();
-	while($stmt->fetch()) {
-		array_push($answers_okc, new Answer($question_id, $answer, $weight, $comment));
-	}
-	$stmt->close();
-
-	VotematchDB::close();
 
 	$theQuestions = new Questions();
-	$theQuestions->initClassicQuestions();
+	//$theQuestions->initClassicQuestions();
 	$theQuestions->initOKCQuestions(true);
-	//$theQuestions->printClassicQuestionTable(true, $answers);
 ?>
 		</table>
 	</div> -->
@@ -114,18 +72,18 @@ if(isset($_SESSION["cdata"])) {
 <script src="js/survey.js"></script>
 <script type="text/javascript">
 <?php
-	echo $theQuestions->getClassicQuestionsArray();
-	echo "\n\n";
+	//echo $theQuestions->getClassicQuestionsArray();
+	//echo "\n\n";
 	echo $theQuestions->getOKCQuestionsArray();
 ?>
-var opinions = [
+/*var opinions = [
 	["Strongly disagree", "Trifft gar nicht zu", "&#1050;&#1072;&#1090;&#1077;&#1075;&#1086;&#1088;&#1080;&#1095;&#1077;&#1089;&#1082;&#1080;&#32;&#1085;&#1077;&#32;&#1089;&#1086;&#1075;&#1083;&#1072;&#1089;&#1077;&#1085;", "&#20840;&#12367;&#21516;&#24847;&#12391;&#12365;&#12394;&#12356;"],
 	["Disagree", "Nicht &uuml;bereinstimmen", "&#1085;&#1077;&#32;&#1089;&#1086;&#1075;&#1083;&#1072;&#1096;&#1072;&#1090;&#1100;&#1089;&#1103;", "&#21516;&#24847;&#12375;&#12394;&#12356;"],
 	["No opinion", "Keine Meinung", "&#1053;&#1077;&#1090;&#32;&#1084;&#1085;&#1077;&#1085;&#1080;&#1103;", "&#24847;&#35211;&#12394;&#12375;"],
 	["Agree", "Stimme zu", "&#1089;&#1086;&#1075;&#1083;&#1072;&#1096;&#1072;&#1090;&#1100;&#1089;&#1103;", "&#21516;&#24847;&#12377;&#12427;"],
 	["Strongly agree", "Stimme voll zu", "&#1055;&#1086;&#1083;&#1085;&#1086;&#1089;&#1090;&#1100;&#1102;&#32;&#1089;&#1086;&#1075;&#1083;&#1072;&#1089;&#1077;&#1085;", "&#24375;&#12367;&#21516;&#24847;&#12377;&#12427;"],
 	["Importance", "Bedeutung", "&#1079;&#1085;&#1072;&#1095;&#1077;&#1085;&#1080;&#1077;", "&#37325;&#35201;&#24615;"],
-];
+];*/
 
 var explanations = ["<b>Election questionnaire</b><br>After filling in this questionnaire, your answers will be compared to the answers from the CSM candidates and a matching percentage will be calculated. You can adjust the importance of the questions relative to eachother with the plus and minus buttons. Note that you need to assign all importance points in order to submit the questionnaire.",
 "<b>Wahl Fragebogen</b><br>Nach dem Ausf&#252;llen dieses Fragebogens werden Ihre Antworten auf die Antworten von den CSM Kandidaten verglichen werden und eine passende Prozentsatz berechnet werden. Sie k&#246;nnen die Bedeutung der Fragen relativ zueinander mit den Plus-und Minus-Tasten.",
@@ -141,10 +99,7 @@ var okc_imp_si_translations = ["Somewhat important", "Etwas wichtig", "&#1053;&#
 var okc_imp_vi_translations = ["Very important", "Sehr wichtig", "&#1054;&#1095;&#1077;&#1085;&#1100; &#1074;&#1072;&#1078;&#1085;&#1086;", "&#38750;&#24120;&#12395;&#37325;&#35201;&#12394;"];
 var okc_imp_ma_translations = ["Mandatory", "Verpflichtend", "&#1086;&#1073;&#1103;&#1079;&#1072;&#1090;&#1077;&#1083;&#1100;&#1085;&#1099;&#1081;", "&#24517;&#38920;&#12398;"];
 
-
-//var weights = <?php //printWeightsArray($answers, $theQuestions); ?>
-
-var weights = [];
+//var weights = [];
 var language=0;
 
 var freePoints = 0.0;
@@ -166,7 +121,7 @@ function checkForm() {
 	include 'footer.php'; 
 }
 
-function printWeightsArray($answers, $theQuestions) {
+/*function printWeightsArray($answers, $theQuestions) {
 	$js = "[";
 	for($i = 0; $i < $theQuestions->getNumClassicQuestions(); $i++) {
 		if($i > 0)
@@ -181,5 +136,5 @@ function printWeightsArray($answers, $theQuestions) {
 	$js .= "];";
 	
 	echo $js;
-}
+}*/
 ?>

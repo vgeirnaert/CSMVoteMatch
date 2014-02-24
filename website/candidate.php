@@ -5,23 +5,21 @@ function sanitize($string) {
 	return htmlspecialchars(stripslashes($string));
 }
 
-$mysqli = VotematchDB::getConnection();
-	
-if (mysqli_connect_errno()) {
-	echo '<p><h2>Error connecting to database:</h2>' . mysqli_connect_error() . '</p>';
-} else {
-	// get candidate details
-	$stmt = $mysqli->prepare("SELECT c.id, c.website, c.thread, c.twitter, c.char_id, c.char_name, c.corp_name, c.alliance_name, c.real_name, c.real_location, c.real_age, c.real_occupation, c.played_since, c.flies_in, c.playstyle, c.can_evemail, c.can_convo, c.email, c.campaign_statement, c.experience_eve, c.experience_real, h.csm FROM candidates AS c LEFT JOIN csm_history AS h ON c.char_id = h.character_id WHERE c.id = ? OR c.char_id = ?");
-	$dbid = $_GET["id"];
-	$cid = $_GET["cid"];
-	$stmt->bind_param("ii", $dbid, $cid);
-	$stmt->execute();
+try {
+	$pdo = VotematchDB::getConnection();
 
-	$stmt->bind_result($id, $website, $thread, $twitter, $charid, $charname, $corpname, $alliancename, $realname, $realloc, $realage, $realocc, $played, $flies, $playstyle, $bevemail, $bconvo, $email, $campaignstmt, $eveexp, $realexp, $csm);
+	// get candidate details
+	$stmt = $pdo->prepare("SELECT c.id, c.website, c.thread, c.twitter, c.char_id, c.char_name, c.corp_name, c.alliance_name, c.real_name, c.real_location, c.real_age, c.real_occupation, c.played_since, c.flies_in, c.playstyle, c.can_evemail, c.can_convo, c.email, c.campaign_statement, c.experience_eve, c.experience_real, h.csm FROM candidates AS c LEFT JOIN csm_history AS h ON c.char_id = h.character_id WHERE c.id = :cid OR c.char_id = :charid");
+	$cid = $_GET["id"];
+	$charid = $_GET["cid"];
+	$stmt->execute(array('cid' => $cid, 'charid' => $charid));
+
+	
+	VoteMatchDB::bindAll($stmt, array($id, $website, $thread, $twitter, $charid, $charname, $corpname, $alliancename, $realname, $realloc, $realage, $realocc, $played, $flies, $playstyle, $bevemail, $bconvo, $email, $campaignstmt, $eveexp, $realexp, $csm));
 	
 	$cdetails = array();
 	$csmarray = array();
-	while($stmt->fetch()) {
+	while($stmt->fetch(PDO::FETCH_BOUND)) {
 		if(count($cdetails) == null) {
 			$cdetails["id"] = $id;
 			$cdetails["website"] = $website;
@@ -55,24 +53,25 @@ if (mysqli_connect_errno()) {
 	
 	$cdetails["csm"] = $csmarray;
 	
-	$stmt->close();
+	$stmt->closeCursor();
 	
 	// get open questions and answers
-	$stmt = $mysqli->prepare("SELECT q.question, a.answer FROM open_questions AS q LEFT JOIN open_answers AS a ON q.id = a.question_id AND a.candidate_id = ? WHERE q.election_id = ? ORDER BY q.id");
+	$stmt = $pdo->prepare("SELECT q.question, a.answer FROM open_questions AS q LEFT JOIN open_answers AS a ON q.id = a.question_id AND a.candidate_id = :canid WHERE q.election_id = elid ORDER BY q.id");
 	
 	$election = Config::active_election;
-	$stmt->bind_param("ii", $cdetails["id"], $election);
 	
-	$stmt->execute();
+	$stmt->execute(array('canid' => $cdetails["id"], 'elid' => $election));
 	
-	$stmt->bind_result($question, $answer);
+	VoteMatchDB::bindAll($stmt, array($question, $answer));
 	
 	$questions = array();
-	while($stmt->fetch()) {
+	while($stmt->fetch(PDO::FETCH_BOUND)) {
 		array_push($questions, array("question"=>$question, "answer"=>sanitize($answer)));
 	}
 	
-	$stmt->close();
+	$stmt->closeCursor();
+} catch (Exception $e) {
+	echo '<p><h2>Error connecting to database:</h2>' . $e->getMessage() . '</p>';
 }
 
 VotematchDB::close();

@@ -1,28 +1,25 @@
 <?php 
 require_once 'database.php';
 ini_set('session.gc_maxlifetime', 20800);
-$mysqli = VotematchDB::getConnection();
-	
-if (mysqli_connect_errno()) {
-	echo '<p><h2>Error connecting to database:</h2>' . mysqli_connect_error() . '</p>';
-} else {
 
+try {
+	$pdo = VotematchDB::getConnection();
+	
 	if(isset($_POST["username"]) && isset($_POST["password"])) {
 	
 		$username = $_POST["username"];
 		$password = $_POST["password"];
 		// get candidate details
-		$stmt = $mysqli->prepare("SELECT c.id, c.website, c.thread, c.twitter, c.char_id, c.char_name, c.corp_name, c.alliance_name, c.real_name, c.real_location, c.real_age, c.real_occupation, c.played_since, c.flies_in, c.playstyle, c.can_evemail, c.can_convo, c.email, c.campaign_statement, c.experience_eve, c.experience_real, h.csm FROM candidates AS c LEFT JOIN csm_history AS h ON c.char_id = h.character_id WHERE c.username = ? AND c.password = ? AND c.election_id = ?");
+		$stmt = $pdo->prepare("SELECT c.id, c.website, c.thread, c.twitter, c.char_id, c.char_name, c.corp_name, c.alliance_name, c.real_name, c.real_location, c.real_age, c.real_occupation, c.played_since, c.flies_in, c.playstyle, c.can_evemail, c.can_convo, c.email, c.campaign_statement, c.experience_eve, c.experience_real, h.csm FROM candidates AS c LEFT JOIN csm_history AS h ON c.char_id = h.character_id WHERE c.username = :username AND c.password = :password AND c.election_id = :elid");
 		$election = Config::active_election;
-		$stmt->bind_param("ssi", $username, $password, $election);
-		$stmt->execute();
+		$stmt->execute(array('username'=>$username, 'password'=>$password, 'elid'=>$election);
 
-		$stmt->bind_result($id, $website, $thread, $twitter, $charid, $charname, $corpname, $alliancename, $realname, $realloc, $realage, $realocc, $played, $flies, $playstyle, $bevemail, $bconvo, $email, $campaignstmt, $eveexp, $realexp, $csm);
+		VotematchDB::bindAll($stmt, array($id, $website, $thread, $twitter, $charid, $charname, $corpname, $alliancename, $realname, $realloc, $realage, $realocc, $played, $flies, $playstyle, $bevemail, $bconvo, $email, $campaignstmt, $eveexp, $realexp, $csm));
 		
 		$cdetails = array();
 		$csmarray = array();
 		$recordfound = false;
-		while($stmt->fetch()) {
+		while($stmt->fetch(PDO::FETCH_BOUND)) {
 			$recordfound = true;
 			if(count($cdetails) == null) {
 				$cdetails["username"] = $username;
@@ -58,19 +55,18 @@ if (mysqli_connect_errno()) {
 		
 		$cdetails["csm"] = $csmarray;
 		
-		$stmt->close();
+		$stmt->closeCursor();
 		
 		if($recordfound) {
 		
 			// get open questions and answers
-			$stmt = $mysqli->prepare("SELECT q.question, a.answer, q.id FROM open_questions AS q LEFT JOIN open_answers AS a ON q.id = a.question_id AND a.candidate_id = ? WHERE q.election_id = ? ORDER BY q.id");
+			$stmt = $pdo->prepare("SELECT q.question, a.answer, q.id FROM open_questions AS q LEFT JOIN open_answers AS a ON q.id = a.question_id AND a.candidate_id = :cid WHERE q.election_id = :elid ORDER BY q.id");
 			
 			$election = Config::active_election;
-			$stmt->bind_param("ii", $cdetails["id"], $election);
 			
-			$stmt->execute();
+			$stmt->execute(array('cid'=>$cdetails["id"], 'elid'=>$election);
 			
-			$stmt->bind_result($question, $answer, $qid);
+			VotematchDb::bindAll($stmt, array($question, $answer, $qid));
 			
 			$questions = array();
 			while($stmt->fetch()) {
@@ -79,7 +75,7 @@ if (mysqli_connect_errno()) {
 			
 			$cdetails["questions"] = $questions;
 			
-			$stmt->close();
+			$stmt->closeCursor();
 			
 			session_start();
 			$_SESSION['cdata'] = $cdetails;
@@ -91,9 +87,13 @@ if (mysqli_connect_errno()) {
 	} else {
 		endSession(false);
 	}
+	
+	VotematchDB::close();
+} catch(Exception $e) {
+	echo '<p><h2>Error connecting to database:</h2>' . $e->getMessage() . '</p>';
 }
 
-VotematchDB::close();
+
 
 function endSession($isError) {
 	session_start();

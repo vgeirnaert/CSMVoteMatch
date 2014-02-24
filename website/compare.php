@@ -22,20 +22,18 @@ function makeUserAnswers() {
 
 function makeCandidateAnswers() {
 
-	$mysqli = VotematchDB::getConnection();
-	if (mysqli_connect_errno()) {
-		echo '<p><h2>Error connecting to database:</h2>' . mysqli_connect_error() . '</p>';
-	} else {
+	try{
+		$pdo = VotematchDB::getConnection();
+
 		$all_candidates = array();
 		$election = Config::active_election;
 		
-		$stmt = $mysqli->prepare("SELECT c.char_name, c.char_id, a.answer_id, a.weight, a.comment, q.id FROM candidates AS c RIGHT JOIN okc_answers AS a ON a.candidate_id = c.id LEFT JOIN okc_options AS o ON o.id = a.answer_id RIGHT JOIN  okc_questions AS q ON o.question_id = q.id WHERE q.election_id = ? ORDER BY c.char_name ASC, q.id ASC;");
-		$stmt->bind_param("i", $election);
-		$stmt->execute();
+		$stmt = $pdo->prepare("SELECT c.char_name, c.char_id, a.answer_id, a.weight, a.comment, q.id FROM candidates AS c RIGHT JOIN okc_answers AS a ON a.candidate_id = c.id LEFT JOIN okc_options AS o ON o.id = a.answer_id RIGHT JOIN  okc_questions AS q ON o.question_id = q.id WHERE q.election_id = :elid ORDER BY c.char_name ASC, q.id ASC;");
+		$stmt->execute(array($election));
 		
-		$stmt->bind_result($c_name, $c_id, $answer, $weight, $comment, $q_id);
+		VotematchDB::bindAll($stmt, array($c_name, $c_id, $answer, $weight, $comment, $q_id));
 		$current_character = new Candidate(-1, "");
-		while($stmt->fetch()) {
+		while($stmt->fetch(PDO::FETCH_BOUND)) {
 			if($current_character->getName() != $c_name && $c_name != null) {
 				// if we come across a new character, add the previous one to the 
 				// candidates list (assuming it's not our placeholder character object
@@ -52,7 +50,7 @@ function makeCandidateAnswers() {
 		// add last character to list
 		array_push($all_candidates, $current_character);
 		
-		$stmt->close();
+		$stmt->closeCursor();
 		$ccount = 0;
 		foreach($all_candidates as $candidate) {
 			$js = "";
@@ -75,8 +73,12 @@ function makeCandidateAnswers() {
 			
 			echo $js;
 		}
+	
+		VotematchDB::close();
+		
+	} catch (Exception $e) {
+		echo '<p><h2>Error connecting to database:</h2>' . $e->getMessage() . '</p>';
 	}
-	VotematchDB::close();
 }
 
 function getCandidateFromList($all_candidates, $c_name) {

@@ -15,7 +15,7 @@ class Questions {
 	}
 	
 	
-	function printClassicQuestionTable($showComments, $answers) {
+	/*function printClassicQuestionTable($showComments, $answers) {
 		for($i = 0; $i < Questions::getNumClassicQuestions(); $i++) {
 		
 			$answer = new Answer($i, 0, 1, "");
@@ -50,7 +50,7 @@ class Questions {
 			if($showComments)
 				echo '<tr><td colspan="7"><div class="collapse" id="r' . $i . '"><input type="text" class="span9" name="c' . $i . '" placeholder="You can explain your answer here" value="' . addslashes($answer->getComment()) . '" /></div></td></tr>';
 		}
-	}
+	}*/
 	
 	function getChecked($answer, $value) {
 		if($answer == $value)
@@ -96,24 +96,21 @@ class Questions {
 	
 	 function initOKCQuestions($showComments) {
 		if($this->okc_html_string == NULL) {
-			$mysqli = VotematchDB::getConnection();
+			try {
+				$pdo = VotematchDB::getConnection();
 			
-			if (mysqli_connect_errno()) {
-				echo '<p><h2>Error connecting to database:</h2>' . mysqli_connect_error() . '</p>';
-			} else {
-				$stmt = $mysqli->prepare("SELECT q.id, q.question_en, q.question_rus, q.question_ger, q.question_jp, o.option_en, o.option_rus, o.option_ger, o.option_jp, o.question_id, o.id FROM okc_questions AS q LEFT JOIN okc_options AS o ON o.question_id = q.id WHERE q.election_id = ? ORDER BY q.id ASC");
+				$stmt = $pdo->prepare("SELECT q.id, q.question_en, q.question_rus, q.question_ger, q.question_jp, o.option_en, o.option_rus, o.option_ger, o.option_jp, o.question_id, o.id FROM okc_questions AS q LEFT JOIN okc_options AS o ON o.question_id = q.id WHERE q.election_id = :elid ORDER BY q.id ASC");
 				$election = Config::active_election;
-				$stmt->bind_param("i", $election);
-				$stmt->execute();
+				$stmt->execute(array('elid'=>$election));
 
-				$stmt->bind_result($id, $q_en, $q_rus, $q_ger, $q_jp, $o_en, $o_rus, $o_ger, $o_jp, $qid, $optionid);
+				VotematchDB::bindAll($stmt, array($id, $q_en, $q_rus, $q_ger, $q_jp, $o_en, $o_rus, $o_ger, $o_jp, $qid, $optionid));
 				
-				$okc_js_array = "[";
+				$okc_js_array = "";
 				$okc_html = "";
 				
 				$current_id = "-1";
 				$count = -1;
-				while($stmt->fetch()) {
+				while($stmt->fetch(PDO::FETCH_BOUND)) {
 					if($current_id != $id) {
 						array_push($this->question_ids, $id);
 						$count++;
@@ -125,12 +122,14 @@ class Questions {
 				}
 				
 				// we're finished, add closing brackets for last object and final array closing bracket
-				$okc_js_array .= " ]\n\t}\n];";
+				$okc_js_array .= " ]\n\t}";
 			
 				$this->okc_question_string = $okc_js_array;
 				$this->okc_html_string = $okc_html;
 				$this->number_of_okc_questions = $count;
-				$stmt->close();
+				$stmt->closeCursor();
+			} catch (Exception $e) {
+				echo '<p><h2>Error connecting to database:</h2>' . $e->getMessage() . '</p>';
 			}
 		}
 	}
@@ -247,7 +246,7 @@ class Questions {
 	}
 	
 	 function getOKCQuestionsArray() {
-		return "var okc_questions = " . $this->okc_question_string;
+		return "var okc_questions = [" . $this->okc_question_string . '];';
 	}
 	
 	 function getOKCHTML() {

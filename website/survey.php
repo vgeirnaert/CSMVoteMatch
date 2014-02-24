@@ -37,19 +37,10 @@ echo $theQuestions->getOKCIds();
 <script src="js/survey.js"></script>
 <script type="text/javascript">
 <?php
-echo $theQuestions->getClassicQuestionsArray();
-echo "\n\n";
 echo $theQuestions->getOKCQuestionsArray();
 ?>
 
-var opinions = [
-	["Strongly disagree", "Trifft gar nicht zu", "&#1050;&#1072;&#1090;&#1077;&#1075;&#1086;&#1088;&#1080;&#1095;&#1077;&#1089;&#1082;&#1080;&#32;&#1085;&#1077;&#32;&#1089;&#1086;&#1075;&#1083;&#1072;&#1089;&#1077;&#1085;", "&#20840;&#12367;&#21516;&#24847;&#12391;&#12365;&#12394;&#12356;"],
-	["Disagree", "Nicht &uuml;bereinstimmen", "&#1085;&#1077;&#32;&#1089;&#1086;&#1075;&#1083;&#1072;&#1096;&#1072;&#1090;&#1100;&#1089;&#1103;", "&#21516;&#24847;&#12375;&#12394;&#12356;"],
-	["No opinion", "Keine Meinung", "&#1053;&#1077;&#1090;&#32;&#1084;&#1085;&#1077;&#1085;&#1080;&#1103;", "&#24847;&#35211;&#12394;&#12375;"],
-	["Agree", "Stimme zu", "&#1089;&#1086;&#1075;&#1083;&#1072;&#1096;&#1072;&#1090;&#1100;&#1089;&#1103;", "&#21516;&#24847;&#12377;&#12427;"],
-	["Strongly agree", "Stimme voll zu", "&#1055;&#1086;&#1083;&#1085;&#1086;&#1089;&#1090;&#1100;&#1102;&#32;&#1089;&#1086;&#1075;&#1083;&#1072;&#1089;&#1077;&#1085;", "&#24375;&#12367;&#21516;&#24847;&#12377;&#12427;"],
-	["Importance", "Bedeutung", "&#1079;&#1085;&#1072;&#1095;&#1077;&#1085;&#1080;&#1077;", "&#37325;&#35201;&#24615;"],
-];
+
 
 var explanations = ["<b>Election questionnaire</b><br>After filling in this questionnaire, your answers will be compared to the answers from the CSM candidates and a match percentage will be calculated. Any questions marked as 'Irrelevant' will not count towards your match percentage.",
 "<b>Wahlbogen</b><br>Nachdem du diesen Fragebogen ausgef&#252;llt hast werden deine Antworten mit den Antworten der CSM Kandidaten verglichen und es wird ein Wert errechnet anhand dessen du sehen kannst wie gut eure Ansichten zusammenpassen. Fragen die du als irrelevant markiert hast werden dabei nicht ber&#252;cksichtigt,",
@@ -86,15 +77,6 @@ function getLang($lang) {
 }
 
 ?>
-var weights = [];
-
-// initialise weights
-for(var i = 0; i < questions.length; i++)
-	weights.push(1);
-	
-
-var freePoints = 0.0;
-var maxPoints = questions.length;
 
 // script entry point
 start();

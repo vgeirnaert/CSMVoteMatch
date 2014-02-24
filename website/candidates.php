@@ -44,83 +44,83 @@ require_once 'database.php';
 <br>
 <div class="row rounded">
 <?php
-	$mysqli = VotematchDB::getConnection();
-	
-	if (mysqli_connect_errno()) {
-		echo '<p><h2>Error connecting to database:</h2>' . mysqli_connect_error() . '</p>';
-	} else {
-		$stmt = $mysqli->prepare("SELECT c.id, c.char_id, c.char_name, c.corp_name, c.alliance_name, c.flies_in, c.playstyle, h.csm, c.played_since FROM candidates AS c LEFT JOIN csm_history AS h ON c.char_id = h.character_id WHERE c.election_id = ? AND c.can_convo IS NOT NULL ORDER BY RAND()");
-		$election = Config::active_election;
-		$stmt->bind_param("i", $election);
-		$stmt->execute();
+try {	
+	$pdo = VotematchDB::getConnection();
 
-		$stmt->bind_result($id, $charid, $charname, $corpname, $alliancename, $flies1, $play1, $csm, $played);
-		
-		$current_char = array();
-		while($stmt->fetch()) {
-			if(!in_array($id,$current_char)) {
-				// new char!
-				echo getCharHtml($id, $charid, $charname, $corpname, $alliancename, $flies1, $play1, $csm, $played);
-				
-				array_push($current_char,$id);
-			} 
-		}
-		
-		$stmt->close();
+	$stmt = $pdo->prepare("SELECT c.id, c.char_id, c.char_name, c.corp_name, c.alliance_name, c.flies_in, c.playstyle, h.csm, c.played_since FROM candidates AS c LEFT JOIN csm_history AS h ON c.char_id = h.character_id WHERE c.election_id = :elid AND c.can_convo IS NOT NULL ORDER BY RAND()");
+	$election = Config::active_election;
+	$stmt->execute(array('elid'=>$election));
+
+	VotematchDB::bindAll($stmt, array($id, $charid, $charname, $corpname, $alliancename, $flies1, $play1, $csm, $played));
+	
+	$current_char = array();
+	while($stmt->fetch(PDO::FETCH_BOUND)) {
+		if(!in_array($id,$current_char)) {
+			// new char!
+			echo getCharHtml($id, $charid, $charname, $corpname, $alliancename, $flies1, $play1, $csm, $played);
+			
+			array_push($current_char,$id);
+		} 
 	}
 	
+	$stmt->close();
+	
+
 	VotematchDB::close();
+} catch (Exception $e) {
+	echo '<p><h2>Error connecting to database:</h2>' . $e->getMessage() . '</p>';
+}
+
+function getCharHtml($id, $charid, $charname, $corpname, $alliancename, $flies1, $play1, $csm, $played) {
+	$html = '<div class="span4 candidate ';
 	
-	function getCharHtml($id, $charid, $charname, $corpname, $alliancename, $flies1, $play1, $csm, $played) {
-		$html = '<div class="span4 candidate ';
-		
-		$html .= getFlyClass($flies1) . ' ' . getCSMClass($csm) . ' ' . getPlaytimeClass($played) . ' ' . getActivityClass($play1) . ' rounded">';
-		
-		$html .= '<a href="candidate.php?id=' . $id . '"><h3>' . $charname . '</h3>';
-		$html .= '<img src="https://image.eveonline.com/Character/' . $charid . '_128.jpg" class="img-rounded" />';
-		$html .= "<p>$corpname<br>$alliancename &nbsp</p></a></div>";
-		
-		return $html;
-	}
+	$html .= getFlyClass($flies1) . ' ' . getCSMClass($csm) . ' ' . getPlaytimeClass($played) . ' ' . getActivityClass($play1) . ' rounded">';
 	
-	function getFlyClass($flies) {
-		if($flies == "0.0")
-			return "null";
-			
-		return $flies;
-	}
+	$html .= '<a href="candidate.php?id=' . $id . '"><h3>' . $charname . '</h3>';
+	$html .= '<img src="https://image.eveonline.com/Character/' . $charid . '_128.jpg" class="img-rounded" />';
+	$html .= "<p>$corpname<br>$alliancename &nbsp</p></a></div>";
 	
-	function getCSMClass($csm) {
-		if($csm != 0)
-			return 'csm';
-			
-		return 'nocsm';
-	}
+	return $html;
+}
+
+function getFlyClass($flies) {
+	if($flies == "0.0")
+		return "null";
+		
+	return $flies;
+}
+
+function getCSMClass($csm) {
+	if($csm != 0)
+		return 'csm';
+		
+	return 'nocsm';
+}
+
+function getPlaytimeClass($played) {
+	$time = strtotime($played);
 	
-	function getPlaytimeClass($played) {
-		$time = strtotime($played);
-		
-		$elapsed = time() - $time;
-		
-		$year = 31556926; // in seconds, aproximate
-		
-		if($elapsed < $year)
-			return 'lt1';
-		else if($elapsed > $year && $elapsed <= ($year * 2))
-			return '1t2';
-		else if($elapsed > ($year * 2) && $elapsed <= ($year * 3))
-			return '2t3';
-		else if($elapsed > ($year * 3) && $elapsed <= ($year * 4))
-			return '3t4';
-		else if($elapsed > ($year * 4) && $elapsed <= ($year * 5))
-			return '4t5';
-		else if($elapsed > ($year * 5))
-			return 'mt5';
-	}
+	$elapsed = time() - $time;
 	
-	function getActivityClass($play) {			
-		return $play;
-	}
+	$year = 31556926; // in seconds, aproximate
+	
+	if($elapsed < $year)
+		return 'lt1';
+	else if($elapsed > $year && $elapsed <= ($year * 2))
+		return '1t2';
+	else if($elapsed > ($year * 2) && $elapsed <= ($year * 3))
+		return '2t3';
+	else if($elapsed > ($year * 3) && $elapsed <= ($year * 4))
+		return '3t4';
+	else if($elapsed > ($year * 4) && $elapsed <= ($year * 5))
+		return '4t5';
+	else if($elapsed > ($year * 5))
+		return 'mt5';
+}
+
+function getActivityClass($play) {			
+	return $play;
+}
 ?>
 </div>
 
