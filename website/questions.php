@@ -103,8 +103,19 @@ class Questions {
 				$election = Config::active_election;
 				$stmt->execute(array('elid'=>$election));
 
-				VotematchDB::bindAll($stmt, array($id, $q_en, $q_rus, $q_ger, $q_jp, $o_en, $o_rus, $o_ger, $o_jp, $qid, $optionid));
-				
+				//VotematchDB::bindAll($stmt, array($id, $q_en, $q_rus, $q_ger, $q_jp, $o_en, $o_rus, $o_ger, $o_jp, $qid, $optionid));
+				$stmt->bindColumn(1, $id);
+				$stmt->bindColumn(2, $q_en);
+				$stmt->bindColumn(3, $q_rus);
+				$stmt->bindColumn(4, $q_ger);
+				$stmt->bindColumn(5, $q_jp);
+				$stmt->bindColumn(6, $o_en);
+				$stmt->bindColumn(7, $o_rus);
+				$stmt->bindColumn(8, $o_ger);
+				$stmt->bindColumn(9, $o_jp);
+				$stmt->bindColumn(10, $qid);
+				$stmt->bindColumn(11, $optionid);
+
 				$okc_js_array = "";
 				$okc_html = "";
 				
@@ -254,7 +265,7 @@ class Questions {
 	}
 	
 	 function getOKCIds() {
-		return '<input type="hidden" name="ids" value="' . serialize($this->question_ids) . '" />';
+		return '<input type="hidden" name="ids" value="' . htmlentities(serialize($this->question_ids)) . '" />';
 	}
 }
 ?>

@@ -31,7 +31,14 @@ function makeCandidateAnswers() {
 		$stmt = $pdo->prepare("SELECT c.char_name, c.char_id, a.answer_id, a.weight, a.comment, q.id FROM candidates AS c RIGHT JOIN okc_answers AS a ON a.candidate_id = c.id LEFT JOIN okc_options AS o ON o.id = a.answer_id RIGHT JOIN  okc_questions AS q ON o.question_id = q.id WHERE q.election_id = :elid ORDER BY c.char_name ASC, q.id ASC;");
 		$stmt->execute(array($election));
 		
-		VotematchDB::bindAll($stmt, array($c_name, $c_id, $answer, $weight, $comment, $q_id));
+		//VotematchDB::bindAll($stmt, array($c_name, $c_id, $answer, $weight, $comment, $q_id));
+		$stmt->bindColumn(1, $c_name);
+		$stmt->bindColumn(2, $c_id);
+		$stmt->bindColumn(3, $answer);
+		$stmt->bindColumn(4, $weight);
+		$stmt->bindColumn(5, $comment);
+		$stmt->bindColumn(6, $q_id);
+
 		$current_character = new Candidate(-1, "");
 		while($stmt->fetch(PDO::FETCH_BOUND)) {
 			if($current_character->getName() != $c_name && $c_name != null) {
@@ -94,10 +101,11 @@ function makeOKCAnswers() {
 	global $questions;
 	$id_array;
 	
-	if(isset($_POST["ids"]))
-		$id_array = unserialize($_POST["ids"]); 
-	else
+	if(isset($_POST["ids"])) {
+		$id_array = unserialize(stripslashes($_POST["ids"])); 
+	} else {
 		$id_array = $questions->getOkcQuestionIds();
+	}
 		
 	$line = '"okc_answers":{';
 	for($i = 0; $i < count($id_array); $i++) {

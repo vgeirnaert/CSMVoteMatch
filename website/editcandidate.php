@@ -5,7 +5,7 @@ session_start();
 if(isset($_SESSION["cdata"])) {
 	$cdetails = $_SESSION["cdata"];
 	
-	$pagetitle = "Edit candidate details for " . $cdetails["charname"];
+	$pagetitle = "Edit " . $cdetails["charname"];
 
 	include 'header.php'; 
 ?>

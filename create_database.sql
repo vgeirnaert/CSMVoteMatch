@@ -52,29 +52,6 @@ CREATE TABLE IF NOT EXISTS open_answers (
 	FOREIGN KEY (candidate_id) REFERENCES candidates(id) ON DELETE CASCADE
 ) TYPE = INNODB CHARACTER SET utf8;
 
-# create table for agree/disagree (classic) questions
-CREATE TABLE IF NOT EXISTS classic_questions (
-	id INTEGER NOT NULL AUTO_INCREMENT PRIMARY KEY,
-	election_id INTEGER NOT NULL,
-	question_en TEXT NOT NULL,
-	question_rus TEXT NOT NULL,
-	question_ger TEXT NOT NULL,
-	question_jp TEXT NOT NULL,
-	FOREIGN KEY (election_id) REFERENCES elections(id) ON DELETE CASCADE
-) TYPE = INNODB CHARACTER SET utf8;
-
-# create table for answers to classic questions
-CREATE TABLE IF NOT EXISTS classic_answers (
-	id INTEGER NOT NULL AUTO_INCREMENT PRIMARY KEY,
-	question_id INTEGER NOT NULL,
-	candidate_id INTEGER NOT NULL,
-	answer TINYINT NOT NULL,
-	weight DOUBLE NOT NULL,
-	comment TEXT,
-	FOREIGN KEY (question_id) REFERENCES classic_questions(id) ON DELETE CASCADE,
-	FOREIGN KEY (candidate_id) REFERENCES candidates(id) ON DELETE CASCADE
-) TYPE = INNODB CHARACTER SET utf8;
-
 # create table for OKCupid style questions
 CREATE TABLE IF NOT EXISTS okc_questions (
 	id INTEGER NOT NULL AUTO_INCREMENT PRIMARY KEY,

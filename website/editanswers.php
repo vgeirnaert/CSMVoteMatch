@@ -7,7 +7,7 @@ session_start();
 if(isset($_SESSION["cdata"])) {
 	$cdetails = $_SESSION["cdata"];
 	
-	$pagetitle = "Edit candidate details for " . $cdetails["charname"];
+	$pagetitle = "Edit " . $cdetails["charname"];
 
 	include 'header.php'; 
 	require 'questions.php';
@@ -32,10 +32,15 @@ if(isset($_SESSION["cdata"])) {
 		$pdo = VotematchDB::getConnection();
 
 		// get okc answers
-		$stmt = $pdo->prepare("SELECT o.question_id, a.answer_id, a.weight, a.comment FROM okc_answers AS a LEFT JOIN okc_options AS o ON a.answer_id = o.id WHERE a.candidate_id = :cid ORDER BY o.question_id ASC");
-		$stmt->execute(array('cid', $id));
+		$stmt = $pdo->prepare("SELECT o.question_id, a.answer_id, a.weight, a.comment FROM okc_answers AS a LEFT JOIN okc_options AS o ON a.answer_id = o.id WHERE a.candidate_id = :cid ORDER BY o.question_id ASC, a.answer_id ASC");
+		$stmt->execute(array('cid' => $id));
 
-		VotematchDB::bindAll($stmt, array($question_id, $answer, $weight, $comment));
+		//VotematchDB::bindAll($stmt, array($question_id, $answer, $weight, $comment));
+		$stmt->bindColumn(1, $question_id);
+		$stmt->bindColumn(2, $answer);
+		$stmt->bindColumn(3, $weight);
+		$stmt->bindColumn(4, $comment);
+
 		$answers_okc = array();
 		while($stmt->fetch(PDO::FETCH_BOUND)) {
 			array_push($answers_okc, new Answer($question_id, $answer, $weight, $comment));
@@ -52,9 +57,8 @@ if(isset($_SESSION["cdata"])) {
 	$theQuestions->initOKCQuestions(true);
 ?>
 		</table>
-	</div> -->
 	
-	<div class="span11 coverview rounded">
+		<div class="span11 coverview rounded">
 		<h2>Questions</h2>
 		Please answer the following 60 questions. In addition to the answers you can set the importance of each issue and you can add a comment explaining your answer.<br><br>
 		It is possible to answer only some of the questions and answer the rest later, as long as you make sure to submit your partial answers using the 'Submit answers' button at the bottom of the page.

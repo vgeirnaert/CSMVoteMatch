@@ -12,9 +12,31 @@ try {
 		// get candidate details
 		$stmt = $pdo->prepare("SELECT c.id, c.website, c.thread, c.twitter, c.char_id, c.char_name, c.corp_name, c.alliance_name, c.real_name, c.real_location, c.real_age, c.real_occupation, c.played_since, c.flies_in, c.playstyle, c.can_evemail, c.can_convo, c.email, c.campaign_statement, c.experience_eve, c.experience_real, h.csm FROM candidates AS c LEFT JOIN csm_history AS h ON c.char_id = h.character_id WHERE c.username = :username AND c.password = :password AND c.election_id = :elid");
 		$election = Config::active_election;
-		$stmt->execute(array('username'=>$username, 'password'=>$password, 'elid'=>$election);
+		$stmt->execute(array('username'=>$username, 'password'=>$password, 'elid'=>$election));
 
-		VotematchDB::bindAll($stmt, array($id, $website, $thread, $twitter, $charid, $charname, $corpname, $alliancename, $realname, $realloc, $realage, $realocc, $played, $flies, $playstyle, $bevemail, $bconvo, $email, $campaignstmt, $eveexp, $realexp, $csm));
+		//VotematchDB::bindAll($stmt, array($id, $website, $thread, $twitter, $charid, $charname, $corpname, $alliancename, $realname, $realloc, $realage, $realocc, $played, $flies, $playstyle, $bevemail, $bconvo, $email, $campaignstmt, $eveexp, $realexp, $csm));
+		$stmt->bindColumn(1, $id);
+		$stmt->bindColumn(2, $website);
+		$stmt->bindColumn(3, $thread);
+		$stmt->bindColumn(4, $twitter);
+		$stmt->bindColumn(5, $charid);
+		$stmt->bindColumn(6, $charname);
+		$stmt->bindColumn(7, $corpname);
+		$stmt->bindColumn(8, $alliancename);
+		$stmt->bindColumn(9, $realname);
+		$stmt->bindColumn(10, $realloc);
+		$stmt->bindColumn(11, $realage);
+		$stmt->bindColumn(12, $realocc);
+		$stmt->bindColumn(13, $played);
+		$stmt->bindColumn(14, $flies);
+		$stmt->bindColumn(15, $playstyle);
+		$stmt->bindColumn(16, $bevemail);
+		$stmt->bindColumn(17, $bconvo);
+		$stmt->bindColumn(18, $email);
+		$stmt->bindColumn(19, $campaignstmt);
+		$stmt->bindColumn(20, $eveexp);
+		$stmt->bindColumn(21, $realexp);
+		$stmt->bindColumn(22, $csm);
 		
 		$cdetails = array();
 		$csmarray = array();
@@ -64,10 +86,13 @@ try {
 			
 			$election = Config::active_election;
 			
-			$stmt->execute(array('cid'=>$cdetails["id"], 'elid'=>$election);
+			$stmt->execute(array('cid'=>$cdetails["id"], 'elid'=>$election));
 			
-			VotematchDb::bindAll($stmt, array($question, $answer, $qid));
-			
+			//VotematchDb::bindAll($stmt, array($question, $answer, $qid));
+			$stmt->bindColumn(1, $question);
+			$stmt->bindColumn(2, $answer);
+			$stmt->bindColumn(3, $qid);
+
 			$questions = array();
 			while($stmt->fetch()) {
 				array_push($questions, array("question"=>$question, "answer"=>$answer, "qid"=>$qid));

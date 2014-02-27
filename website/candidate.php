@@ -9,13 +9,36 @@ try {
 	$pdo = VotematchDB::getConnection();
 
 	// get candidate details
-	$stmt = $pdo->prepare("SELECT c.id, c.website, c.thread, c.twitter, c.char_id, c.char_name, c.corp_name, c.alliance_name, c.real_name, c.real_location, c.real_age, c.real_occupation, c.played_since, c.flies_in, c.playstyle, c.can_evemail, c.can_convo, c.email, c.campaign_statement, c.experience_eve, c.experience_real, h.csm FROM candidates AS c LEFT JOIN csm_history AS h ON c.char_id = h.character_id WHERE c.id = :cid OR c.char_id = :charid");
+	$stmt = $pdo->prepare("SELECT c.id, c.website, c.thread, c.twitter, c.char_id, c.char_name, c.corp_name, c.alliance_name, c.real_name, c.real_location, c.real_age, c.real_occupation, c.played_since, c.flies_in, c.playstyle, c.can_evemail, c.can_convo, c.email, c.campaign_statement, c.experience_eve, c.experience_real, h.csm FROM candidates AS c LEFT JOIN csm_history AS h ON c.char_id = h.character_id WHERE (c.id = :cid OR c.char_id = :charid) AND c.election_id = :elid");
 	$cid = $_GET["id"];
 	$charid = $_GET["cid"];
-	$stmt->execute(array('cid' => $cid, 'charid' => $charid));
+	$election = Config::active_election;
+	$stmt->execute(array('cid' => $cid, 'charid' => $charid, 'elid' => $election));
 
 	
-	VoteMatchDB::bindAll($stmt, array($id, $website, $thread, $twitter, $charid, $charname, $corpname, $alliancename, $realname, $realloc, $realage, $realocc, $played, $flies, $playstyle, $bevemail, $bconvo, $email, $campaignstmt, $eveexp, $realexp, $csm));
+	//VoteMatchDB::bindAll($stmt, array($id, $website, $thread, $twitter, $charid, $charname, $corpname, $alliancename, $realname, $realloc, $realage, $realocc, $played, $flies, $playstyle, $bevemail, $bconvo, $email, $campaignstmt, $eveexp, $realexp, $csm));
+	$stmt->bindColumn(1, $id);
+	$stmt->bindColumn(2, $website);
+	$stmt->bindColumn(3, $thread);
+	$stmt->bindColumn(4, $twitter);
+	$stmt->bindColumn(5, $charid);
+	$stmt->bindColumn(6, $charname);
+	$stmt->bindColumn(7, $corpname);
+	$stmt->bindColumn(8, $alliancename);
+	$stmt->bindColumn(9, $realname);
+	$stmt->bindColumn(10, $realloc);
+	$stmt->bindColumn(11, $realage);
+	$stmt->bindColumn(12, $realocc);
+	$stmt->bindColumn(13, $played);
+	$stmt->bindColumn(14, $flies);
+	$stmt->bindColumn(15, $playstyle);
+	$stmt->bindColumn(16, $bevemail);
+	$stmt->bindColumn(17, $bconvo);
+	$stmt->bindColumn(18, $email);
+	$stmt->bindColumn(19, $campaignstmt);
+	$stmt->bindColumn(20, $eveexp);
+	$stmt->bindColumn(21, $realexp);
+	$stmt->bindColumn(22, $csm);
 	
 	$cdetails = array();
 	$csmarray = array();
@@ -56,14 +79,15 @@ try {
 	$stmt->closeCursor();
 	
 	// get open questions and answers
-	$stmt = $pdo->prepare("SELECT q.question, a.answer FROM open_questions AS q LEFT JOIN open_answers AS a ON q.id = a.question_id AND a.candidate_id = :canid WHERE q.election_id = elid ORDER BY q.id");
+	$stmt = $pdo->prepare("SELECT q.question, a.answer FROM open_questions AS q LEFT JOIN open_answers AS a ON q.id = a.question_id AND a.candidate_id = :canid WHERE q.election_id = :elid ORDER BY q.id");
 	
-	$election = Config::active_election;
+	
 	
 	$stmt->execute(array('canid' => $cdetails["id"], 'elid' => $election));
 	
-	VoteMatchDB::bindAll($stmt, array($question, $answer));
-	
+	//VoteMatchDB::bindAll($stmt, array($question, $answer));
+	$stmt->bindColumn(1, $question);
+	$stmt->bindColumn(2, $answer);
 	$questions = array();
 	while($stmt->fetch(PDO::FETCH_BOUND)) {
 		array_push($questions, array("question"=>$question, "answer"=>sanitize($answer)));
@@ -76,7 +100,7 @@ try {
 
 VotematchDB::close();
 
-$pagetitle = $cdetails["charname"] . " for CSM - Eve Vote Match 2.0";
+$pagetitle = $cdetails["charname"] . " for CSM";
 
 include 'header.php'; 
 ?>

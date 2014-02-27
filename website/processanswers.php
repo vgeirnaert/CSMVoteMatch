@@ -14,11 +14,11 @@ try {
 			
 		// remove original okc answers
 		$stmt = $pdo->prepare("DELETE FROM okc_answers WHERE candidate_id = :cid");
-		$stmt->execute(array('cid'=>$userid);
+		$stmt->execute(array('cid'=>$userid));
 		$stmt->closeCursor();
 		
 		// input new okc answers
-		$id_array = unserialize($_POST["ids"]);
+		$id_array = unserialize(stripslashes($_POST["ids"]));
 		
 		$answer = 0;
 		$weight = 0;
@@ -60,7 +60,7 @@ try {
 		doError("Session timeout"); 
 	}
 } catch (Exception $e) {
-	echo '<p><h2>Error connecting to database:</h2>' . mysqli_connect_error() . '</p>';
+	echo '<p><h2>Error connecting to database:</h2>' . $e->getMessage() . '</p>';
 }
 
 function doError($string) {

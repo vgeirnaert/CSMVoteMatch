@@ -47,11 +47,20 @@ require_once 'database.php';
 try {	
 	$pdo = VotematchDB::getConnection();
 
-	$stmt = $pdo->prepare("SELECT c.id, c.char_id, c.char_name, c.corp_name, c.alliance_name, c.flies_in, c.playstyle, h.csm, c.played_since FROM candidates AS c LEFT JOIN csm_history AS h ON c.char_id = h.character_id WHERE c.election_id = :elid AND c.can_convo IS NOT NULL ORDER BY RAND()");
+	$stmt = $pdo->prepare("SELECT c.id, c.char_id, c.char_name, c.corp_name, c.alliance_name, c.flies_in, c.playstyle, h.csm, c.played_since FROM candidates AS c LEFT JOIN csm_history AS h ON c.char_id = h.character_id WHERE c.election_id = :elid AND c.can_convo IS NOT NULL ORDER BY random()");
 	$election = Config::active_election;
 	$stmt->execute(array('elid'=>$election));
 
-	VotematchDB::bindAll($stmt, array($id, $charid, $charname, $corpname, $alliancename, $flies1, $play1, $csm, $played));
+	//VotematchDB::bindAll($stmt, array($id, $charid, $charname, $corpname, $alliancename, $flies1, $play1, $csm, $played));
+	$stmt->bindColumn(1, $id);
+	$stmt->bindColumn(2, $charid);
+	$stmt->bindColumn(3, $charname);
+	$stmt->bindColumn(4, $corpname);
+	$stmt->bindColumn(5, $alliancename);
+	$stmt->bindColumn(6, $flies1);
+	$stmt->bindColumn(7, $play1);
+	$stmt->bindColumn(8, $csm);
+	$stmt->bindColumn(9, $played);
 	
 	$current_char = array();
 	while($stmt->fetch(PDO::FETCH_BOUND)) {
@@ -63,7 +72,7 @@ try {
 		} 
 	}
 	
-	$stmt->close();
+	$stmt->closeCursor();
 	
 
 	VotematchDB::close();

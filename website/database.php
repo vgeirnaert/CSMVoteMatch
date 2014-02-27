@@ -58,8 +58,8 @@ class VotematchDB {
 	}
 	
 	public static function bindAll($stmt, $ar_columns) {
-		for($i = 0; $i < count($ar_columns); $i++) {
-			$stmt->bindColumn($i + 1, $ar_columns[$i]);
+		foreach($ar_columns as $key => &$val) {
+			$stmt->bindColumn($key + 1, $val);
 		}
 	}
 }
