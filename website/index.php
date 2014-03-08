@@ -24,4 +24,25 @@
 	</div>
 </div>
 
+<div class="modal fade" id="myModal" role="dialog">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h4 class="modal-title">Eve Votematch is not yet open</h4>
+      </div>
+      <div class="modal-body">
+        <p>Eve Votematch currently contains example data instead of the actual CSM9 election data because the election period has not yet started and CCP has not officially released a list of candidates for this election. Please keep an eye on our twitter account <a href="https://twitter.com/evevotematch" target="_blank">@EveVotematch</a> or the <a href="https://forums.eveonline.com/default.aspx?g=topics&f=268" target="_blank">official Eve Online forums</a> to be notified when Eve Votematch goes live for the CSM9 elections.</p>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">I understand</button>
+      </div>
+    </div><!-- /.modal-content -->
+  </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->
+<script type="text/javascript">
+setTimeout(function() {
+	$('#myModal').modal({backdrop: true, show: true});
+	}, 1000);
+</script>
+
 <?php include 'footer.php'; ?>

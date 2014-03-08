@@ -19,7 +19,7 @@
 		<a name="trust"><h2>How do I know I can trust this website?</h2></a>
 		<p>Vote Match aims to be as transparent as possible. Candidates can verify that their answers are stored correctly at any time, as well as adjust their stored information at their discretion. All the matching calculations are performed client-side through <a href="js/compare.js" target="_blank">Javascript</a>, meaning the code for it can be verified by anyone. Additionally, the entire source for this website can be found at our <a href="https://github.com/vgeirnaert/CSMVoteMatch" target="_blank">Github repository</a>.</p>
 		<a name="who"><h2>Who runs this website?</h2></a>
-		<p>This website is created and maintained by me: Valentijn Geirnaert, <a href="https://gate.eveonline.com/Profile/Dierdra%20Vaal" target="_blank">Dierdra Vaal</a> in Eve Online. I was a representative on the first CSM, chairman of the third CSM and vice-chairman of the fifth CSM and firmly believe that the CSM is a strong positive influence on the development of Eve Online. Vote Match is hosted on a server owned by <a href="https://gate.eveonline.com/Profile/Serenity%20Steele" target="_blank">Serenity Steele</a>, vice-chairman of the first CSM and producer of the <a href="http://www.eve-maps.com/" target="_blank">Eve Strategic Maps</a>.</p>
+		<p>This website is created and maintained by me: Valentijn Geirnaert, <a href="https://gate.eveonline.com/Profile/Dierdra%20Vaal" target="_blank">Dierdra Vaal</a> in Eve Online. I was a representative on the first CSM, chairman of the third CSM and vice-chairman of the fifth CSM and firmly believe that the CSM is a strong positive influence on the development of Eve Online. </p>
 		<a name="candidates"><h2>Are all candidates on this website?</h2></a>
 		<p>Vote Match has approached all candidates because we would like to be as complete as possible. However, some candidates choose not to participate. As such, these candidates are not included in the candidate overview or matching.</p>
 	</div>
@@ -39,12 +39,6 @@
 		<ul>
 			<li><a href="https://gate.eveonline.com/Profile/Mike Devoid" target="_blank">Mike deVoid</a> - for encouraging a more flexible question format and help with gathering high quality questions</li>
 			<li><a href="https://gate.eveonline.com/Profile/Gilbaron" target="_blank">Gilbaron</a> - for translating the questions into German</li>
-			<li><a href="https://gate.eveonline.com/Profile/Greene Lee" target="_blank">Greene Lee</a> - for translating the questions into Russian</li>
-			<li><a href="https://gate.eveonline.com/Profile/Dark Eirlys" target="_blank">Dark Eirlys</a> - for translating the questions into Italian</li>
-			<li><a href="https://gate.eveonline.com/Profile/Two Step" target="_blank">Two Step</a> - For giving feedback on the questionnaire</li>
-			<li><a href="https://gate.eveonline.com/Profile/Trebor Daehdoow" target="_blank">Trebor Daehdoow</a> - For giving feedback on the questionnaire</li>
-			<li><a href="https://gate.eveonline.com/Profile/Meissa Anunthiel" target="_blank">Meissa Anunthiel</a> - For giving feedback on the questionnaire</li>
-			<li><a href="https://gate.eveonline.com/Profile/Alekseyev Karrde" target="_blank">Alekseyev Karrde</a> - For giving feedback on the questionnaire</li>
 			<li>All the players that submitted question suggestions in the various threads</li>
 		</ul>
 	</div>

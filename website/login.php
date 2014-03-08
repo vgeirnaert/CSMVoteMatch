@@ -1,5 +1,5 @@
 <?php include 'header.php'; 
-require_once '../config2.php';
+require_once '../../../configs/votematch/eve_vm.php';
 ?>
 
 <div class="row inverted rounded">

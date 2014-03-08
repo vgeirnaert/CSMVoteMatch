@@ -1,6 +1,6 @@
 <?php
 if(!isset($pagetitle))
-	$pagetitle = "CSM Vote Match 2.1";
+	$pagetitle = "Eve Vote Match 2.1";
 ?>
 
 <!DOCTYPE html>
